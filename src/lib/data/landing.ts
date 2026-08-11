@@ -1,6 +1,5 @@
 /**
  * Static content for the MODELTREE landing page.
- *
  * Everything here is placeholder copy/figures standing in for what will later
  * come from the catalog service. Keeping it in one module means the section
  * components stay presentational and swap over to real data in one place.
