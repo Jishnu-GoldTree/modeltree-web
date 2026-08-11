@@ -87,6 +87,7 @@ export function FeaturedDesigner() {
               >
                 <Thumb
                   seed={work.seed}
+                  sizes="(min-width: 1024px) 15vw, (min-width: 640px) 25vw, 50vw"
                   className="aspect-square transition-transform duration-300 group-hover:scale-[1.04]"
                 />
                 <div className="bg-background p-3">

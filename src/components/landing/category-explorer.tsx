@@ -65,6 +65,13 @@ export function CategoryExplorer({
             >
               <Thumb
                 seed={category.seed}
+                src={category.cover}
+                // The first tile spans two columns on large screens.
+                sizes={
+                  index === 0
+                    ? "(min-width: 1024px) 40vw, (min-width: 640px) 33vw, 50vw"
+                    : "(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
+                }
                 className={cn(
                   "flex items-end p-3 transition-transform duration-300 group-hover:scale-[1.03]",
                   index === 0 ? "aspect-4/3 lg:aspect-auto lg:h-full" : "aspect-4/3"

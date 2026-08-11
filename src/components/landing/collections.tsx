@@ -37,6 +37,7 @@ export function Collections() {
             >
               <Thumb
                 seed={collection.featured.seed}
+                sizes="(min-width: 1024px) 50vw, 100vw"
                 className="aspect-16/7 shrink-0 transition-transform duration-300 group-hover:scale-[1.02]"
               />
               <div className="flex flex-1 flex-col bg-background p-5">

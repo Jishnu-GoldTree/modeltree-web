@@ -12,6 +12,8 @@ export type CategoryTile = {
   count: string;
   /** Seed for the generated thumbnail gradient — keeps tiles stable across renders. */
   seed: string;
+  /** Catalog preview. Cards fall back to the shared cover when unset. */
+  cover?: string;
 };
 
 export type ModelCard = {
@@ -24,6 +26,8 @@ export type ModelCard = {
   formats: string[];
   badge?: string;
   seed: string;
+  /** Catalog preview. Cards fall back to the shared cover when unset. */
+  cover?: string;
 };
 
 export type NavItem = {
