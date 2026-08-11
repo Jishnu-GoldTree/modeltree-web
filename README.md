@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MODELTREE
 
-## Getting Started
+A 3D model marketplace — designers upload and sell 3D assets, buyers license
+and download them. Modeled on CGTrader.
 
-First, run the development server:
+**Status:** landing page complete. Catalog, auth, uploads and checkout are not
+built yet.
+
+## Stack
+
+| Concern     | Choice                                |
+| ----------- | ------------------------------------- |
+| Framework   | Next.js 16 (App Router, Turbopack)    |
+| Language    | TypeScript                            |
+| Styling     | Tailwind CSS v4 (`@theme` tokens)     |
+| Components  | shadcn/ui (`new-york`, Radix UI base) |
+| Forms       | React Hook Form + Zod                 |
+| Package mgr | Yarn                                  |
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+yarn install
+yarn dev          # http://localhost:3000
+yarn build        # production build + typecheck
+yarn lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Layout
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+src/
+  app/
+    page.tsx              # landing page — composes the sections below
+    search/page.tsx       # stub, so the search form has a destination
+    globals.css           # design tokens (brand palette lives here)
+  components/
+    landing/              # one file per landing-page band
+    layout/               # header, footer, logo
+    marketplace/          # model-card, thumb — reused beyond the landing page
+    forms/                # RHF + Zod forms (search, newsletter)
+    ui/                   # shadcn primitives — regenerate, don't hand-edit
+  lib/
+    data/landing.ts       # all landing copy and mock catalog data
+    validations/forms.ts  # Zod schemas
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Where to change things
 
-## Learn More
+- **Copy, categories, trending models, nav, footer links** → `src/lib/data/landing.ts`.
+  Section components are presentational; nothing is hardcoded in them.
+- **Brand colors** → the `--brand*` and `--ink*` tokens in `src/app/globals.css`.
+  `--brand` is the fill; `--brand-foreground` is text _on_ that fill;
+  `--brand-accent` is the darkened variant that stays readable as text on white.
+- **Page gutter** → the `.shell` class in `globals.css`, shared by every section
+  so the bands stay aligned.
 
-To learn more about Next.js, take a look at the following resources:
+## Placeholder imagery
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+There is no asset pipeline yet, so `components/marketplace/thumb.tsx` generates
+a deterministic "studio shot" per model from a seed string: dark stage,
+perspective grid floor, lit subject. Hues are constrained to a cool band so a
+full grid reads as one system. Replace `<Thumb>` with `next/image` once real
+renders exist — the seed field on each record can go away with it.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Next up
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Catalog browse + filters, model detail page, designer storefronts, auth,
+upload/publishing flow, cart and checkout.
