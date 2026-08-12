@@ -41,13 +41,16 @@ if (process.env.AUTH_FACEBOOK_ID && process.env.AUTH_FACEBOOK_SECRET) {
 
 /**
  * Fixture sign-in, so the signed-in screens can be demoed before a user
- * database exists. It accepts hard-coded credentials, which would be a serious
- * hole in a real deployment — so it is ON in development and OFF in production
- * unless someone opts in explicitly with AUTH_DEMO=1. Delete this provider
- * (and `lib/data/account`) once real accounts land.
+ * database exists.
+ *
+ * ON everywhere, production included, because the deployed site is currently a
+ * demo and the client needs to sign in on it. That means anyone who finds the
+ * URL can sign in as these accounts — and the login page prints the credentials
+ * — so this MUST be switched off before real users exist. Two ways:
+ * set AUTH_DEMO=0 in the environment, or delete this provider along with
+ * `lib/data/account` once a real user table lands.
  */
-export const demoAuthEnabled =
-  process.env.NODE_ENV !== "production" || process.env.AUTH_DEMO === "1"
+export const demoAuthEnabled = process.env.AUTH_DEMO !== "0"
 
 if (demoAuthEnabled) {
   providers.push(
