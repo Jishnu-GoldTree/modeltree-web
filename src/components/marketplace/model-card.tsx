@@ -49,9 +49,14 @@ export function ModelCard({
             line up across the grid regardless of title length. */}
         <h3 className="min-h-10 text-sm leading-snug font-medium">
           {/* Stretched link keeps the whole card clickable without nesting
-              interactive elements inside an anchor. */}
+              interactive elements inside an anchor.
+
+              Singular `/3d-model/`: `/3d-models/[segment]` serves categories
+              and collections, so detail needs its own segment to stay
+              unambiguous — a model slugged "car" would otherwise collide with
+              the Car category. */}
           <Link
-            href={`/3d-models/${model.slug}`}
+            href={`/3d-model/${model.slug}`}
             className="after:absolute after:inset-0 after:content-[''] hover:underline"
           >
             <span className="line-clamp-2">{model.title}</span>

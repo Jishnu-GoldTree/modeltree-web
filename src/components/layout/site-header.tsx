@@ -25,17 +25,24 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Logo } from "@/components/layout/logo"
+import { AccountMenu } from "@/components/layout/account-menu"
 import { SearchForm } from "@/components/forms/search-form"
 
 /**
  * The header floats over the hero at the top of the page and hardens into a
  * solid sticky bar (with its own compact search) once the hero scrolls away.
+ *
+ * `solid` starts it hardened. The floating state paints its logo, nav and
+ * actions in white, which only works over a dark hero — on an interior page
+ * with a light background the entire header renders invisible. Any page that
+ * doesn't open on a dark band wants `solid`.
  */
-export function SiteHeader() {
-  const [stuck, setStuck] = useState(false)
+export function SiteHeader({ solid = false }: { solid?: boolean }) {
+  const [scrolled, setScrolled] = useState(false)
+  const stuck = solid || scrolled
 
   useEffect(() => {
-    const onScroll = () => setStuck(window.scrollY > 220)
+    const onScroll = () => setScrolled(window.scrollY > 220)
     onScroll()
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
@@ -57,11 +64,19 @@ export function SiteHeader() {
           <NavigationMenuList>
             {PRIMARY_NAV.map((item) => (
               <NavigationMenuItem key={item.label}>
-                <NavigationMenuTrigger className="bg-transparent text-sm font-medium text-white/85 hover:bg-white/10 hover:text-white data-[state=open]:bg-white/10 data-[state=open]:text-white">
+                {/* The trigger sits on a dark bar, so every state has to be
+                    overridden off the light default. Use `data-open:` (not
+                    `data-[state=open]:`) to match the variant stacks the base
+                    style uses — otherwise twMerge sees different modifiers,
+                    keeps both, and the base's `data-open:hover:bg-muted` wins
+                    the cascade, leaving white text on a near-white pill. */}
+                <NavigationMenuTrigger className="bg-transparent text-sm font-medium text-white/85 hover:bg-white/10 hover:text-white focus:bg-white/10 data-open:bg-white/10 data-open:text-white data-open:hover:bg-white/10 data-open:focus:bg-white/10 data-popup-open:bg-white/10 data-popup-open:hover:bg-white/10">
                   {item.label}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <ul className="grid w-[520px] gap-1 p-2 md:grid-cols-2">
+                  {/* gap-2, not gap-1: each row paints a full-width hover fill,
+                      so a 4px gutter left neighbouring fills visually touching. */}
+                  <ul className="grid w-[520px] gap-2 p-2 md:grid-cols-2">
                     {item.children?.map((child) => (
                       <li key={child.label}>
                         <NavigationMenuLink asChild>
@@ -98,7 +113,11 @@ export function SiteHeader() {
           <SearchForm size="compact" placeholder="Search 3D models" />
         </div>
 
-        <div className={cn("flex items-center gap-1", !stuck && "ml-auto")}>
+        {/* Pushed right by its own auto margin, except at md+ when stuck —
+            there the compact search above carries the auto margin instead.
+            Below md that search is display:none, so this must keep its own or
+            the actions collapse against the logo. */}
+        <div className={cn("flex items-center gap-1 ml-auto", stuck && "md:ml-0")}>
           <Button
             variant="ghost"
             size="icon"
@@ -127,19 +146,7 @@ export function SiteHeader() {
             className="mx-2 hidden !h-5 bg-white/20 sm:block"
           />
 
-          <Button
-            variant="ghost"
-            className="hidden text-white/85 hover:bg-white/10 hover:text-white sm:inline-flex"
-            asChild
-          >
-            <Link href="/login">Log in</Link>
-          </Button>
-          <Button
-            className="hidden bg-brand text-brand-foreground hover:bg-brand/85 sm:inline-flex"
-            asChild
-          >
-            <Link href="/signup">Sign up</Link>
-          </Button>
+          <AccountMenu />
 
           <MobileNav />
         </div>
