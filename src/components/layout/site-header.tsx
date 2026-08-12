@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { Heart, Menu, ShoppingCart, Upload } from "lucide-react"
+import { Menu, Upload } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { PRIMARY_NAV } from "@/lib/data/landing"
@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/sheet"
 import { Logo } from "@/components/layout/logo"
 import { AccountMenu } from "@/components/layout/account-menu"
+import { HeaderBadges } from "@/components/layout/header-badges"
 import { SearchForm } from "@/components/forms/search-form"
 
 /**
@@ -118,28 +119,7 @@ export function SiteHeader({ solid = false }: { solid?: boolean }) {
             Below md that search is display:none, so this must keep its own or
             the actions collapse against the logo. */}
         <div className={cn("flex items-center gap-1 ml-auto", stuck && "md:ml-0")}>
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Favorites"
-            className="hidden text-white/85 hover:bg-white/10 hover:text-white sm:inline-flex"
-            asChild
-          >
-            <Link href="/favorites">
-              <Heart className="size-5" />
-            </Link>
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Cart"
-            className="hidden text-white/85 hover:bg-white/10 hover:text-white sm:inline-flex"
-            asChild
-          >
-            <Link href="/cart">
-              <ShoppingCart className="size-5" />
-            </Link>
-          </Button>
+          <HeaderBadges />
 
           <Separator
             orientation="vertical"

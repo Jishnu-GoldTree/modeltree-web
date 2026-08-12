@@ -29,11 +29,13 @@ export function CatalogView({
   params,
   result,
   lockedCategory,
+  favorites,
 }: {
   base: string
   params: Params
   result: CatalogResult
   lockedCategory?: string
+  favorites: Set<string>
 }) {
   const { items, total, page, pageCount, facets } = result
   const filters = (
@@ -115,7 +117,7 @@ export function CatalogView({
           <ul className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
             {items.map((model) => (
               <li key={model.slug}>
-                <ModelCard model={model} />
+                <ModelCard model={model} favorited={favorites.has(model.slug)} />
               </li>
             ))}
           </ul>

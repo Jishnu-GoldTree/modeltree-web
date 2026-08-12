@@ -7,11 +7,11 @@ import {
   getAccountStats,
   getDemoUserByEmail,
   getDesignerStats,
-  getFavorites,
   getOrders,
   initials,
 } from "@/lib/data/account"
 import { LICENSE_LABELS } from "@/lib/data/catalog"
+import { getFavoriteModels } from "@/lib/favorites"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { ModelCard } from "@/components/marketplace/model-card"
@@ -36,7 +36,10 @@ export default async function ProfilePage() {
   const userId = user?.id ?? "u_alex"
 
   const orders = getOrders(userId)
-  const favorites = getFavorites(userId)
+  // Saved models come from the cookie, same as /favorites — one source, so
+  // the two screens can never disagree. Orders stay fixtures until there are
+  // real orders to read.
+  const favorites = await getFavoriteModels()
   const stats = getAccountStats(userId)
   const isDesigner = user?.accountType === "designer"
   const designer = isDesigner ? getDesignerStats(user.handle) : null
@@ -45,7 +48,7 @@ export default async function ProfilePage() {
     { label: "Purchases", value: String(stats.purchases), Icon: Package },
     { label: "Total spent", value: money(stats.spent), Icon: Receipt },
     { label: "Files available", value: String(stats.downloads), Icon: Download },
-    { label: "Saved models", value: String(stats.favorites), Icon: Star },
+    { label: "Saved models", value: String(favorites.length), Icon: Star },
   ]
 
   return (
@@ -215,7 +218,7 @@ export default async function ProfilePage() {
               <ul className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
                 {favorites.map((model) => (
                   <li key={model.slug}>
-                    <ModelCard model={model} />
+                    <ModelCard model={model} favorited />
                   </li>
                 ))}
               </ul>

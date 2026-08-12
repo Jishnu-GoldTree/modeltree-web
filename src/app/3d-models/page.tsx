@@ -3,6 +3,7 @@ import { SiteFooter } from "@/components/layout/site-footer"
 import { CatalogView } from "@/components/marketplace/catalog-view"
 import { queryModels } from "@/lib/data/catalog"
 import { toParams, toQuery } from "@/lib/data/catalog-params"
+import { getFavoriteSet } from "@/lib/favorites"
 
 export const metadata = {
   title: "3D models",
@@ -13,6 +14,7 @@ export const metadata = {
 export default async function ModelsPage({ searchParams }: PageProps<"/3d-models">) {
   const params = toParams(await searchParams)
   const result = queryModels(toQuery(params))
+  const favorites = await getFavoriteSet()
 
   return (
     <>
@@ -31,7 +33,12 @@ export default async function ModelsPage({ searchParams }: PageProps<"/3d-models
           </div>
         </div>
 
-        <CatalogView base="/3d-models" params={params} result={result} />
+        <CatalogView
+          base="/3d-models"
+          params={params}
+          result={result}
+          favorites={favorites}
+        />
       </main>
 
       <SiteFooter />

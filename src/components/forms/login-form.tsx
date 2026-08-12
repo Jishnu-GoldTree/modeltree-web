@@ -199,7 +199,7 @@ export function LoginForm({
         <div className="rounded-lg border border-dashed p-3 text-xs text-muted-foreground">
           <p className="font-medium text-foreground">Demo accounts</p>
           <p className="mt-1">
-            Buyer <code className="font-mono">buyer@modeltree.demo</code> · Designer{" "}
+            Buyer <code className="font-mono">omri@goldtree.com</code> · Designer{" "}
             <code className="font-mono">designer@modeltree.demo</code>
             <br />
             Password <code className="font-mono">demo1234</code>

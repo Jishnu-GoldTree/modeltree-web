@@ -7,6 +7,7 @@ import {
   type CatalogQuery,
 } from "@/lib/data/catalog"
 import { toParams, toQuery } from "@/lib/data/catalog-params"
+import { getFavoriteSet } from "@/lib/favorites"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { CatalogView } from "@/components/marketplace/catalog-view"
@@ -66,6 +67,7 @@ export default async function SegmentPage({
 
   const raw = toParams(await searchParams)
   const result = queryModels({ ...toQuery(raw), ...resolved.patch })
+  const favorites = await getFavoriteSet()
 
   return (
     <>
@@ -88,6 +90,7 @@ export default async function SegmentPage({
           params={raw}
           result={result}
           lockedCategory={resolved.lockedCategory}
+          favorites={favorites}
         />
       </main>
 

@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Heart, Star } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { toggleFavorite } from "@/lib/actions/favorites"
 import type { ModelCard as ModelCardData } from "@/lib/data/landing"
 import { Thumb } from "@/components/marketplace/thumb"
 import { Badge } from "@/components/ui/badge"
@@ -13,9 +14,17 @@ function formatPrice(price: ModelCardData["price"]) {
 export function ModelCard({
   model,
   className,
+  favorited = false,
 }: {
   model: ModelCardData
   className?: string
+  /**
+   * Whether this model is saved. Passed in rather than read here: the card
+   * renders on statically prerendered pages, and reading the cookie would make
+   * them all dynamic. Pages that already render dynamically pass the real
+   * value; the rest show an unsaved heart that still saves on click.
+   */
+  favorited?: boolean
 }) {
   return (
     <article
@@ -35,13 +44,30 @@ export function ModelCard({
             {model.badge}
           </Badge>
         )}
-        <button
-          type="button"
-          aria-label={`Save ${model.title}`}
-          className="absolute top-2 right-2 inline-flex size-8 items-center justify-center rounded-full bg-black/45 text-white opacity-0 backdrop-blur transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+        {/* z-10 lifts this above the stretched link's ::after overlay, which
+            covers the whole card and would otherwise swallow the click. */}
+        <form
+          action={toggleFavorite}
+          className={cn(
+            "absolute top-2 right-2 z-10 transition-opacity",
+            favorited
+              ? "opacity-100"
+              : "opacity-0 group-hover:opacity-100 focus-within:opacity-100",
+          )}
         >
-          <Heart className="size-4" aria-hidden />
-        </button>
+          <input type="hidden" name="slug" value={model.slug} />
+          <button
+            type="submit"
+            aria-label={favorited ? `Remove ${model.title} from saved` : `Save ${model.title}`}
+            aria-pressed={favorited}
+            className="inline-flex size-8 items-center justify-center rounded-full bg-black/45 text-white outline-none backdrop-blur hover:bg-black/65 focus-visible:ring-3 focus-visible:ring-brand/50"
+          >
+            <Heart
+              className={cn("size-4", favorited && "fill-brand text-brand")}
+              aria-hidden
+            />
+          </button>
+        </form>
       </Thumb>
 
       <div className="flex flex-1 flex-col p-3">

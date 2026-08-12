@@ -26,6 +26,8 @@ import { ModelCard } from "@/components/marketplace/model-card"
 import { Thumb } from "@/components/marketplace/thumb"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { addToCart } from "@/lib/actions/cart"
+import { addFavorite } from "@/lib/actions/favorites"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { initials } from "@/lib/data/account"
@@ -269,49 +271,62 @@ export default async function ModelPage({ params }: PageProps<"/3d-model/[slug]"
                   included.
                 </p>
 
-                {/* License tiers. Links rather than client state, so a chosen
-                    tier survives a refresh and can be linked to directly. */}
-                <fieldset className="mt-5">
-                  <legend className="sr-only">Choose a license</legend>
-                  <ul className="flex flex-col gap-2">
-                    {licenses.map((option, index) => (
-                      <li key={option.id}>
-                        <div
-                          className={`flex flex-col gap-0.5 rounded-lg border p-3 ${
-                            index === 0 ? "border-brand bg-brand-muted/50" : ""
-                          }`}
-                        >
-                          <div className="flex items-baseline justify-between gap-2">
-                            <span className="text-sm font-medium">{option.name}</span>
-                            <span className="text-sm font-semibold tabular-nums">
-                              {option.price === 0 ? "Free" : `$${option.price}`}
-                            </span>
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            {option.blurb}
-                          </p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </fieldset>
+                {/* The licence picker and the add button are one form, so
+                    the chosen tier posts with it. Radios + submit means it
+                    works with JS disabled and there's no client state to keep
+                    in sync with the cart cookie. */}
+                <form action={addToCart} className="mt-5">
+                  <input type="hidden" name="slug" value={model.slug} />
 
-                <div className="mt-4 flex flex-col gap-2">
-                  <Button
-                    asChild
-                    className="h-10 bg-brand text-brand-foreground hover:bg-brand/85"
-                  >
-                    <Link href="/cart">
-                      {model.price === "free" ? "Download" : "Add to cart"}
-                    </Link>
+                  <fieldset>
+                    <legend className="sr-only">Choose a license</legend>
+                    <ul className="flex flex-col gap-2">
+                      {licenses.map((option, index) => (
+                        <li key={option.id}>
+                          <label
+                            className="flex cursor-pointer flex-col gap-0.5 rounded-lg border p-3 transition-colors hover:bg-accent has-checked:border-brand has-checked:bg-brand-muted/60 has-focus-visible:ring-3 has-focus-visible:ring-brand/50"
+                          >
+                            <input
+                              type="radio"
+                              name="license"
+                              value={option.id}
+                              defaultChecked={index === 0}
+                              className="sr-only"
+                            />
+                            <span className="flex items-baseline justify-between gap-2">
+                              <span className="text-sm font-medium">{option.name}</span>
+                              <span className="text-sm font-semibold tabular-nums">
+                                {option.price === 0 ? "Free" : `$${option.price}`}
+                              </span>
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {option.blurb}
+                            </span>
+                          </label>
+                        </li>
+                      ))}
+                    </ul>
+                  </fieldset>
+
+                  <div className="mt-4 flex flex-col gap-2">
+                    <Button
+                      type="submit"
+                      className="h-10 bg-brand text-brand-foreground hover:bg-brand/85"
+                    >
+                      {model.price === "free" ? "Get this model" : "Add to cart"}
+                    </Button>
+                  </div>
+                </form>
+
+                {/* Its own form: nesting it inside the add-to-cart form would
+                    make one submit carry the other's fields. */}
+                <form action={addFavorite} className="mt-2">
+                  <input type="hidden" name="slug" value={model.slug} />
+                  <Button type="submit" variant="outline" className="h-10 w-full">
+                    <Heart className="size-4" aria-hidden />
+                    Save for later
                   </Button>
-                  <Button asChild variant="outline" className="h-10">
-                    <Link href="/favorites">
-                      <Heart className="size-4" aria-hidden />
-                      Save
-                    </Link>
-                  </Button>
-                </div>
+                </form>
 
                 <ul className="mt-5 flex flex-col gap-2 border-t pt-4">
                   {[

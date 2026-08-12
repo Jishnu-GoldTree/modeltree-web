@@ -1,20 +1,28 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useForm, useWatch } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Check, Eye, EyeOff, Info, Loader2, ShoppingBag, Upload } from "lucide-react"
+import { useState } from "react";
+import Link from "next/link";
+import { useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Check,
+  Eye,
+  EyeOff,
+  Info,
+  Loader2,
+  ShoppingBag,
+  Upload,
+} from "lucide-react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 import {
   PASSWORD_RULES,
   signupSchema,
   type SignupValues,
-} from "@/lib/validations/forms"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/lib/validations/forms";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Form,
   FormControl,
@@ -22,8 +30,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { SocialAuthButtons } from "@/components/forms/social-auth-buttons"
+} from "@/components/ui/form";
+import { SocialAuthButtons } from "@/components/forms/social-auth-buttons";
 
 const ACCOUNT_OPTIONS = [
   {
@@ -38,11 +46,15 @@ const ACCOUNT_OPTIONS = [
     hint: "Publish and earn royalties",
     Icon: Upload,
   },
-] as const
+] as const;
 
-export function SignupForm({ enabledProviders }: { enabledProviders: string[] }) {
-  const [showPassword, setShowPassword] = useState(false)
-  const [notice, setNotice] = useState<string | null>(null)
+export function SignupForm({
+  enabledProviders,
+}: {
+  enabledProviders: string[];
+}) {
+  const [showPassword, setShowPassword] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
 
   const form = useForm<SignupValues>({
     resolver: zodResolver(signupSchema),
@@ -56,21 +68,21 @@ export function SignupForm({ enabledProviders }: { enabledProviders: string[] })
       accountType: "buyer",
       terms: false,
     },
-  })
+  });
 
   // useWatch, not form.watch: watch() returns a fresh function each render,
   // which makes React Compiler bail out of memoizing this whole component.
-  const password = useWatch({ control: form.control, name: "password" })
+  const password = useWatch({ control: form.control, name: "password" });
 
   async function onSubmit() {
-    setNotice(null)
+    setNotice(null);
     // TODO: creating an account by email needs somewhere to put it. Once a
     // database and Auth.js adapter exist: insert the user, hash the password,
     // send a verification email, then land them on their dashboard.
-    await new Promise((resolve) => setTimeout(resolve, 700))
+    await new Promise((resolve) => setTimeout(resolve, 700));
     setNotice(
       "Email sign-up needs a user database — not wired yet. Social sign-up is live.",
-    )
+    );
   }
 
   return (
@@ -86,7 +98,10 @@ export function SignupForm({ enabledProviders }: { enabledProviders: string[] })
       />
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-4"
+        >
           <FormField
             control={form.control}
             name="accountType"
@@ -113,8 +128,13 @@ export function SignupForm({ enabledProviders }: { enabledProviders: string[] })
                           onBlur={field.onBlur}
                           className="sr-only"
                         />
-                        <option.Icon className="size-4 text-brand-accent" aria-hidden />
-                        <span className="text-sm font-medium">{option.label}</span>
+                        <option.Icon
+                          className="size-4 text-brand-accent"
+                          aria-hidden
+                        />
+                        <span className="text-sm font-medium">
+                          {option.label}
+                        </span>
                         <span className="text-xs text-muted-foreground">
                           {option.hint}
                         </span>
@@ -137,7 +157,7 @@ export function SignupForm({ enabledProviders }: { enabledProviders: string[] })
                   <Input
                     {...field}
                     autoComplete="name"
-                    placeholder="Alex Rivera"
+                    placeholder="Omri GoldTree"
                     className="h-10"
                   />
                 </FormControl>
@@ -185,7 +205,9 @@ export function SignupForm({ enabledProviders }: { enabledProviders: string[] })
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                     aria-pressed={showPassword}
                     className="absolute inset-y-0 right-0 inline-flex w-10 items-center justify-center rounded-r-lg text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
                   >
@@ -204,7 +226,7 @@ export function SignupForm({ enabledProviders }: { enabledProviders: string[] })
                     rejected submit. */}
                 <ul className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
                   {PASSWORD_RULES.map((rule) => {
-                    const met = rule.test(password)
+                    const met = rule.test(password);
                     return (
                       <li
                         key={rule.label}
@@ -222,9 +244,11 @@ export function SignupForm({ enabledProviders }: { enabledProviders: string[] })
                           aria-hidden
                         />
                         {rule.label}
-                        <span className="sr-only">{met ? "met" : "not met"}</span>
+                        <span className="sr-only">
+                          {met ? "met" : "not met"}
+                        </span>
                       </li>
-                    )
+                    );
                   })}
                 </ul>
               </FormItem>
@@ -249,13 +273,22 @@ export function SignupForm({ enabledProviders }: { enabledProviders: string[] })
                       className="mt-0.5 size-4 rounded border-input accent-brand"
                     />
                   </FormControl>
-                  <Label htmlFor="terms" className="text-sm leading-snug font-normal">
+                  <Label
+                    htmlFor="terms"
+                    className="text-sm leading-snug font-normal"
+                  >
                     I agree to the{" "}
-                    <Link href="/terms" className="text-brand-accent hover:underline">
+                    <Link
+                      href="/terms"
+                      className="text-brand-accent hover:underline"
+                    >
                       Terms of Service
                     </Link>{" "}
                     and{" "}
-                    <Link href="/privacy" className="text-brand-accent hover:underline">
+                    <Link
+                      href="/privacy"
+                      className="text-brand-accent hover:underline"
+                    >
                       Privacy Policy
                     </Link>
                   </Label>
@@ -290,10 +323,13 @@ export function SignupForm({ enabledProviders }: { enabledProviders: string[] })
 
       <p className="text-center text-sm text-muted-foreground">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-brand-accent hover:underline">
+        <Link
+          href="/login"
+          className="font-medium text-brand-accent hover:underline"
+        >
           Log in
         </Link>
       </p>
     </div>
-  )
+  );
 }
