@@ -5,7 +5,7 @@ import { SITE } from "@/lib/data/landing"
 import { Logo } from "@/components/layout/logo"
 import { Thumb } from "@/components/marketplace/thumb"
 import { LoginForm } from "@/components/forms/login-form"
-import { demoAuthEnabled, enabledProviders } from "@/auth"
+import { ENABLED_OAUTH_PROVIDERS, SHOW_DEMO_HINT } from "@/lib/auth-config"
 
 export const metadata = { title: "Log in" }
 
@@ -27,12 +27,9 @@ const BENEFITS = [
  * nothing to a buyer.
  */
 const AUTH_ERRORS: Record<string, string> = {
-  OAuthAccountNotLinked:
-    "That email already has an account created with a different sign-in method. Use the original method instead.",
-  OAuthSignin: "Could not reach that provider. Try again.",
-  OAuthCallback: "That provider rejected the sign-in. Try again.",
-  AccessDenied: "You cancelled the sign-in, or the provider denied access.",
-  Configuration: "Sign-in is misconfigured. Check the server logs.",
+  oauth: "That sign-in didn't complete. Try again.",
+  access_denied: "You cancelled the sign-in, or the provider denied access.",
+  server_error: "The provider had a problem. Try again in a moment.",
 }
 
 export default async function LoginPage({ searchParams }: PageProps<"/login">) {
@@ -115,9 +112,9 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
           </p>
 
           <LoginForm
-            enabledProviders={enabledProviders}
+            enabledProviders={ENABLED_OAUTH_PROVIDERS}
             authError={authError}
-            demoEnabled={demoAuthEnabled}
+            demoEnabled={SHOW_DEMO_HINT}
             redirectTo={redirectTo}
           />
         </div>

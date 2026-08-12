@@ -2,7 +2,7 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { Download, MapPin, Package, Receipt, Star } from "lucide-react"
 
-import { auth } from "@/auth"
+import { getCurrentUser } from "@/lib/supabase/server"
 import {
   getAccountStats,
   getDemoUserByEmail,
@@ -26,13 +26,17 @@ const money = (value: number) =>
   value === 0 ? "Free" : `$${value.toLocaleString("en-US")}`
 
 export default async function ProfilePage() {
-  const session = await auth()
+  const user_ = await getCurrentUser()
   // Anonymous visitors get bounced to login with a return path, rather than an
   // empty profile that looks broken.
-  if (!session?.user) redirect("/login?next=/profile")
+  if (!user_) redirect("/login?next=/profile")
 
-  const user = getDemoUserByEmail(session.user.email)
-  const name = user?.name ?? session.user.name ?? "Your account"
+  const user = getDemoUserByEmail(user_.email)
+  const name =
+    user?.name ??
+    (user_.user_metadata?.full_name as string | undefined) ??
+    user_.email ??
+    "Your account"
   const userId = user?.id ?? "u_alex"
 
   const orders = getOrders(userId)
@@ -74,7 +78,7 @@ export default async function ProfilePage() {
                 </Badge>
               </div>
               <p className="mt-1 text-sm text-white/60">
-                {session.user.email}
+                {user_.email}
                 {user && ` · Member since ${user.memberSince}`}
               </p>
               {user && (

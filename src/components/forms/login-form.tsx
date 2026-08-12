@@ -17,8 +17,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { SocialAuthButtons } from "@/components/forms/social-auth-buttons"
-import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase/client"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 
@@ -45,26 +45,25 @@ export function LoginForm({
   async function onSubmit(values: LoginValues) {
     setNotice(null)
 
-    // Signed in from the client, not through a server action. A server-side
-    // `signIn` redirects via a soft navigation, which never remounts
-    // SessionProvider — the session cookie is set but the header keeps showing
-    // "Log in" until a hard reload. The client helper updates the session in
-    // place. OAuth can stay server-side because it leaves the site entirely and
-    // comes back on a fresh document.
-    const result = await signIn("demo", {
+    // Client-side sign-in so the browser client's session updates in place;
+    // a server action would set the cookie but leave this tab's client unaware
+    // until a hard reload. OAuth stays server-side — it leaves the site and
+    // returns on a fresh document.
+    const supabase = createClient()
+    const { error } = await supabase.auth.signInWithPassword({
       email: values.email,
       password: values.password,
-      redirect: false,
     })
 
     // One message for every failure: distinguishing "no such account" from
     // "wrong password" turns the form into an account-existence oracle.
-    if (!result || result.error) {
+    if (error) {
       setNotice("That email and password don't match an account.")
       return
     }
 
     router.push(redirectTo)
+    // Re-render server components so they see the new session cookie.
     router.refresh()
   }
 
@@ -76,7 +75,7 @@ export function LoginForm({
         enabledProviders={enabledProviders}
         onUnavailable={(provider) =>
           setNotice(
-            `${provider} sign-in isn't configured yet — its Auth.js credentials are missing.`,
+            `${provider} sign-in isn't enabled yet — turn it on in the Supabase dashboard under Authentication → Providers.`,
           )
         }
       />

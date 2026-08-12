@@ -4,7 +4,7 @@ import { ArrowLeft, Check } from "lucide-react"
 import { Logo } from "@/components/layout/logo"
 import { Thumb } from "@/components/marketplace/thumb"
 import { SignupForm } from "@/components/forms/signup-form"
-import { enabledProviders } from "@/auth"
+import { ENABLED_OAUTH_PROVIDERS } from "@/lib/auth-config"
 
 export const metadata = { title: "Create an account" }
 
@@ -78,7 +78,7 @@ export default function SignupPage() {
             One account to buy, license and sell 3D models.
           </p>
 
-          <SignupForm enabledProviders={enabledProviders} />
+          <SignupForm enabledProviders={ENABLED_OAUTH_PROVIDERS} />
         </div>
       </div>
     </main>

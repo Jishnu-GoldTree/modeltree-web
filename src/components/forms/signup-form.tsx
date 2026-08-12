@@ -31,7 +31,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { SocialAuthButtons } from "@/components/forms/social-auth-buttons";
+import { SocialAuthButtons } from "@/components/forms/social-auth-buttons"
+import { createClient } from "@/lib/supabase/client"
+import { useRouter } from "next/navigation";
 
 const ACCOUNT_OPTIONS = [
   {
@@ -53,6 +55,7 @@ export function SignupForm({
 }: {
   enabledProviders: string[];
 }) {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
 
@@ -74,15 +77,39 @@ export function SignupForm({
   // which makes React Compiler bail out of memoizing this whole component.
   const password = useWatch({ control: form.control, name: "password" });
 
-  async function onSubmit() {
+  async function onSubmit(values: SignupValues) {
     setNotice(null);
-    // TODO: creating an account by email needs somewhere to put it. Once a
-    // database and Auth.js adapter exist: insert the user, hash the password,
-    // send a verification email, then land them on their dashboard.
-    await new Promise((resolve) => setTimeout(resolve, 700));
-    setNotice(
-      "Email sign-up needs a user database — not wired yet. Social sign-up is live.",
-    );
+
+    const supabase = createClient();
+    const { data, error } = await supabase.auth.signUp({
+      email: values.email,
+      password: values.password,
+      options: {
+        // Lands on auth.users.raw_user_meta_data; a trigger copies it into the
+        // profiles table so the app never reads the auth schema directly.
+        data: { full_name: values.name, account_type: values.accountType },
+      },
+    });
+
+    if (error) {
+      setNotice(
+        error.message.toLowerCase().includes("already")
+          ? "That email already has an account. Try logging in instead."
+          : "Could not create the account. Check the details and try again.",
+      );
+      return;
+    }
+
+    // With email confirmation enabled, signUp returns a user but no session.
+    if (!data.session) {
+      setNotice(
+        `Check ${values.email} for a confirmation link to finish setting up your account.`,
+      );
+      return;
+    }
+
+    router.push("/profile");
+    router.refresh();
   }
 
   return (
@@ -92,7 +119,7 @@ export function SignupForm({
         enabledProviders={enabledProviders}
         onUnavailable={(provider) =>
           setNotice(
-            `${provider} sign-up isn't configured yet — its Auth.js credentials are missing.`,
+            `${provider} sign-up isn't enabled yet — turn it on in the Supabase dashboard under Authentication → Providers.`,
           )
         }
       />

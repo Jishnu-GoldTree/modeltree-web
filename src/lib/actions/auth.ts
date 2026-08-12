@@ -1,27 +1,42 @@
 "use server"
 
-import { AuthError } from "next-auth"
+import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache"
+import { headers } from "next/headers"
 
-import { signIn, signOut } from "@/auth"
+import { createClient } from "@/lib/supabase/server"
 
 /**
- * Starts an OAuth sign-in. Called from the provider buttons.
+ * Auth mutations against Supabase.
  *
- * `signIn` redirects by throwing a Next redirect error, so nothing after it
- * runs on the happy path — the catch only sees genuine auth failures, and must
- * rethrow anything else or it would swallow the redirect.
+ * Password sign-in and sign-up run client-side (see the forms) so the browser
+ * client's session updates in place. These are the flows that must happen on
+ * the server: OAuth needs the request origin to build a callback URL, and sign
+ * out must clear the httpOnly cookie.
  */
+
 export async function signInWithProvider(provider: string, redirectTo = "/") {
-  try {
-    await signIn(provider, { redirectTo })
-  } catch (error) {
-    if (error instanceof AuthError) {
-      return { error: "Could not start sign-in with that provider." }
-    }
-    throw error
+  const supabase = await createClient()
+  const origin = (await headers()).get("origin") ?? ""
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: provider as "google" | "facebook",
+    options: {
+      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`,
+    },
+  })
+
+  if (error || !data.url) {
+    return { error: "Could not start sign-in with that provider." }
   }
+
+  // Supabase returns the provider's authorize URL rather than redirecting.
+  redirect(data.url)
 }
 
 export async function signOutAction() {
-  await signOut({ redirectTo: "/" })
+  const supabase = await createClient()
+  await supabase.auth.signOut()
+  revalidatePath("/", "layout")
+  redirect("/")
 }

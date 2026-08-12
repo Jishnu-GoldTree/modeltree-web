@@ -1,7 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import { useSession } from "next-auth/react"
+import { useEffect, useState } from "react"
+import type { User as SupabaseUser } from "@supabase/supabase-js"
+
+import { createClient } from "@/lib/supabase/client"
 import { Heart, LayoutDashboard, LogOut, Package, User } from "lucide-react"
 
 import { signOutAction } from "@/lib/actions/auth"
@@ -34,13 +37,30 @@ const LINKS = [
  * session lands.
  */
 export function AccountMenu() {
-  const { data: session, status } = useSession()
+  const [user, setUser] = useState<SupabaseUser | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  if (status === "loading") {
+  useEffect(() => {
+    const supabase = createClient()
+
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user)
+      setLoading(false)
+    })
+
+    // Keeps the header in step with sign-in/out that happens in another tab or
+    // on a page this component didn't navigate through.
+    const { data: subscription } = supabase.auth.onAuthStateChange(
+      (_event, session) => setUser(session?.user ?? null),
+    )
+    return () => subscription.subscription.unsubscribe()
+  }, [])
+
+  if (loading) {
     return <Skeleton className="h-8 w-28 rounded-md bg-white/10" />
   }
 
-  if (!session?.user) {
+  if (!user) {
     return (
       <>
         <Button
@@ -60,7 +80,8 @@ export function AccountMenu() {
     )
   }
 
-  const name = session.user.name ?? "Account"
+  const name =
+    (user.user_metadata?.full_name as string | undefined) ?? user.email ?? "Account"
 
   return (
     <DropdownMenu>
@@ -82,7 +103,7 @@ export function AccountMenu() {
         <DropdownMenuLabel className="flex flex-col gap-0.5">
           <span className="text-sm font-medium">{name}</span>
           <span className="truncate text-xs font-normal text-muted-foreground">
-            {session.user.email}
+            {user.email}
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
