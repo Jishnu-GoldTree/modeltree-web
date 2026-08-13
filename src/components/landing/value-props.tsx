@@ -10,7 +10,7 @@ const ICONS = {
 
 export function ValueProps() {
   return (
-    <section className="bg-muted/40 py-16 sm:py-20">
+    <section className="bg-muted/40 section-band">
       <div className="shell">
         <h2 className="text-center text-xl font-semibold tracking-tight text-balance sm:text-2xl">
           What sets {SITE.name} apart?

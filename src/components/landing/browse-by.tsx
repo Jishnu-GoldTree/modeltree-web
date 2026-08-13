@@ -73,7 +73,7 @@ function FreeCard({
 
 export function BrowseBy() {
   return (
-    <section className="shell pb-16 sm:pb-20">
+    <section className="shell">
       <div className="grid gap-10 rounded-2xl border bg-card p-6 sm:p-8 lg:grid-cols-3">
         <BrowseList
           heading="Browse by Type"

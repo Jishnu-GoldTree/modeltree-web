@@ -1,10 +1,11 @@
 "use client"
 
+import { useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Search } from "lucide-react"
+import { Loader2, Search } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { searchSchema, type SearchValues } from "@/lib/validations/forms"
@@ -41,8 +42,15 @@ export function SearchForm({
     mode: "onSubmit",
   })
 
+  // No toast for search — the results page is the confirmation. What it does
+  // need is a busy state, since /search reads the database and cannot be
+  // prefetched, so the click otherwise looks like it did nothing.
+  const [isSearching, startSearch] = useTransition()
+
   function onSubmit(values: SearchValues) {
-    router.push(`/search?q=${encodeURIComponent(values.q)}`)
+    startSearch(() => {
+      router.push(`/search?q=${encodeURIComponent(values.q)}`)
+    })
   }
 
   const isHero = size === "hero"
@@ -87,12 +95,20 @@ export function SearchForm({
                 <Button
                   type="submit"
                   aria-label={t("search")}
+                  disabled={isSearching}
                   className={cn(
                     "shrink-0 rounded-full bg-brand text-brand-foreground hover:bg-brand/85",
                     isHero ? "size-11" : "size-8"
                   )}
                 >
-                  <Search className={isHero ? "size-5" : "size-4"} />
+                  {isSearching ? (
+                    <Loader2
+                      className={cn("animate-spin", isHero ? "size-5" : "size-4")}
+                      aria-hidden
+                    />
+                  ) : (
+                    <Search className={isHero ? "size-5" : "size-4"} />
+                  )}
                 </Button>
               </div>
               <FormMessage

@@ -18,8 +18,10 @@ export async function PromoBanner() {
   const t = await getTranslations("promo")
 
   return (
-    // The negative top margin lifts this card onto the hero's dark base.
-    <section className="shell -mt-12 pb-16 sm:pb-20">
+    /* This card deliberately overlaps the hero's dark base, so it is the one
+       section that opts out of the flow gap: the negative margin cancels the
+       gap (16/20) and then lifts the card a further 12 onto the hero. */
+    <section className="shell -mt-28 sm:-mt-32">
       <div className="relative overflow-hidden rounded-2xl border bg-card p-6 shadow-lg sm:p-8">
         <div
           aria-hidden

@@ -31,7 +31,7 @@ export function CategoryExplorer({
   className?: string
 }) {
   return (
-    <section className={cn("shell pb-16 sm:pb-20", className)}>
+    <section className={cn("shell", className)}>
       <SectionHeading
         title={title}
         description={description}

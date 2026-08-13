@@ -26,12 +26,12 @@
   },
   "catalog": {
     "title": "3D models",
-    "description": "Royalty-free assets for games, film, architecture and product visualisation — filter by category, format and license.",
+    "description": "Royalty-free assets for games, film, architecture and product visualisation. Filter by category, format and license.",
     "count": "{count, plural, =0 {No models} one {# model} other {# models}}",
     "filters": "Filters",
     "clearAll": "Clear all",
     "emptyTitle": "No models match those filters",
-    "emptyBody": "Try removing a filter — combining a narrow category with a rare file format usually comes up empty.",
+    "emptyBody": "Try removing a filter. Combining a narrow category with a rare file format usually comes up empty.",
     "price": "Price",
     "category": "Category",
     "fileFormat": "File format",
@@ -66,7 +66,7 @@
     "empty": "Nothing saved yet",
     "emptyBody": "Tap the heart on any model to keep it here while you compare options. Saved models stay for six months, signed in or not.",
     "clear": "Clear all",
-    "addToCart": "Add — {price}",
+    "addToCart": "Add for {price}",
     "getFree": "Get for free",
     "summary": "{count} saved · {free} free · {total} to buy the rest",
     "emptyAction": "Browse 3D models"
@@ -137,7 +137,7 @@
     "updates": "Free lifetime updates",
     "invoice": "Invoice issued on purchase",
     "checked": "Every model is checked against our publishing guidelines before it goes on sale.",
-    "commercial": "{license} license — commercial use included.",
+    "commercial": "{license} license, commercial use included.",
     "daysAgo": "{days} days ago"
   },
   "profile": {
@@ -186,7 +186,7 @@
     "buyerPays": "Buyer pays",
     "commission": "Platform commission",
     "youReceive": "You receive",
-    "payoutNote": "Paid out monthly once your balance passes . Every sale carries an invoice you can download.",
+    "payoutNote": "Paid out monthly. Every sale carries an invoice you can download.",
     "createDesigner": "Create a designer account",
     "step1Title": "Upload your files",
     "step1Body": "Drop in the formats you already export. We generate previews and check the mesh before it goes live.",
@@ -222,7 +222,7 @@
   "promo": {
     "badge": "Monthly bundle",
     "title": "Two models a month, every month",
-    "body": "A monthly bundle for studios that need a steady flow of assets. Pick any two models from the catalog each month — the licences are yours to keep, even if you cancel.",
+    "body": "A monthly bundle for studios that need a steady flow of assets. Pick any two models from the catalog each month, and the licences are yours to keep even if you cancel.",
     "cta": "See the bundle",
     "commission": "Commission a model",
     "priceLabel": "Monthly bundle",
@@ -232,13 +232,13 @@
   "jewellery": {
     "badge": "In-house jewellery library",
     "title": "40,000 jewellery models, modelled in-house",
-    "body": "Four designers spent two years building GoldTree's jewellery library — rings, pendants, settings and bands, modelled for casting and direct print. Licence a piece as it is, or ask for it adjusted to your stone and metal.",
+    "body": "Four designers spent two years building GoldTree's jewellery library of rings, pendants, settings and bands, modelled for casting and direct print. Licence a piece as it is, or ask for it adjusted to your stone and metal.",
     "models": "Jewellery models",
     "designers": "In-house designers",
     "years": "Years in the making",
     "browse": "Browse jewellery",
     "commission": "Commission a piece",
-    "cast": "Cast-ready geometry — watertight, correctly scaled, no manifold errors",
+    "cast": "Cast-ready geometry: watertight, correctly scaled, no manifold errors",
     "sizes": "Ring sizes and stone settings adjusted on request",
     "inhouse": "Modelled in-house by GoldTree, not resold from third parties"
   },
@@ -253,6 +253,15 @@
     "savedCleared": "Saved models cleared",
     "listingCreated": "Listing saved",
     "listingPublished": "Listing queued for processing",
-    "licenseUpdated": "License updated"
+    "listingFailed": "Could not save the listing",
+    "licenseUpdated": "License updated",
+    "accountCreated": "Account created. Opening your profile",
+    "confirmEmail": "Almost there. Confirm your email address",
+    "emailTaken": "That email already has an account",
+    "signUpFailed": "Could not create the account",
+    "signedIn": "Signed in. Taking you through",
+    "signInFailed": "Check your email and password",
+    "signedOut": "Signed out",
+    "subscribed": "You're subscribed"
   }
 }

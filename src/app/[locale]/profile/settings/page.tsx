@@ -35,7 +35,7 @@ export default async function ProfileSettingsPage() {
 
           <h1 className="mt-5 text-2xl font-semibold tracking-tight">Profile settings</h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
-            {user.email} — your email is managed by your sign-in method and
+            {user.email}. Your email is managed by your sign-in method and
             can&apos;t be changed here.
           </p>
 

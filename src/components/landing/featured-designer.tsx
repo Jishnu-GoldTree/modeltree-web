@@ -12,7 +12,7 @@ export function FeaturedDesigner() {
   const designer = FEATURED_DESIGNER
 
   return (
-    <section className="shell py-16 sm:py-20">
+    <section className="shell">
       <SectionHeading
         title="Featured Designer"
         action={{ label: "Browse all designers", href: "/designers" }}

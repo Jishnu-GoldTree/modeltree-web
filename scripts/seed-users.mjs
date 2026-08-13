@@ -61,7 +61,7 @@ for (const user of USERS) {
 
   console.log(
     error
-      ? `  ✗ ${user.email} — ${error.message}`
+      ? `  ✗ ${user.email}: ${error.message}`
       : `  ✓ ${user.email} (${found ? "updated" : "created"})`,
   )
 }

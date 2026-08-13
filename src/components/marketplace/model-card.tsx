@@ -6,6 +6,7 @@ import { UserText } from "@/components/user-text"
 import { FavoriteButton } from "@/components/marketplace/favorite-button"
 import type { ModelCard as ModelCardData } from "@/lib/data/landing"
 import { Thumb } from "@/components/marketplace/thumb"
+import { tempPreview } from "@/lib/temp-previews"
 import { Badge } from "@/components/ui/badge"
 
 function formatPrice(price: ModelCardData["price"]) {
@@ -36,7 +37,7 @@ export function ModelCard({
     >
       <Thumb
         seed={model.seed}
-        src={model.cover}
+        src={model.cover ?? tempPreview(model.slug)}
         sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
         className="aspect-4/3 shrink-0 transition-transform duration-300 group-hover:scale-[1.04]"
       >
@@ -45,8 +46,16 @@ export function ModelCard({
             {model.badge}
           </Badge>
         )}
-        <FavoriteButton slug={model.slug} title={model.title} favorited={favorited} />
       </Thumb>
+
+      {/* Outside <Thumb>, deliberately. Thumb picks up group-hover:scale, and a
+          transform creates a stacking context — with the heart inside it, its
+          z-10 only ranked among Thumb's own children, so the stretched link's
+          ::after (later in the DOM, on the card itself) painted over it. The
+          heart was unclickable with a real pointer: hovering to reach it was
+          what put the overlay on top, so the click navigated to the model
+          instead of saving it. As a child of the card it outranks the overlay. */}
+      <FavoriteButton slug={model.slug} title={model.title} favorited={favorited} />
 
       <div className="flex flex-1 flex-col p-3">
         {/* Two lines are reserved for the title so prices and format chips

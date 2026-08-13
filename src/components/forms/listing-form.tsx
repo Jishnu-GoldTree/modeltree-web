@@ -1,7 +1,9 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useEffect } from "react"
 import { useFormStatus } from "react-dom"
+import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 import { Info, Loader2, UploadCloud } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -55,7 +57,14 @@ export function ListingForm({
   categories: { id: string; slug: string; label: string; kind: string }[]
   licenses: { code: string; label: string; blurb: string }[]
 }) {
+  const feedback = useTranslations("toast")
   const [state, formAction] = useActionState<ListingState, FormData>(createListing, {})
+
+  // Only the failure path needs a toast here — a successful create redirects to
+  // the dashboard and carries its own flash marker.
+  useEffect(() => {
+    if (state.error) toast.error(feedback("listingFailed"))
+  }, [state, feedback])
 
   return (
     <form action={formAction} className="flex flex-col gap-6">
@@ -80,7 +89,7 @@ export function ListingForm({
 
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="title">Title</Label>
-        <Input id="title" name="title" placeholder="Rally Car — Rigged" className="h-10" required />
+        <Input id="title" name="title" placeholder="Rally Car (Rigged)" className="h-10" required />
         <FieldError message={state.fieldErrors?.title} />
       </div>
 

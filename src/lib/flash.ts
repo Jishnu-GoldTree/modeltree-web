@@ -18,6 +18,7 @@ export const FLASH_KEYS = [
   "listingCreated",
   "listingPublished",
   "licenseUpdated",
+  "signedOut",
 ] as const
 
 export type FlashKey = (typeof FLASH_KEYS)[number]

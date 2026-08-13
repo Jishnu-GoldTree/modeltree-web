@@ -175,6 +175,32 @@
   .shell {
     @apply mx-auto w-full max-w-350 px-4 sm:px-6 lg:px-10;
   }
+
+  /* ── Section rhythm ──────────────────────────────────────────────────
+     Two classes, one scale. Sections never set their own vertical spacing.
+
+     The space *between* sections belongs to the parent, not to the sections.
+     When each one carried its own padding, every section had to know what sat
+     above it: most used pb-only and inherited their top gap from the section
+     before, which silently broke the moment a full-bleed band was inserted —
+     a band's padding is inside its background, so it contributes nothing
+     below its border, and "Explore 3D assets" ended up flush against it.
+     A gap on the container cannot be got wrong that way, and adjacent
+     paddings can never double up.
+
+     The trailing padding matters as much as the gap: the last section has
+     nothing below it to space against, so without it the final row sits
+     straight on the footer. */
+  .section-flow {
+    @apply flex flex-col gap-16 pb-16 sm:gap-20 sm:pb-20;
+  }
+
+  /* The space *inside* a section that paints its own background, so its
+     content clears the band's edges. Sections with no background need none of
+     this — .section-flow already spaces them. */
+  .section-band {
+    @apply py-16 sm:py-20;
+  }
 }
 
 @layer utilities {

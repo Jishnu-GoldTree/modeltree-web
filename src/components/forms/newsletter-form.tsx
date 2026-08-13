@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, Loader2 } from "lucide-react"
@@ -17,6 +19,7 @@ import {
 } from "@/components/ui/form"
 
 export function NewsletterForm() {
+  const feedback = useTranslations("toast")
   const [done, setDone] = useState(false)
   const form = useForm<NewsletterValues>({
     resolver: zodResolver(newsletterSchema),
@@ -26,6 +29,7 @@ export function NewsletterForm() {
   async function onSubmit() {
     // TODO: POST the validated email to the subscriptions endpoint once it exists.
     await new Promise((resolve) => setTimeout(resolve, 600))
+    toast.success(feedback("subscribed"))
     setDone(true)
     form.reset()
   }

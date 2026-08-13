@@ -12,7 +12,7 @@ const ICONS = {
 
 export function BusinessAccount() {
   return (
-    <section className="py-16 sm:py-20">
+    <section>
       <div className="shell">
         <div className="flex flex-col items-center text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium text-muted-foreground">

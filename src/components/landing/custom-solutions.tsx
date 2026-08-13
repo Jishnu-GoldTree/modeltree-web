@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 
 export function CustomSolutions() {
   return (
-    <section className="bg-ink py-16 text-ink-foreground sm:py-20">
+    <section className="bg-ink text-ink-foreground section-band">
       <div className="shell">
         <div className="flex flex-col items-center text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80">
@@ -17,7 +17,7 @@ export function CustomSolutions() {
             Need something unique? Let&apos;s create it
           </h2>
           <p className="mt-3 max-w-xl text-sm text-pretty text-white/65">
-            Two ways to get a model that doesn&apos;t exist yet — hand the whole
+            Two ways to get a model that doesn&apos;t exist yet: hand the whole
             brief to our production team, or hire a designer directly.
           </p>
         </div>

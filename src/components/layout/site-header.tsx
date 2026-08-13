@@ -127,7 +127,9 @@ export function SiteHeader({ solid = false }: { solid?: boolean }) {
               : "pointer-events-none -translate-y-1 opacity-0"
           )}
         >
-          <SearchForm size="compact" placeholder="Search 3D models" />
+          {/* No placeholder prop: SearchForm falls back to the translated
+              nav.search, which a hardcoded English string was overriding. */}
+          <SearchForm size="compact" />
         </div>
 
         {/* Pushed right by its own auto margin, except at md+ when stuck —

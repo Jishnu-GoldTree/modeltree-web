@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
 
 import { createClient } from "@/lib/supabase/server"
+import { withFlash } from "@/lib/flash"
 
 /**
  * Auth mutations against Supabase.
@@ -38,5 +39,5 @@ export async function signOutAction() {
   const supabase = await createClient()
   await supabase.auth.signOut()
   revalidatePath("/", "layout")
-  redirect("/")
+  redirect(withFlash("/", "signedOut"))
 }

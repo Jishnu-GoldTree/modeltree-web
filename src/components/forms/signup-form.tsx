@@ -1,7 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl"
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
 import Link from "next/link";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -57,9 +58,15 @@ export function SignupForm({
   enabledProviders: string[];
 }) {
   const t = useTranslations("auth");
+  const feedback = useTranslations("toast");
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  // Navigating is a separate pending state from submitting: react-hook-form
+  // clears isSubmitting the moment onSubmit returns, but the push to /profile
+  // is still fetching. Without this the button stops spinning and the page sits
+  // there looking broken for as long as the destination takes to render.
+  const [isNavigating, startNavigation] = useTransition();
 
   const form = useForm<SignupValues>({
     resolver: zodResolver(signupSchema),
@@ -94,8 +101,10 @@ export function SignupForm({
     });
 
     if (error) {
+      const taken = error.message.toLowerCase().includes("already");
+      toast.error(feedback(taken ? "emailTaken" : "signUpFailed"));
       setNotice(
-        error.message.toLowerCase().includes("already")
+        taken
           ? "That email already has an account. Try logging in instead."
           : "Could not create the account. Check the details and try again.",
       );
@@ -103,15 +112,25 @@ export function SignupForm({
     }
 
     // With email confirmation enabled, signUp returns a user but no session.
+    // The toast is the headline; the inline notice stays because it names the
+    // address and has to still be on screen after the toast times out.
     if (!data.session) {
+      toast.info(feedback("confirmEmail"));
       setNotice(
         `Check ${values.email} for a confirmation link to finish setting up your account.`,
       );
       return;
     }
 
-    router.push("/profile");
-    router.refresh();
+    // Fires before the navigation, so there is feedback the instant the account
+    // exists rather than only once /profile has rendered.
+    toast.success(feedback("accountCreated"));
+
+    startNavigation(() => {
+      router.push("/profile");
+      // Re-render server components so they see the new session cookie.
+      router.refresh();
+    });
   }
 
   return (
@@ -121,7 +140,7 @@ export function SignupForm({
         enabledProviders={enabledProviders}
         onUnavailable={(provider) =>
           setNotice(
-            `${provider} sign-up isn't enabled yet — turn it on in the Supabase dashboard under Authentication → Providers.`,
+            `${provider} sign-up isn't enabled yet. Turn it on in the Supabase dashboard under Authentication → Providers.`,
           )
         }
       />
@@ -339,10 +358,10 @@ export function SignupForm({
 
           <Button
             type="submit"
-            disabled={form.formState.isSubmitting}
+            disabled={form.formState.isSubmitting || isNavigating}
             className="h-10 bg-brand text-brand-foreground hover:bg-brand/85"
           >
-            {form.formState.isSubmitting && (
+            {(form.formState.isSubmitting || isNavigating) && (
               <Loader2 className="size-4 animate-spin" aria-hidden />
             )}
             {t("createAccount")}

@@ -21,7 +21,7 @@ const listingSchema = z.object({
   description: z
     .string()
     .trim()
-    .min(30, "Describe the model in at least 30 characters — buyers rely on this")
+    .min(30, "Describe the model in at least 30 characters. Buyers rely on this")
     .max(4000),
   // A missing select posts null, which would otherwise surface Zod's raw
   // "expected string, received null" to the designer.

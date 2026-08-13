@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { Suspense, useEffect, useRef } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
@@ -10,12 +10,8 @@ import { isFlashKey } from "@/lib/flash"
 /**
  * Reads `?flash=` and shows the matching toast, then strips the param so a
  * refresh or a shared link does not replay it.
- *
- * Mounted per page rather than in the layout: it needs useSearchParams, which
- * opts a route out of static rendering, and the pages that redirect with a
- * flash are dynamic already.
  */
-export function FlashToast() {
+function FlashToastReader() {
   const t = useTranslations("toast")
   const params = useSearchParams()
   const pathname = usePathname()
@@ -37,4 +33,26 @@ export function FlashToast() {
   }, [flash, params, pathname, router, t])
 
   return null
+}
+
+/**
+ * Mounted once in the locale layout so every route is covered.
+ *
+ * It used to be mounted page by page, on the theory that `useSearchParams`
+ * would opt a route out of static rendering. The Suspense boundary is what
+ * makes the layout mount safe: on a prerendered route only the tree below the
+ * boundary is client-rendered, and this component renders nothing, so the 192
+ * prerendered model pages stay prerendered.
+ *
+ * Per-page mounting also quietly lost toasts. `toggleFavorite` redirects back
+ * to wherever the heart was clicked and sign-out redirects home — neither the
+ * landing page nor the model pages had a reader, so those actions left a
+ * `?flash=` in the URL and showed nothing.
+ */
+export function FlashToast() {
+  return (
+    <Suspense fallback={null}>
+      <FlashToastReader />
+    </Suspense>
+  )
 }

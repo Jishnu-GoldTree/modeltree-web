@@ -53,7 +53,7 @@ export default async function SignupPage() {
         </div>
 
         <p className="relative max-w-md text-sm text-white/60">
-          Free to join. No listing fees, no subscription — you only pay a
+          Free to join. No listing fees and no subscription: you only pay a
           commission when a model sells.
         </p>
       </aside>

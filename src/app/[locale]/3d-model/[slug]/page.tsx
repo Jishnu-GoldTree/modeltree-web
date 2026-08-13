@@ -25,7 +25,8 @@ import {
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { ModelCard } from "@/components/marketplace/model-card"
-import { Thumb } from "@/components/marketplace/thumb"
+import { ProductGallery } from "@/components/marketplace/product-gallery"
+import { tempGallery } from "@/lib/temp-previews"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { addToCart } from "@/lib/actions/cart"
@@ -119,23 +120,9 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
 
           <div className="mt-5 grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
             <div className="min-w-0">
-              <Thumb
-                seed={model.seed}
-                className="aspect-16/10 w-full rounded-xl border"
-              />
-
-              {/* A real viewer comes with the asset pipeline; until then the
-                  generated artwork stands in for the render set. */}
-              <div className="mt-3 grid grid-cols-4 gap-3">
-                {[1, 2, 3, 4].map((n) => (
-                  <Thumb
-                    key={n}
-                    seed={`${model.seed}-view-${n}`}
-                    grid={false}
-                    className="aspect-4/3 rounded-lg border"
-                  />
-                ))}
-              </div>
+              {/* A real viewer comes with the asset pipeline; until then these
+                  are the stand-in renders from public/images/temp-prod. */}
+              <ProductGallery images={tempGallery(model.slug)} title={model.title} />
 
               <UserText
                 as="h1"
@@ -277,7 +264,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                 </div>
 
                 <p className="mt-1.5 text-xs text-muted-foreground">
-                  {LICENSE_LABELS[model.license]} license — commercial use
+                  {LICENSE_LABELS[model.license]} license, commercial use
                   included.
                 </p>
 

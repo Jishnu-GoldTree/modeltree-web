@@ -1,7 +1,7 @@
 [
   {
     "slug": "furniture-shelving-unit",
-    "title": "Shelving Unit — Low Poly",
+    "title": "Shelving Unit (Low Poly)",
     "author": "kamarabay",
     "price": 110,
     "rating": 4.8,
@@ -25,7 +25,7 @@
   },
   {
     "slug": "plant-fern-cluster",
-    "title": "Fern Cluster — PBR Textured",
+    "title": "Fern Cluster (PBR Textured)",
     "author": "heritage3d",
     "price": 90,
     "rating": 4.7,
@@ -49,7 +49,7 @@
   },
   {
     "slug": "furniture-standing-desk",
-    "title": "Standing Desk — Modular Kit",
+    "title": "Standing Desk (Modular Kit)",
     "author": "atelier9",
     "price": 240,
     "rating": 4.8,
@@ -72,7 +72,7 @@
   },
   {
     "slug": "military-supply-truck-v2",
-    "title": "Supply Truck Vol. 2 — Modular Kit",
+    "title": "Supply Truck Vol. 2 (Modular Kit)",
     "author": "kamarabay",
     "price": 65,
     "rating": 4.5,
@@ -97,7 +97,7 @@
   },
   {
     "slug": "exterior-row-houses",
-    "title": "Row Houses — PBR Textured",
+    "title": "Row Houses (PBR Textured)",
     "author": "studio.nord",
     "price": "free",
     "rating": 4.2,
@@ -122,7 +122,7 @@
   },
   {
     "slug": "car-classic-roadster",
-    "title": "Classic Roadster — Rigged",
+    "title": "Classic Roadster (Rigged)",
     "author": "polyforge",
     "price": 90,
     "rating": 4,
@@ -147,7 +147,7 @@
   },
   {
     "slug": "exterior-modern-villa-v2",
-    "title": "Modern Villa Vol. 2 — Production Ready",
+    "title": "Modern Villa Vol. 2 (Production Ready)",
     "author": "kamarabay",
     "price": "free",
     "rating": 4.7,
@@ -170,7 +170,7 @@
   },
   {
     "slug": "character-cyber-courier",
-    "title": "Cyber Courier — High Detail",
+    "title": "Cyber Courier (High Detail)",
     "author": "mesh.labs",
     "price": "free",
     "rating": 3.7,
@@ -194,7 +194,7 @@
   },
   {
     "slug": "aircraft-glider",
-    "title": "Glider — Rigged",
+    "title": "Glider (Rigged)",
     "author": "kamarabay",
     "price": 95,
     "rating": 4.3,
@@ -217,7 +217,7 @@
   },
   {
     "slug": "exterior-modern-villa",
-    "title": "Modern Villa — Production Ready",
+    "title": "Modern Villa (Production Ready)",
     "author": "mesh.labs",
     "price": "free",
     "rating": 4.8,
@@ -242,7 +242,7 @@
   },
   {
     "slug": "food-street-taco-cart",
-    "title": "Street Taco Cart — Game Ready",
+    "title": "Street Taco Cart (Game Ready)",
     "author": "atelier9",
     "price": 75,
     "rating": 3.9,
@@ -265,7 +265,7 @@
   },
   {
     "slug": "military-recon-drone",
-    "title": "Recon Drone — Modular Kit",
+    "title": "Recon Drone (Modular Kit)",
     "author": "atelier9",
     "price": "free",
     "rating": 3.9,
@@ -289,7 +289,7 @@
   },
   {
     "slug": "exterior-office-tower-v2",
-    "title": "Office Tower Vol. 2 — High Detail",
+    "title": "Office Tower Vol. 2 (High Detail)",
     "author": "velocity.cg",
     "price": 195,
     "rating": 4.3,
@@ -314,7 +314,7 @@
   },
   {
     "slug": "character-sci-fi-marine",
-    "title": "Sci-fi Marine — Rigged",
+    "title": "Sci-fi Marine (Rigged)",
     "author": "mesh.labs",
     "price": 80,
     "rating": 3.7,
@@ -338,7 +338,7 @@
   },
   {
     "slug": "animal-grey-wolf-v2",
-    "title": "Grey Wolf Vol. 2 — Rigged",
+    "title": "Grey Wolf Vol. 2 (Rigged)",
     "author": "heritage3d",
     "price": 170,
     "rating": 4.9,
@@ -363,7 +363,7 @@
   },
   {
     "slug": "animal-barn-owl-v2",
-    "title": "Barn Owl Vol. 2 — Rigged",
+    "title": "Barn Owl Vol. 2 (Rigged)",
     "author": "studio.nord",
     "price": 245,
     "rating": 4.2,
@@ -386,7 +386,7 @@
   },
   {
     "slug": "military-field-radio",
-    "title": "Field Radio — Low Poly",
+    "title": "Field Radio (Low Poly)",
     "author": "mesh.labs",
     "price": 110,
     "rating": 3.7,
@@ -409,7 +409,7 @@
   },
   {
     "slug": "exterior-warehouse-district",
-    "title": "Warehouse District — Production Ready",
+    "title": "Warehouse District (Production Ready)",
     "author": "polyforge",
     "price": "free",
     "rating": 4.8,
@@ -432,7 +432,7 @@
   },
   {
     "slug": "exterior-office-tower",
-    "title": "Office Tower — High Detail",
+    "title": "Office Tower (High Detail)",
     "author": "kamarabay",
     "price": 25,
     "rating": 3.7,
@@ -455,7 +455,7 @@
   },
   {
     "slug": "aircraft-bush-plane-v2",
-    "title": "Bush Plane Vol. 2 — Rigged",
+    "title": "Bush Plane Vol. 2 (Rigged)",
     "author": "atelier9",
     "price": "free",
     "rating": 4.6,
@@ -478,7 +478,7 @@
   },
   {
     "slug": "aircraft-attack-helicopter",
-    "title": "Attack Helicopter — Rigged",
+    "title": "Attack Helicopter (Rigged)",
     "author": "kamarabay",
     "price": 70,
     "rating": 4.2,
@@ -501,7 +501,7 @@
   },
   {
     "slug": "military-patrol-boat-v2",
-    "title": "Patrol Boat Vol. 2 — Photoscan",
+    "title": "Patrol Boat Vol. 2 (Photoscan)",
     "author": "velocity.cg",
     "price": 190,
     "rating": 4.3,
@@ -524,7 +524,7 @@
   },
   {
     "slug": "plant-potted-monstera",
-    "title": "Potted Monstera — High Detail",
+    "title": "Potted Monstera (High Detail)",
     "author": "mesh.labs",
     "price": 45,
     "rating": 3.7,
@@ -547,7 +547,7 @@
   },
   {
     "slug": "furniture-oak-dining-set",
-    "title": "Oak Dining Set — PBR Textured",
+    "title": "Oak Dining Set (PBR Textured)",
     "author": "velocity.cg",
     "price": "free",
     "rating": 3.8,
@@ -573,7 +573,7 @@
   },
   {
     "slug": "animal-barn-owl",
-    "title": "Barn Owl — Low Poly",
+    "title": "Barn Owl (Low Poly)",
     "author": "mesh.labs",
     "price": "free",
     "rating": 4.8,
@@ -597,7 +597,7 @@
   },
   {
     "slug": "car-city-hatchback-v2",
-    "title": "City Hatchback Vol. 2 — Rigged",
+    "title": "City Hatchback Vol. 2 (Rigged)",
     "author": "polyforge",
     "price": "free",
     "rating": 3.8,
@@ -622,7 +622,7 @@
   },
   {
     "slug": "food-bakery-set",
-    "title": "Bakery Set — Modular Kit",
+    "title": "Bakery Set (Modular Kit)",
     "author": "atelier9",
     "price": 145,
     "rating": 4.8,
@@ -645,7 +645,7 @@
   },
   {
     "slug": "military-field-radio-v2",
-    "title": "Field Radio Vol. 2 — Rigged",
+    "title": "Field Radio Vol. 2 (Rigged)",
     "author": "kamarabay",
     "price": 60,
     "rating": 5,
@@ -669,7 +669,7 @@
   },
   {
     "slug": "aircraft-attack-helicopter-v2",
-    "title": "Attack Helicopter Vol. 2 — Rigged",
+    "title": "Attack Helicopter Vol. 2 (Rigged)",
     "author": "kamarabay",
     "price": 245,
     "rating": 3.9,
@@ -692,7 +692,7 @@
   },
   {
     "slug": "furniture-modular-sofa-v2",
-    "title": "Modular Sofa Vol. 2 — Modular Kit",
+    "title": "Modular Sofa Vol. 2 (Modular Kit)",
     "author": "kamarabay",
     "price": 200,
     "rating": 4.2,
@@ -715,7 +715,7 @@
   },
   {
     "slug": "food-coffee-service",
-    "title": "Coffee Service — Production Ready",
+    "title": "Coffee Service (Production Ready)",
     "author": "mesh.labs",
     "price": "free",
     "rating": 3.7,
@@ -740,7 +740,7 @@
   },
   {
     "slug": "plant-potted-monstera-v2",
-    "title": "Potted Monstera Vol. 2 — High Detail",
+    "title": "Potted Monstera Vol. 2 (High Detail)",
     "author": "mesh.labs",
     "price": 215,
     "rating": 4.8,
@@ -763,7 +763,7 @@
   },
   {
     "slug": "plant-fern-cluster-v2",
-    "title": "Fern Cluster Vol. 2 — Photoscan",
+    "title": "Fern Cluster Vol. 2 (Photoscan)",
     "author": "studio.nord",
     "price": 100,
     "rating": 3.7,
@@ -786,7 +786,7 @@
   },
   {
     "slug": "animal-reef-shark",
-    "title": "Reef Shark — Rigged",
+    "title": "Reef Shark (Rigged)",
     "author": "studio.nord",
     "price": 130,
     "rating": 4.1,
@@ -809,7 +809,7 @@
   },
   {
     "slug": "car-sports-coupe",
-    "title": "Sports Coupe — Rigged",
+    "title": "Sports Coupe (Rigged)",
     "author": "kamarabay",
     "price": 85,
     "rating": 4,
@@ -833,7 +833,7 @@
   },
   {
     "slug": "plant-broadleaf-tree-pack-v2",
-    "title": "Broadleaf Tree Pack Vol. 2 — Photoscan",
+    "title": "Broadleaf Tree Pack Vol. 2 (Photoscan)",
     "author": "northlight",
     "price": 85,
     "rating": 4.2,
@@ -857,7 +857,7 @@
   },
   {
     "slug": "plant-wheat-field",
-    "title": "Wheat Field — Modular Kit",
+    "title": "Wheat Field (Modular Kit)",
     "author": "velocity.cg",
     "price": 225,
     "rating": 4.8,
@@ -881,7 +881,7 @@
   },
   {
     "slug": "car-rally-car",
-    "title": "Rally Car — Rigged",
+    "title": "Rally Car (Rigged)",
     "author": "polyforge",
     "price": "free",
     "rating": 4.8,
@@ -907,7 +907,7 @@
   },
   {
     "slug": "character-fantasy-knight-v2",
-    "title": "Fantasy Knight Vol. 2 — High Detail",
+    "title": "Fantasy Knight Vol. 2 (High Detail)",
     "author": "velocity.cg",
     "price": "free",
     "rating": 4.6,
@@ -930,7 +930,7 @@
   },
   {
     "slug": "character-sci-fi-marine-v2",
-    "title": "Sci-fi Marine Vol. 2 — High Detail",
+    "title": "Sci-fi Marine Vol. 2 (High Detail)",
     "author": "northlight",
     "price": 240,
     "rating": 4,
@@ -953,7 +953,7 @@
   },
   {
     "slug": "car-city-hatchback",
-    "title": "City Hatchback — PBR Textured",
+    "title": "City Hatchback (PBR Textured)",
     "author": "kamarabay",
     "price": 45,
     "rating": 4.8,
@@ -978,7 +978,7 @@
   },
   {
     "slug": "character-street-runner",
-    "title": "Street Runner — Modular Kit",
+    "title": "Street Runner (Modular Kit)",
     "author": "polyforge",
     "price": 70,
     "rating": 4.6,
@@ -1003,7 +1003,7 @@
   },
   {
     "slug": "food-ramen-bowl-v2",
-    "title": "Ramen Bowl Vol. 2 — Low Poly",
+    "title": "Ramen Bowl Vol. 2 (Low Poly)",
     "author": "northlight",
     "price": 225,
     "rating": 4.7,
@@ -1028,7 +1028,7 @@
   },
   {
     "slug": "furniture-lounge-chair-v2",
-    "title": "Lounge Chair Vol. 2 — Modular Kit",
+    "title": "Lounge Chair Vol. 2 (Modular Kit)",
     "author": "atelier9",
     "price": 95,
     "rating": 4.8,
@@ -1052,7 +1052,7 @@
   },
   {
     "slug": "car-pickup-truck-v2",
-    "title": "Pickup Truck Vol. 2 — Rigged",
+    "title": "Pickup Truck Vol. 2 (Rigged)",
     "author": "northlight",
     "price": 70,
     "rating": 4,
@@ -1075,7 +1075,7 @@
   },
   {
     "slug": "animal-desert-fox",
-    "title": "Desert Fox — Production Ready",
+    "title": "Desert Fox (Production Ready)",
     "author": "atelier9",
     "price": 165,
     "rating": 4.1,
@@ -1098,7 +1098,7 @@
   },
   {
     "slug": "character-village-elder",
-    "title": "Village Elder — Rigged",
+    "title": "Village Elder (Rigged)",
     "author": "mesh.labs",
     "price": 220,
     "rating": 4.2,
@@ -1121,7 +1121,7 @@
   },
   {
     "slug": "military-ammo-crate",
-    "title": "Ammo Crate — Rigged",
+    "title": "Ammo Crate (Rigged)",
     "author": "kamarabay",
     "price": 110,
     "rating": 3.8,
@@ -1144,7 +1144,7 @@
   },
   {
     "slug": "exterior-petrol-station",
-    "title": "Petrol Station — High Detail",
+    "title": "Petrol Station (High Detail)",
     "author": "kamarabay",
     "price": 210,
     "rating": 3.8,
@@ -1168,7 +1168,7 @@
   },
   {
     "slug": "furniture-oak-dining-set-v2",
-    "title": "Oak Dining Set Vol. 2 — Photoscan",
+    "title": "Oak Dining Set Vol. 2 (Photoscan)",
     "author": "polyforge",
     "price": 105,
     "rating": 4.7,
@@ -1192,7 +1192,7 @@
   },
   {
     "slug": "plant-broadleaf-tree-pack",
-    "title": "Broadleaf Tree Pack — PBR Textured",
+    "title": "Broadleaf Tree Pack (PBR Textured)",
     "author": "northlight",
     "price": 200,
     "rating": 4.6,
@@ -1215,7 +1215,7 @@
   },
   {
     "slug": "character-street-runner-v2",
-    "title": "Street Runner Vol. 2 — Low Poly",
+    "title": "Street Runner Vol. 2 (Low Poly)",
     "author": "northlight",
     "price": "free",
     "rating": 3.9,
@@ -1238,7 +1238,7 @@
   },
   {
     "slug": "character-fantasy-knight",
-    "title": "Fantasy Knight — Production Ready",
+    "title": "Fantasy Knight (Production Ready)",
     "author": "northlight",
     "price": 175,
     "rating": 3.7,
@@ -1262,7 +1262,7 @@
   },
   {
     "slug": "aircraft-cargo-drone",
-    "title": "Cargo Drone — Rigged",
+    "title": "Cargo Drone (Rigged)",
     "author": "kamarabay",
     "price": 245,
     "rating": 3.8,
@@ -1285,7 +1285,7 @@
   },
   {
     "slug": "animal-grey-wolf",
-    "title": "Grey Wolf — Rigged",
+    "title": "Grey Wolf (Rigged)",
     "author": "kamarabay",
     "price": 95,
     "rating": 3.7,
@@ -1309,7 +1309,7 @@
   },
   {
     "slug": "car-pickup-truck",
-    "title": "Pickup Truck — Rigged",
+    "title": "Pickup Truck (Rigged)",
     "author": "studio.nord",
     "price": "free",
     "rating": 4.6,
@@ -1333,7 +1333,7 @@
   },
   {
     "slug": "aircraft-airliner",
-    "title": "Airliner — Production Ready",
+    "title": "Airliner (Production Ready)",
     "author": "studio.nord",
     "price": "free",
     "rating": 4,
@@ -1358,7 +1358,7 @@
   },
   {
     "slug": "furniture-lounge-chair",
-    "title": "Lounge Chair — Production Ready",
+    "title": "Lounge Chair (Production Ready)",
     "author": "studio.nord",
     "price": "free",
     "rating": 3.7,
@@ -1382,7 +1382,7 @@
   },
   {
     "slug": "aircraft-airliner-v2",
-    "title": "Airliner Vol. 2 — Modular Kit",
+    "title": "Airliner Vol. 2 (Modular Kit)",
     "author": "studio.nord",
     "price": 150,
     "rating": 3.6,
@@ -1406,7 +1406,7 @@
   },
   {
     "slug": "aircraft-bush-plane",
-    "title": "Bush Plane — Rigged",
+    "title": "Bush Plane (Rigged)",
     "author": "mesh.labs",
     "price": 220,
     "rating": 4.9,
@@ -1430,7 +1430,7 @@
   },
   {
     "slug": "food-fruit-crate-v2",
-    "title": "Fruit Crate Vol. 2 — Photoscan",
+    "title": "Fruit Crate Vol. 2 (Photoscan)",
     "author": "atelier9",
     "price": 180,
     "rating": 3.8,
@@ -1456,7 +1456,7 @@
   },
   {
     "slug": "furniture-modular-sofa",
-    "title": "Modular Sofa — Modular Kit",
+    "title": "Modular Sofa (Modular Kit)",
     "author": "mesh.labs",
     "price": 80,
     "rating": 3.8,
@@ -1481,7 +1481,7 @@
   },
   {
     "slug": "exterior-warehouse-district-v2",
-    "title": "Warehouse District Vol. 2 — Production Ready",
+    "title": "Warehouse District Vol. 2 (Production Ready)",
     "author": "studio.nord",
     "price": 65,
     "rating": 4,
@@ -1505,7 +1505,7 @@
   },
   {
     "slug": "food-ramen-bowl",
-    "title": "Ramen Bowl — Production Ready",
+    "title": "Ramen Bowl (Production Ready)",
     "author": "velocity.cg",
     "price": 165,
     "rating": 4.9,
@@ -1528,7 +1528,7 @@
   },
   {
     "slug": "animal-reef-shark-v2",
-    "title": "Reef Shark Vol. 2 — Photoscan",
+    "title": "Reef Shark Vol. 2 (Photoscan)",
     "author": "velocity.cg",
     "price": 115,
     "rating": 3.7,
@@ -1553,7 +1553,7 @@
   },
   {
     "slug": "food-bakery-set-v2",
-    "title": "Bakery Set Vol. 2 — Low Poly",
+    "title": "Bakery Set Vol. 2 (Low Poly)",
     "author": "kamarabay",
     "price": 215,
     "rating": 3.9,
@@ -1578,7 +1578,7 @@
   },
   {
     "slug": "food-fruit-crate",
-    "title": "Fruit Crate — Game Ready",
+    "title": "Fruit Crate (Game Ready)",
     "author": "polyforge",
     "price": 50,
     "rating": 4.3,
@@ -1603,7 +1603,7 @@
   },
   {
     "slug": "military-patrol-boat",
-    "title": "Patrol Boat — PBR Textured",
+    "title": "Patrol Boat (PBR Textured)",
     "author": "mesh.labs",
     "price": 65,
     "rating": 4.3,
@@ -1628,7 +1628,7 @@
   },
   {
     "slug": "military-supply-truck",
-    "title": "Supply Truck — Low Poly",
+    "title": "Supply Truck (Low Poly)",
     "author": "northlight",
     "price": "free",
     "rating": 4.6,
@@ -1653,7 +1653,7 @@
   },
   {
     "slug": "animal-highland-cow",
-    "title": "Highland Cow — Production Ready",
+    "title": "Highland Cow (Production Ready)",
     "author": "kamarabay",
     "price": "free",
     "rating": 3.9,
@@ -1677,7 +1677,7 @@
   },
   {
     "slug": "plant-coral-set",
-    "title": "Coral Set — High Detail",
+    "title": "Coral Set (High Detail)",
     "author": "velocity.cg",
     "price": 25,
     "rating": 4.3,
@@ -1701,7 +1701,7 @@
   },
   {
     "slug": "car-sports-coupe-v2",
-    "title": "Sports Coupe Vol. 2 — Production Ready",
+    "title": "Sports Coupe Vol. 2 (Production Ready)",
     "author": "atelier9",
     "price": 55,
     "rating": 3.9,

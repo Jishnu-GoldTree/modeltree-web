@@ -4,7 +4,6 @@ import { Lock, ShieldCheck, ShoppingCart, Trash2 } from "lucide-react"
 import { getCart } from "@/lib/cart"
 import { getLicenseOptions } from "@/lib/data/catalog"
 import { clearCart, removeFromCart, setLineLicense } from "@/lib/actions/cart"
-import { FlashToast } from "@/components/layout/flash-toast"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { Thumb } from "@/components/marketplace/thumb"
@@ -27,7 +26,6 @@ export default async function CartPage() {
 
   return (
     <>
-      <FlashToast />
       <SiteHeader solid />
 
       <main className="flex-1 pt-16">
@@ -108,7 +106,7 @@ export default async function CartPage() {
                               >
                                 {options.map((option) => (
                                   <option key={option.id} value={option.id}>
-                                    {option.name} — {money(option.price)}
+                                    {option.name} ({money(option.price)})
                                   </option>
                                 ))}
                               </select>

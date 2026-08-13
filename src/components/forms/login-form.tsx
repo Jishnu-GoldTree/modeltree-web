@@ -1,7 +1,8 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { useState } from "react"
+import { useState, useTransition } from "react"
+import { toast } from "sonner"
 import Link from "next/link"
 import { Eye, EyeOff, Info, Loader2 } from "lucide-react"
 
@@ -35,9 +36,13 @@ export function LoginForm({
   redirectTo: string
 }) {
   const t = useTranslations("auth")
+  const feedback = useTranslations("toast")
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [notice, setNotice] = useState<string | null>(authError ?? null)
+  // See the note in signup-form: isSubmitting ends when onSubmit returns, but
+  // the destination is still loading. This keeps the button busy until it lands.
+  const [isNavigating, startNavigation] = useTransition()
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -60,13 +65,18 @@ export function LoginForm({
     // One message for every failure: distinguishing "no such account" from
     // "wrong password" turns the form into an account-existence oracle.
     if (error) {
+      toast.error(feedback("signInFailed"))
       setNotice(t("badCredentials"))
       return
     }
 
-    router.push(redirectTo)
-    // Re-render server components so they see the new session cookie.
-    router.refresh()
+    toast.success(feedback("signedIn"))
+
+    startNavigation(() => {
+      router.push(redirectTo)
+      // Re-render server components so they see the new session cookie.
+      router.refresh()
+    })
   }
 
 
@@ -77,7 +87,7 @@ export function LoginForm({
         enabledProviders={enabledProviders}
         onUnavailable={(provider) =>
           setNotice(
-            `${provider} sign-in isn't enabled yet — turn it on in the Supabase dashboard under Authentication → Providers.`,
+            `${provider} sign-in isn't enabled yet. Turn it on in the Supabase dashboard under Authentication → Providers.`,
           )
         }
       />
@@ -185,10 +195,10 @@ export function LoginForm({
 
           <Button
             type="submit"
-            disabled={form.formState.isSubmitting}
+            disabled={form.formState.isSubmitting || isNavigating}
             className="h-10 bg-brand text-brand-foreground hover:bg-brand/85"
           >
-            {form.formState.isSubmitting && (
+            {(form.formState.isSubmitting || isNavigating) && (
               <Loader2 className="size-4 animate-spin" aria-hidden />
             )}
             {t("login")}

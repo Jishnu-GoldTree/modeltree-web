@@ -3,32 +3,29 @@ import {
   ASSET_TABS,
   PRINT_CATEGORIES,
   PRINT_TABS,
-} from "@/lib/data/landing"
-import { SiteHeader } from "@/components/layout/site-header"
-import { SiteFooter } from "@/components/layout/site-footer"
-import { Hero } from "@/components/landing/hero"
-import { PromoBanner } from "@/components/landing/promo-banner"
-import { JewelleryLibrary } from "@/components/landing/jewellery-library"
-import { CategoryExplorer } from "@/components/landing/category-explorer"
-import { Collections } from "@/components/landing/collections"
-import { FeaturedDesigner } from "@/components/landing/featured-designer"
-import { BrowseBy } from "@/components/landing/browse-by"
-import { TrendingModels } from "@/components/landing/trending-models"
-import { ValueProps } from "@/components/landing/value-props"
-import { CustomSolutions } from "@/components/landing/custom-solutions"
-import { BusinessAccount } from "@/components/landing/business-account"
+} from "@/lib/data/landing";
+import { SiteHeader } from "@/components/layout/site-header";
+import { SiteFooter } from "@/components/layout/site-footer";
+import { Hero } from "@/components/landing/hero";
+import { PromoBanner } from "@/components/landing/promo-banner";
+import { JewelleryLibrary } from "@/components/landing/jewellery-library";
+import { CategoryExplorer } from "@/components/landing/category-explorer";
+import { Collections } from "@/components/landing/collections";
+import { FeaturedDesigner } from "@/components/landing/featured-designer";
+import { BrowseBy } from "@/components/landing/browse-by";
+import { TrendingModels } from "@/components/landing/trending-models";
+import { ValueProps } from "@/components/landing/value-props";
+import { CustomSolutions } from "@/components/landing/custom-solutions";
+import { BusinessAccount } from "@/components/landing/business-account";
 
 export default function HomePage() {
   return (
     <>
       <SiteHeader />
-
-      <main className="flex-1">
+      <main className="section-flow flex-1">
         <Hero />
         <PromoBanner />
-
         <JewelleryLibrary />
-
         <CategoryExplorer
           title="Explore 3D assets"
           description="Find the perfect 3D asset for any search or style with our curated themed packs."
@@ -68,5 +65,5 @@ export default function HomePage() {
 
       <SiteFooter />
     </>
-  )
+  );
 }

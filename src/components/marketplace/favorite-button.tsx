@@ -41,7 +41,8 @@ export function FavoriteButton({
         }
       }}
       className={cn(
-        "absolute top-2 end-2 z-10 transition-opacity",
+        // z-20 to stay clear of the card's stretched-link overlay.
+        "absolute top-2 end-2 z-20 transition-opacity",
         favorited
           ? "opacity-100"
           : "opacity-0 group-hover:opacity-100 focus-within:opacity-100",

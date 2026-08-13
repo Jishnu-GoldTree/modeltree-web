@@ -4,7 +4,7 @@ import { SectionHeading } from "@/components/landing/section-heading"
 
 export function TrendingModels() {
   return (
-    <section className="shell pb-16 sm:pb-20">
+    <section className="shell">
       <SectionHeading
         title="Trending 3D models"
         description="Discover the most popular 3D models and assets trending right now."

@@ -26,8 +26,8 @@ export async function JewelleryLibrary() {
   ] as const
 
   return (
-    <section className="border-y bg-ink text-ink-foreground">
-      <div className="shell grid gap-10 py-16 lg:grid-cols-2 lg:items-center lg:py-20">
+    <section className="section-band border-y bg-ink text-ink-foreground">
+      <div className="shell grid gap-10 lg:grid-cols-2 lg:items-center">
         <div>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/15 px-3 py-1 text-xs font-medium text-brand">
             <Gem className="size-3.5" aria-hidden />

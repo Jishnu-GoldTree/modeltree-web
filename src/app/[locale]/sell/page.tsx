@@ -20,12 +20,12 @@ const COMMISSION_RATE = 0.2
 export const metadata = {
   title: "Sell your 3D models",
   description:
-    "Publish your 3D models on ModelTree. No listing fees, no subscription — you pay a commission only when a model sells.",
+    "Publish your 3D models on ModelTree. No listing fees and no subscription: you pay a commission only when a model sells.",
 }
 
 
 const TERMS = [
-  "No listing fees and no subscription — you pay a commission only when a model sells",
+  "No listing fees and no subscription: you pay a commission only when a model sells",
   "Keep publishing elsewhere; nothing here is exclusive",
   "Set your own price, or give a model away to build an audience",
   "Withdraw once your balance passes $50",

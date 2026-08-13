@@ -13,7 +13,7 @@ import { SITE } from "@/lib/data/landing";
 
 export const ogSize = { width: 1200, height: 630 };
 export const ogContentType = "image/png";
-export const ogAlt = `${SITE.name} — ${SITE.tagline}`;
+export const ogAlt = `${SITE.name} | ${SITE.tagline}`;
 
 const INK = "#101924";
 const BRAND = "#00bdbd";

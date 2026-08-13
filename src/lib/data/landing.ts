@@ -44,7 +44,7 @@ export const SITE = {
   // "world's largest" was invented placeholder and had to go.
   tagline: "40,000 jewellery models, cast-ready and yours to license",
   description:
-    "A jewellery-first 3D marketplace from GoldTree. Rings, pendants and settings modelled in-house for casting and print — plus a wider catalog of production-ready assets, or commission exactly what you need.",
+    "A jewellery-first 3D marketplace from GoldTree. Rings, pendants and settings modelled in-house for casting and print, plus a wider catalog of production-ready assets, or commission exactly what you need.",
 } as const;
 
 export const PRIMARY_NAV: NavItem[] = [
@@ -286,7 +286,7 @@ export const BROWSE_BY_FORMAT = [
 export const TRENDING_MODELS: ModelCard[] = [
   {
     slug: "roman-bust-scan",
-    title: "Roman Marble Bust — Photogrammetry Scan",
+    title: "Roman Marble Bust (Photogrammetry Scan)",
     author: "heritage3d",
     price: 45,
     rating: 4.9,
@@ -297,7 +297,7 @@ export const TRENDING_MODELS: ModelCard[] = [
   },
   {
     slug: "stylized-hero-pack",
-    title: "Stylized Hero Character Pack — Rigged",
+    title: "Stylized Hero Character Pack (Rigged)",
     author: "kamarabay",
     price: 119,
     rating: 4.8,
@@ -307,7 +307,7 @@ export const TRENDING_MODELS: ModelCard[] = [
   },
   {
     slug: "ui-icon-megaset",
-    title: "147 Asset Megaset — Modular Interiors",
+    title: "147 Asset Megaset (Modular Interiors)",
     author: "studio.nord",
     price: 210,
     rating: 5,
@@ -318,7 +318,7 @@ export const TRENDING_MODELS: ModelCard[] = [
   },
   {
     slug: "classic-race-cars",
-    title: "Classic Race Car Collection — 50 Items",
+    title: "Classic Race Car Collection (50 Items)",
     author: "velocity.cg",
     price: 165,
     rating: 4.7,
@@ -328,7 +328,7 @@ export const TRENDING_MODELS: ModelCard[] = [
   },
   {
     slug: "orange-supercar",
-    title: "Concept Supercar — Production Ready",
+    title: "Concept Supercar (Production Ready)",
     author: "velocity.cg",
     price: 89,
     rating: 4.9,
@@ -338,7 +338,7 @@ export const TRENDING_MODELS: ModelCard[] = [
   },
   {
     slug: "anime-figure",
-    title: "Anime Figure — Print Ready & Pre-supported",
+    title: "Anime Figure (Print Ready & Pre-supported)",
     author: "printforge",
     price: "free",
     rating: 4.6,
@@ -349,7 +349,7 @@ export const TRENDING_MODELS: ModelCard[] = [
   },
   {
     slug: "gothic-cathedral",
-    title: "Gothic Cathedral Interior — Modular Kit",
+    title: "Gothic Cathedral Interior (Modular Kit)",
     author: "studio.nord",
     price: 240,
     rating: 4.8,
@@ -359,7 +359,7 @@ export const TRENDING_MODELS: ModelCard[] = [
   },
   {
     slug: "hong-kong-street",
-    title: "Neon Street Environment — Hong Kong",
+    title: "Neon Street Environment (Hong Kong)",
     author: "atlas.works",
     price: 175,
     rating: 4.9,
@@ -397,7 +397,7 @@ export const CUSTOM_SOLUTIONS = [
     steps: [
       {
         title: "Upload images",
-        body: "Send us reference images or product links — no technical expertise needed.",
+        body: "Send us reference images or product links. No technical expertise needed.",
       },
       {
         title: "3D Model Creation",
@@ -409,7 +409,7 @@ export const CUSTOM_SOLUTIONS = [
       },
     ],
     benefits: [
-      "End-to-end service — no vendor juggling",
+      "End-to-end service, no vendor juggling",
       "Consistent quality across every batch",
       "Fixed pricing, no hourly surprises",
       "Scalable production for thousands of SKUs",
@@ -435,9 +435,9 @@ export const CUSTOM_SOLUTIONS = [
       },
     ],
     benefits: [
-      "Direct collaboration — talk to the designer",
-      "Flexible iterations — adjust designs as the brief evolves",
-      "Best-fit creative projects — ideal for custom or one-off work",
+      "Direct collaboration: talk to the designer",
+      "Flexible iterations: adjust designs as the brief evolves",
+      "Best-fit creative projects: ideal for custom or one-off work",
     ],
   },
 ] as const;

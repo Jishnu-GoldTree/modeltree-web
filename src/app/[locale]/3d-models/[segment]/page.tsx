@@ -8,7 +8,6 @@ import {
 } from "@/lib/data/catalog"
 import { toParams, toQuery } from "@/lib/data/catalog-params"
 import { getFavoriteSet } from "@/lib/favorites"
-import { FlashToast } from "@/components/layout/flash-toast"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { CatalogView } from "@/components/marketplace/catalog-view"
@@ -81,7 +80,6 @@ export default async function SegmentPage({
 
   return (
     <>
-      <FlashToast />
       <SiteHeader solid />
 
       <main className="flex-1 pt-16">

@@ -6,7 +6,6 @@ import { Download, Plus, Star, Trash2, Wallet } from "lucide-react"
 import { getCurrentUser } from "@/lib/supabase/server"
 import { getDesignerEarnings, getMyModels } from "@/lib/data/designer"
 import { deleteListing } from "@/lib/actions/models"
-import { FlashToast } from "@/components/layout/flash-toast"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { Thumb } from "@/components/marketplace/thumb"
@@ -44,7 +43,6 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <FlashToast />
       <SiteHeader solid />
 
       <main className="flex-1 pt-16">

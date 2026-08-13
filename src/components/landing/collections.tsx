@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 
 export function Collections() {
   return (
-    <section className="bg-muted/40 py-16 sm:py-20">
+    <section className="bg-muted/40 section-band">
       <div className="shell grid gap-6 lg:grid-cols-2">
         {COLLECTIONS.map((collection) => (
           <article
