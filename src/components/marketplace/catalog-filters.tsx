@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { getTranslations } from "next-intl/server"
 import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -79,7 +80,7 @@ function Option({
   )
 }
 
-export function CatalogFilters({
+export async function CatalogFilters({
   base,
   params,
   facets,
@@ -91,6 +92,7 @@ export function CatalogFilters({
   /** Set on /3d-models/[category], where the category is the page, not a filter. */
   lockedCategory?: string
 }) {
+  const t = await getTranslations("catalog")
   const toggle = (key: string, value: string) =>
     href(base, params, { [key]: params[key] === value ? undefined : value })
 
@@ -101,14 +103,14 @@ export function CatalogFilters({
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between pb-3">
-        <h2 className="text-sm font-semibold">Filters</h2>
+        <h2 className="text-sm font-semibold">{t("filters")}</h2>
         {activeCount > 0 && (
           <Link
             href={href(base, {}, { sort: params.sort, q: params.q })}
             className="inline-flex items-center gap-1 rounded-md text-xs text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-brand/50"
           >
             <X className="size-3" aria-hidden />
-            Clear all
+            {t("clearAll")}
           </Link>
         )}
       </div>

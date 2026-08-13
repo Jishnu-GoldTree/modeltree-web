@@ -123,7 +123,7 @@ export function LoginForm({
                       type={showPassword ? "text" : "password"}
                       autoComplete="current-password"
                       placeholder="••••••••"
-                      className="h-10 pr-10"
+                      className="h-10 pe-10"
                     />
                   </FormControl>
                   <button
@@ -131,7 +131,7 @@ export function LoginForm({
                     onClick={() => setShowPassword((v) => !v)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
                     aria-pressed={showPassword}
-                    className="absolute inset-y-0 right-0 inline-flex w-10 items-center justify-center rounded-r-lg text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+                    className="absolute inset-y-0 end-0 inline-flex w-10 items-center justify-center rounded-e-lg text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
                   >
                     {showPassword ? (
                       <EyeOff className="size-4" aria-hidden />

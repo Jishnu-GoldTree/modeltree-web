@@ -1,0 +1,84 @@
+import { NextResponse, type NextRequest } from "next/server"
+import { createServerClient } from "@supabase/ssr"
+import createIntlProxy from "next-intl/middleware"
+
+import { routing } from "@/i18n/routing"
+
+/**
+ * Two jobs on every request:
+ *
+ *   1. next-intl resolves the locale and may redirect or rewrite the URL.
+ *   2. Supabase refreshes the session cookie.
+ *
+ * They share one response object. next-intl decides the final URL, so it runs
+ * first and its response is handed to Supabase to write cookies onto. Running
+ * them independently would mean one discarding the other's Set-Cookie headers.
+ *
+ * Named `proxy`, not `middleware`: Next 16 deprecated that file convention.
+ */
+const intlProxy = createIntlProxy(routing)
+
+/**
+ * Routes that must never be locale-rewritten.
+ *
+ * next-intl treats every path as a page, so it rewrote /api/counts to
+ * /en/api/counts and /auth/callback to /he/auth/callback — both 404, which
+ * silently broke the header badges and would have broken the OAuth callback the
+ * moment a provider was configured. These still get the session refresh; they
+ * just skip locale handling.
+ */
+function isNonLocalisedRoute(pathname: string) {
+  return pathname.startsWith("/api/") || pathname.startsWith("/auth/")
+}
+
+export async function proxy(request: NextRequest) {
+  const skipIntl = isNonLocalisedRoute(request.nextUrl.pathname)
+  const start = () => (skipIntl ? NextResponse.next({ request }) : intlProxy(request))
+
+  let response = start()
+
+  // A redirect from next-intl (adding the /he prefix, say) is terminal — the
+  // browser comes back and the refresh happens on that request.
+  if (!skipIntl && response.headers.get("location")) return response
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll: () => request.cookies.getAll(),
+        setAll: (cookiesToSet) => {
+          for (const { name, value } of cookiesToSet) {
+            request.cookies.set(name, value)
+          }
+          // Rebuild so any rewrite headers survive alongside the new cookies.
+          const next = start()
+          for (const [key, value] of response.headers) {
+            if (!next.headers.has(key)) next.headers.set(key, value)
+          }
+          response = next
+          for (const { name, value, options } of cookiesToSet) {
+            response.cookies.set(name, value, options)
+          }
+        },
+      },
+    },
+  )
+
+  // Do not remove: this call performs the refresh. Anything between
+  // createServerClient and getUser risks the session silently expiring.
+  await supabase.auth.getUser()
+
+  return response
+}
+
+export const config = {
+  matcher: [
+    /*
+     * Everything except static assets, image files and the metadata routes —
+     * none carry a session or need a locale, and running this on them would
+     * just burn invocations.
+     */
+    "/((?!_next/static|_next/image|favicon.ico|icon|apple-icon|opengraph-image|twitter-image|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
+}

@@ -1,0 +1,61 @@
+{
+  "nav": {
+    "logIn": "Log in",
+    "signUp": "Sign up",
+    "cart": "Cart",
+    "saved": "Saved models",
+    "openMenu": "Open menu",
+    "search": "Search 3D models",
+    "backToMarketplace": "Back to marketplace",
+    "browseModels": "Browse 3D models"
+  },
+  "locale": {
+    "label": "Language",
+    "switchTo": "Switch to {language}"
+  },
+  "catalog": {
+    "title": "3D models",
+    "description": "Royalty-free assets for games, film, architecture and product visualisation — filter by category, format and license.",
+    "count": "{count, plural, =0 {No models} one {# model} other {# models}}",
+    "filters": "Filters",
+    "clearAll": "Clear all",
+    "emptyTitle": "No models match those filters",
+    "emptyBody": "Try removing a filter — combining a narrow category with a rare file format usually comes up empty."
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty",
+    "emptyBody": "Models you add will stay here for 30 days, whether or not you're signed in.",
+    "emptyAction": "Browse 3D models",
+    "clear": "Empty cart",
+    "summary": "Order summary",
+    "subtotal": "Subtotal ({count, plural, one {# item} other {# items}})",
+    "tax": "Tax",
+    "taxNote": "Calculated at checkout",
+    "total": "Total",
+    "checkout": "Checkout",
+    "keepBrowsing": "Keep browsing",
+    "remove": "Remove",
+    "license": "License",
+    "update": "Update",
+    "free": "Free"
+  },
+  "favorites": {
+    "title": "Saved models",
+    "empty": "Nothing saved yet",
+    "emptyBody": "Tap the heart on any model to keep it here while you compare options. Saved models stay for six months, signed in or not.",
+    "clear": "Clear all",
+    "addToCart": "Add — {price}",
+    "getFree": "Get for free",
+    "summary": "{count} saved · {free} free · {total} to buy the rest",
+    "emptyAction": "Browse 3D models"
+  },
+  "notFound": {
+    "eyebrow": "Error 404",
+    "title": "This model isn't in the catalog",
+    "body": "The page you were looking for was moved, renamed, or never existed. Search the catalog instead, or pick up from one of the categories below.",
+    "home": "Back to home",
+    "browse": "Browse 3D models",
+    "popular": "Popular categories"
+  }
+}

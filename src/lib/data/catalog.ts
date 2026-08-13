@@ -1,33 +1,36 @@
 import type { ModelCard } from "@/lib/data/landing"
-import { ASSET_CATEGORIES } from "@/lib/data/landing"
+import { supabasePublic } from "@/lib/supabase/public"
 
 /**
- * Stand-in catalog.
+ * Catalog reads, backed by Postgres.
  *
- * The landing page only needed eight hand-written models; a catalog needs
- * enough rows to actually exercise filtering, sorting and paging. These are
- * generated from a fixed seed, so the set is identical on server and client and
- * stable across deploys — a model keeps its price, rating and URL.
+ * The exported shapes are unchanged from the generated-fixture version this
+ * replaced, so pages and components did not have to move. What changed is
+ * underneath: filtering, sorting, paging and facet counts now happen in the
+ * database instead of over an in-memory array.
  *
- * `queryModels` is the seam: it takes the same shape a real endpoint would and
- * returns items plus facet counts. When the catalog service exists, this module
- * is what gets replaced, and the pages above it shouldn't need to change.
+ * Reads go through the anon client. Published listings are public, and RLS
+ * limits this to exactly what an anonymous visitor may see — so the same code
+ * serves a signed-out browser and a build-time prerender.
+ *
+ * Money is stored as integer cents; `price` is exposed as whole dollars (or
+ * "free") because that is what the UI has always rendered.
  */
 
 export type License = "royalty-free" | "editorial" | "extended"
 
 export type CatalogModel = ModelCard & {
+  id: string
   category: string
   license: License
   rigged: boolean
   animated: boolean
   pbr: boolean
-  /** Days since publication — relative so the data never looks stale. */
-  ageDays: number
   downloads: number
   polygons: number
   vertices: number
   description: string
+  publishedAt: string
 }
 
 export const FORMATS = [
@@ -55,8 +58,29 @@ export type SortValue = (typeof SORTS)[number]["value"]
 
 export const PAGE_SIZE = 24
 
+export const LICENSE_LABELS: Record<License, string> = {
+  "royalty-free": "Royalty-free",
+  editorial: "Editorial use",
+  extended: "Extended commercial",
+}
+
+export type CatalogQuery = {
+  category?: string
+  format?: string
+  price?: "free" | "paid"
+  license?: License
+  rigged?: boolean
+  animated?: boolean
+  pbr?: boolean
+  maxPolygons?: number
+  tag?: string
+  q?: string
+  sort?: SortValue
+  page?: number
+}
+
 /**
- * Path segments under /3d-models that aren't categories but named filters.
+ * Path segments under /3d-models that are named filters rather than categories.
  * They exist because the nav already links them.
  */
 export const COLLECTION_SEGMENTS: Record<
@@ -85,193 +109,11 @@ export const COLLECTION_SEGMENTS: Record<
   },
 }
 
-/* --------------------------------------------------------------- generation */
-
-function rng(seed: number) {
-  let a = seed >>> 0
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0
-    let t = a
-    t = Math.imul(t ^ (t >>> 15), t | 1)
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-  }
-}
-
-/** Per-category vocabulary, so titles read like real listings. */
-const SUBJECTS: Record<string, string[]> = {
-  exterior: ["Modern Villa", "Office Tower", "Warehouse District", "Row Houses", "Petrol Station"],
-  car: ["Sports Coupe", "City Hatchback", "Pickup Truck", "Rally Car", "Classic Roadster"],
-  aircraft: ["Airliner", "Bush Plane", "Attack Helicopter", "Cargo Drone", "Glider"],
-  furniture: ["Lounge Chair", "Modular Sofa", "Oak Dining Set", "Standing Desk", "Shelving Unit"],
-  military: ["Supply Truck", "Field Radio", "Patrol Boat", "Ammo Crate", "Recon Drone"],
-  character: ["Fantasy Knight", "Street Runner", "Sci-fi Marine", "Village Elder", "Cyber Courier"],
-  animal: ["Grey Wolf", "Barn Owl", "Reef Shark", "Highland Cow", "Desert Fox"],
-  plant: ["Broadleaf Tree Pack", "Fern Cluster", "Potted Monstera", "Wheat Field", "Coral Set"],
-  food: ["Bakery Set", "Ramen Bowl", "Fruit Crate", "Coffee Service", "Street Taco Cart"],
-}
-
-const QUALIFIERS = [
-  "Game Ready",
-  "PBR Textured",
-  "Photoscan",
-  "Low Poly",
-  "High Detail",
-  "Modular Kit",
-  "Production Ready",
-]
-
-/**
- * Only things with joints get rigged or animated. Without this the generator
- * happily produces "Modern Villa — Rigged", which reads as obviously fake to
- * anyone who works in 3D.
- */
-const ARTICULATED = new Set(["character", "animal", "aircraft", "military", "car"])
-
-const AUTHORS = [
-  "kamarabay",
-  "heritage3d",
-  "studio.nord",
-  "velocity.cg",
-  "polyforge",
-  "atelier9",
-  "mesh.labs",
-  "northlight",
-]
-
-const LICENSES: License[] = ["royalty-free", "editorial", "extended"]
-
-function buildCatalog(): CatalogModel[] {
-  const next = rng(0x4d54)
-  const models: CatalogModel[] = []
-  const categories = ASSET_CATEGORIES.map((c) => c.slug)
-
-  for (const category of categories) {
-    const subjects = SUBJECTS[category] ?? ["Asset"]
-    for (let i = 0; i < 8; i++) {
-      const subject = subjects[i % subjects.length]
-      const articulated = ARTICULATED.has(category)
-      const rigged = articulated && next() < 0.55
-      const qualifier = rigged
-        ? "Rigged"
-        : QUALIFIERS[Math.floor(next() * QUALIFIERS.length)]
-      const variant = i >= subjects.length ? ` Vol. ${Math.floor(i / subjects.length) + 1}` : ""
-      const title = `${subject}${variant} — ${qualifier}`
-
-      // A fifth of the catalog is free; the rest lands on a realistic curve.
-      const free = next() < 0.2
-      const price = free ? "free" : Math.round((9 + next() * 240) / 5) * 5
-
-      const formatCount = 2 + Math.floor(next() * 3)
-      const formats = [...FORMATS]
-        .sort(() => next() - 0.5)
-        .slice(0, formatCount)
-        .map((f) => f.label)
-
-      const polygons = Math.round((900 + next() ** 2 * 340_000) / 100) * 100
-      const scanned = qualifier === "Photoscan"
-
-      models.push({
-        slug: `${category}-${subject.toLowerCase().replace(/[^a-z0-9]+/g, "-")}${variant ? `-v${Math.floor(i / subjects.length) + 1}` : ""}`,
-        title,
-        author: AUTHORS[Math.floor(next() * AUTHORS.length)],
-        price,
-        rating: Math.round((3.6 + next() * 1.4) * 10) / 10,
-        reviews: Math.floor(next() * 480) + 4,
-        formats,
-        badge: next() < 0.14 ? "Top rated" : undefined,
-        seed: `${category}-${i}`,
-        category,
-        license: LICENSES[Math.floor(next() * LICENSES.length)],
-        rigged,
-        animated: rigged && next() < 0.6,
-        pbr: qualifier === "PBR Textured" || next() < 0.45,
-        ageDays: Math.floor(next() * 720),
-        downloads: Math.floor(next() * 9_400) + 12,
-        polygons,
-        vertices: Math.round(polygons * (0.5 + next() * 0.4)),
-        description: `${subject} built for ${
-          polygons < 12_000 ? "real-time engines" : "close-up renders"
-        }, delivered in ${formats.join(", ")}. ${
-          scanned ? "Captured from the real object by photogrammetry and retopologised." : "Clean quad topology with non-overlapping UVs."
-        }`,
-      })
-    }
-  }
-
-  return models
-}
-
-const CATALOG = buildCatalog()
-
-/* ------------------------------------------------------------------ queries */
-
-export type CatalogQuery = {
-  category?: string
-  format?: string
-  price?: "free" | "paid"
-  license?: License
-  rigged?: boolean
-  animated?: boolean
-  pbr?: boolean
-  maxPolygons?: number
-  tag?: string
-  q?: string
-  sort?: SortValue
-  page?: number
-}
-
-function matches(model: CatalogModel, query: CatalogQuery) {
-  if (query.category && model.category !== query.category) return false
-  if (query.price === "free" && model.price !== "free") return false
-  if (query.price === "paid" && model.price === "free") return false
-  if (query.license && model.license !== query.license) return false
-  if (query.rigged && !model.rigged) return false
-  if (query.animated && !model.animated) return false
-  if (query.pbr && !model.pbr) return false
-  if (query.maxPolygons && model.polygons > query.maxPolygons) return false
-  if (query.tag === "scanned" && !model.title.includes("Photoscan")) return false
-  if (query.format) {
-    const label = FORMATS.find((f) => f.value === query.format)?.label
-    if (!label || !model.formats.includes(label)) return false
-  }
-  if (query.q) {
-    const needle = query.q.toLowerCase()
-    const haystack = `${model.title} ${model.author} ${model.category}`.toLowerCase()
-    if (!haystack.includes(needle)) return false
-  }
-  return true
-}
-
-const numericPrice = (price: ModelCard["price"]) => (price === "free" ? 0 : price)
-
-function compare(sort: SortValue) {
-  switch (sort) {
-    case "newest":
-      return (a: CatalogModel, b: CatalogModel) => a.ageDays - b.ageDays
-    case "price-asc":
-      return (a: CatalogModel, b: CatalogModel) =>
-        numericPrice(a.price) - numericPrice(b.price)
-    case "price-desc":
-      return (a: CatalogModel, b: CatalogModel) =>
-        numericPrice(b.price) - numericPrice(a.price)
-    case "rating":
-      return (a: CatalogModel, b: CatalogModel) =>
-        b.rating - a.rating || b.reviews - a.reviews
-    default:
-      // "Trending" has no real signal yet, so approximate it with downloads
-      // weighted by rating. Swap for actual event data once it exists.
-      return (a: CatalogModel, b: CatalogModel) =>
-        b.downloads * b.rating - a.downloads * a.rating
-  }
-}
-
 export type CatalogResult = {
   items: CatalogModel[]
   total: number
   page: number
   pageCount: number
-  /** Result counts per facet value, computed against the rest of the query. */
   facets: {
     categories: Record<string, number>
     formats: Record<string, number>
@@ -279,72 +121,264 @@ export type CatalogResult = {
   }
 }
 
-export function queryModels(query: CatalogQuery): CatalogResult {
-  const filtered = CATALOG.filter((model) => matches(model, query))
+/* ────────────────────────────────── mapping ─────────────────────────────── */
 
-  // Each facet is counted with its own dimension dropped, so the numbers show
-  // what you'd get by switching to that value rather than always reading zero.
-  const countBy = <K extends keyof CatalogQuery>(
-    drop: K,
-    key: (model: CatalogModel) => string | string[],
-  ) => {
-    const rest = { ...query, [drop]: undefined }
-    const counts: Record<string, number> = {}
-    for (const model of CATALOG) {
-      if (!matches(model, rest)) continue
-      const values = key(model)
-      for (const value of Array.isArray(values) ? values : [values]) {
-        counts[value] = (counts[value] ?? 0) + 1
-      }
-    }
-    return counts
+/** Shape returned by the select below; kept narrow so a schema change surfaces here. */
+type ModelRow = {
+  id: string
+  slug: string
+  title: string
+  description: string | null
+  price_cents: number
+  license_code: License
+  rigged: boolean
+  animated: boolean
+  pbr: boolean
+  polygons: number | null
+  vertices: number | null
+  download_count: number
+  rating: number | null
+  review_count: number
+  published_at: string | null
+  formats: string[]
+  file_summary: { format: string; size_bytes: number }[]
+  categories: { slug: string } | null
+  profiles: { handle: string } | null
+}
+
+const SELECT = `
+  id, slug, title, description, price_cents, license_code,
+  rigged, animated, pbr, polygons, vertices,
+  download_count, rating, review_count, published_at,
+  formats, file_summary,
+  categories ( slug ),
+  profiles!models_designer_id_fkey ( handle )
+`
+
+function toModel(row: ModelRow): CatalogModel {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    description: row.description ?? "",
+    author: row.profiles?.handle ?? "unknown",
+    price: row.price_cents === 0 ? "free" : row.price_cents / 100,
+    rating: row.rating ?? 0,
+    reviews: row.review_count,
+    formats: row.formats,
+    // The generated artwork is keyed off a stable string; the slug serves that
+    // role now that seeds are no longer part of the data.
+    seed: row.slug,
+    category: row.categories?.slug ?? "",
+    license: row.license_code,
+    rigged: row.rigged,
+    animated: row.animated,
+    pbr: row.pbr,
+    downloads: row.download_count,
+    polygons: row.polygons ?? 0,
+    vertices: row.vertices ?? 0,
+    publishedAt: row.published_at ?? "",
+  }
+}
+
+/* ────────────────────────────────── queries ─────────────────────────────── */
+
+/** Names the PostgREST builder type; the value is never called. */
+ 
+type Builder = ReturnType<typeof baseQuery>
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function baseQuery(select: string, options?: { count?: "exact"; head?: boolean }) {
+  return supabasePublic
+    .from("models")
+    .select(select, options)
+    .eq("status", "published")
+}
+
+/** Applies everything except pagination and ordering. */
+function applyFilters<T extends Builder>(query: T, q: CatalogQuery): T {
+  let out = query
+  if (q.category) out = out.eq("categories.slug", q.category) as T
+  if (q.price === "free") out = out.eq("price_cents", 0) as T
+  if (q.price === "paid") out = out.gt("price_cents", 0) as T
+  if (q.license) out = out.eq("license_code", q.license) as T
+  if (q.rigged) out = out.eq("rigged", true) as T
+  if (q.animated) out = out.eq("animated", true) as T
+  if (q.pbr) out = out.eq("pbr", true) as T
+  if (q.maxPolygons) out = out.lte("polygons", q.maxPolygons) as T
+  if (q.format) {
+    const label = FORMATS.find((f) => f.value === q.format)?.label
+    if (label) out = out.contains("formats", [label]) as T
+  }
+  if (q.tag === "scanned") out = out.ilike("title", "%Photoscan%") as T
+  if (q.q) out = out.ilike("title", `%${q.q}%`) as T
+  return out
+}
+
+function applySort<T extends Builder>(query: T, sort: SortValue): T {
+  switch (sort) {
+    case "newest":
+      return query.order("published_at", { ascending: false }) as T
+    case "price-asc":
+      return query.order("price_cents", { ascending: true }) as T
+    case "price-desc":
+      return query.order("price_cents", { ascending: false }) as T
+    case "rating":
+      return query
+        .order("rating", { ascending: false, nullsFirst: false })
+        .order("review_count", { ascending: false }) as T
+    default:
+      // "Trending" has no event data yet, so approximate with downloads.
+      return query.order("download_count", { ascending: false }) as T
+  }
+}
+
+/**
+ * Category lives in a joined table, and PostgREST cannot filter a parent by a
+ * child column without an inner join. `!inner` forces one; without it a
+ * category filter silently returns every model with a null category.
+ *
+ * Format needs no join: it is a public array column on models, because
+ * model_files is gated behind purchase and unreadable to a browsing visitor.
+ */
+function joinedSelect(q: CatalogQuery) {
+  const category = q.category ? "categories!inner ( slug )" : "categories ( slug )"
+  return `
+    id, slug, title, description, price_cents, license_code,
+    rigged, animated, pbr, polygons, vertices,
+    download_count, rating, review_count, published_at,
+    formats, file_summary,
+    ${category},
+    profiles!models_designer_id_fkey ( handle )
+  `
+}
+
+export async function queryModels(query: CatalogQuery): Promise<CatalogResult> {
+
+  const build = (select: string, count?: "exact") => {
+    let q = supabasePublic
+      .from("models")
+      .select(select, count ? { count } : undefined)
+      .eq("status", "published")
+    q = applyFilters(q as Builder, query) as typeof q
+    return q
   }
 
-  const sorted = [...filtered].sort(compare(query.sort ?? "trending"))
-  const pageCount = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE))
-  const page = Math.min(Math.max(query.page ?? 1, 1), pageCount)
-  const start = (page - 1) * PAGE_SIZE
+  const page = Math.max(query.page ?? 1, 1)
+  const from = (page - 1) * PAGE_SIZE
+
+  const listQuery = applySort(build(joinedSelect(query), "exact") as Builder, query.sort ?? "trending")
+    .range(from, from + PAGE_SIZE - 1)
+
+  const [{ data, count, error }, facets] = await Promise.all([
+    listQuery as unknown as Promise<{
+      data: ModelRow[] | null
+      count: number | null
+      error: { message: string } | null
+    }>,
+    computeFacets(query),
+  ])
+
+  if (error) throw new Error(`catalog query failed: ${error.message}`)
+
+  const total = count ?? 0
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE))
 
   return {
-    items: sorted.slice(start, start + PAGE_SIZE),
-    total: sorted.length,
-    page,
+    items: (data ?? []).map(toModel),
+    total,
+    page: Math.min(page, pageCount),
     pageCount,
-    facets: {
-      categories: countBy("category", (m) => m.category),
-      formats: countBy("format", (m) =>
-        m.formats.map(
-          (label) => FORMATS.find((f) => f.label === label)?.value ?? label,
-        ),
-      ),
-      licenses: countBy("license", (m) => m.license),
-    },
+    facets,
   }
 }
 
-export function getModel(slug: string) {
-  return CATALOG.find((model) => model.slug === slug)
+/**
+ * Facet counts, each computed with its own dimension dropped so the numbers
+ * show what you would get by switching to that value rather than always
+ * reading zero.
+ */
+async function computeFacets(query: CatalogQuery): Promise<CatalogResult["facets"]> {
+  const countFor = async (patch: CatalogQuery) => {
+    const merged = { ...query, ...patch }
+    let q = supabasePublic
+      .from("models")
+      .select(
+        `id, ${merged.category ? "categories!inner ( slug )" : "categories ( slug )"}`,
+        { count: "exact", head: true },
+      )
+      .eq("status", "published")
+    q = applyFilters(q as unknown as Builder, merged) as unknown as typeof q
+    const { count } = await q
+    return count ?? 0
+  }
+
+  const [categories, formats, licenses] = await Promise.all([
+    (async () => {
+      const { data } = await supabasePublic.from("categories").select("slug")
+      const entries = await Promise.all(
+        (data ?? []).map(async (c) => [c.slug, await countFor({ category: c.slug })] as const),
+      )
+      return Object.fromEntries(entries)
+    })(),
+    (async () => {
+      const entries = await Promise.all(
+        FORMATS.map(async (f) => [f.value, await countFor({ format: f.value })] as const),
+      )
+      return Object.fromEntries(entries)
+    })(),
+    (async () => {
+      const codes: License[] = ["royalty-free", "editorial", "extended"]
+      const entries = await Promise.all(
+        codes.map(async (code) => [code, await countFor({ license: code })] as const),
+      )
+      return Object.fromEntries(entries)
+    })(),
+  ])
+
+  return { categories, formats, licenses }
 }
 
-/** Same category, excluding the model itself. */
-export function getRelated(model: CatalogModel, limit = 4) {
-  return CATALOG.filter(
-    (candidate) =>
-      candidate.category === model.category && candidate.slug !== model.slug,
-  ).slice(0, limit)
+export async function getModel(slug: string): Promise<CatalogModel | undefined> {
+  const { data } = await supabasePublic
+    .from("models")
+    .select(SELECT)
+    .eq("status", "published")
+    .eq("slug", slug)
+    .maybeSingle()
+  return data ? toModel(data as unknown as ModelRow) : undefined
 }
 
-export function allModelSlugs() {
-  return CATALOG.map((model) => model.slug)
+export async function getRelated(model: CatalogModel, limit = 4): Promise<CatalogModel[]> {
+  const { data } = await supabasePublic
+    .from("models")
+    .select(`${SELECT}`)
+    .eq("status", "published")
+    .neq("slug", model.slug)
+    .eq("category_id", await categoryIdFor(model.category))
+    .order("download_count", { ascending: false })
+    .limit(limit)
+  return ((data ?? []) as unknown as ModelRow[]).map(toModel)
 }
 
-export const LICENSE_LABELS: Record<License, string> = {
-  "royalty-free": "Royalty-free",
-  editorial: "Editorial use",
-  extended: "Extended commercial",
+async function categoryIdFor(slug: string) {
+  const { data } = await supabasePublic
+    .from("categories")
+    .select("id")
+    .eq("slug", slug)
+    .maybeSingle()
+  return data?.id ?? null
 }
 
-/* ------------------------------------------------------ detail-page extras */
+export async function allModelSlugs(): Promise<string[]> {
+  const { data } = await supabasePublic
+    .from("models")
+    .select("slug")
+    .eq("status", "published")
+  return (data ?? []).map((m) => m.slug)
+}
+
+/* ─────────────────────────── product-page extras ────────────────────────── */
 
 export type Review = {
   id: string
@@ -354,75 +388,65 @@ export type Review = {
   body: string
 }
 
-const REVIEW_BODIES = [
-  "Topology is clean and the UVs unwrapped without a single overlap. Dropped straight into the scene.",
-  "Good value for the price. Textures are 4K and hold up in close-ups, though the normal map is a little soft.",
-  "Exactly what the description says. Imported into Blender with no scale issues.",
-  "Solid asset. Would have liked a lower-poly LOD included, but I made one in ten minutes.",
-  "Used this on a client project last week — renders beautifully with area lights.",
-  "The rig is sensible and the weight painting is better than most assets at this price.",
-]
+export async function getReviews(model: CatalogModel): Promise<Review[]> {
+  const { data } = await supabasePublic
+    .from("reviews")
+    .select("id, rating, body, created_at, profiles ( handle )")
+    .eq("model_id", model.id)
+    .order("created_at", { ascending: false })
+    .limit(4)
 
-const REVIEWERS = [
-  "marta.k", "j_okafor", "renderhaus", "pixelsmith", "atelier.nine", "tomek3d", "sunhee.p",
-]
-
-/**
- * Reviews for a model, derived from its slug so they stay put across renders.
- * The count is anchored to the model's own review total, so the header figure
- * and the list below it can't disagree.
- */
-export function getReviews(model: CatalogModel): Review[] {
-  const next = rng(hashString(model.slug))
-  // Always show a few: a page claiming 400 reviews that lists one reads as
-  // broken, and these stand in for a "most helpful" selection anyway.
-  const count = Math.min(4, Math.max(3, Math.round(model.reviews / 90)))
-
-  return Array.from({ length: count }, (_, i) => {
-    // Keep individual scores near the model's average, clamped to 1–5.
-    const drift = (next() - 0.45) * 1.6
-    const rating = Math.min(5, Math.max(1, Math.round(model.rating + drift)))
+  return (data ?? []).map((r) => {
+    const row = r as unknown as {
+      id: string
+      rating: number
+      body: string | null
+      created_at: string
+      profiles: { handle: string } | null
+    }
     return {
-      id: `${model.slug}-r${i}`,
-      author: REVIEWERS[Math.floor(next() * REVIEWERS.length)],
-      rating,
-      daysAgo: Math.floor(next() * 240) + 2,
-      body: REVIEW_BODIES[Math.floor(next() * REVIEW_BODIES.length)],
+      id: row.id,
+      author: row.profiles?.handle ?? "buyer",
+      rating: row.rating,
+      daysAgo: Math.max(
+        0,
+        Math.round((Date.now() - new Date(row.created_at).getTime()) / 86_400_000),
+      ),
+      body: row.body ?? "",
     }
   })
 }
 
-function hashString(value: string) {
-  let h = 2166136261
-  for (let i = 0; i < value.length; i++) {
-    h ^= value.charCodeAt(i)
-    h = Math.imul(h, 16777619)
-  }
-  return Math.abs(h)
-}
+/**
+ * The "What you get" panel. Reads the public summary on models, not
+ * model_files — a visitor deciding whether to buy has to see what is included,
+ * but must not be able to read storage keys.
+ */
+export async function getFiles(model: CatalogModel) {
+  const { data } = await supabasePublic
+    .from("models")
+    .select("file_summary")
+    .eq("id", model.id)
+    .maybeSingle()
 
-/** Per-format file listing for the "what you get" panel. */
-export function getFiles(model: CatalogModel) {
-  const next = rng(hashString(`${model.slug}-files`))
-  return model.formats.map((format) => ({
-    format,
-    // Rough size correlation with mesh density; enough to look plausible.
-    size: `${(model.polygons / 42_000 + next() * 18 + 2).toFixed(1)} MB`,
+  const summary = (data?.file_summary ?? []) as { format: string; size_bytes: number }[]
+  return summary.map((f) => ({
+    format: f.format,
+    size: `${(f.size_bytes / 1_048_576).toFixed(1)} MB`,
   }))
 }
 
 /**
- * License tiers. The upgrade is priced as a multiple of the base rather than a
- * flat figure, so a $9 asset and a $240 asset both come out sensible.
+ * Licence tiers. The upgrade is priced from the model's own price via the
+ * multiplier on the licences table, so pricing policy is data, not code.
  *
- * A model already sold under the extended license has nothing to upgrade to,
- * so it gets a single tier — otherwise the panel offers "Extended commercial"
- * twice at two different prices.
+ * A model already sold as extended has nothing to upgrade to and gets one tier
+ * — otherwise the panel offers "Extended commercial" twice at two prices.
  */
-export function getLicenseOptions(model: CatalogModel) {
+export async function getLicenseOptions(model: CatalogModel) {
   const base = model.price === "free" ? 0 : model.price
   const standard = {
-    id: "standard",
+    id: model.license,
     name: LICENSE_LABELS[model.license],
     price: base,
     blurb:
@@ -433,13 +457,20 @@ export function getLicenseOptions(model: CatalogModel) {
 
   if (model.license === "extended") return [standard]
 
+  const { data } = await supabasePublic
+    .from("licenses")
+    .select("code, label, blurb, price_multiplier")
+    .eq("code", "extended")
+    .maybeSingle()
+
+  const multiplier = Number(data?.price_multiplier ?? 2.5)
   return [
     standard,
     {
       id: "extended",
-      name: LICENSE_LABELS.extended,
-      price: base === 0 ? 29 : Math.round((base * 2.5) / 5) * 5,
-      blurb: "Unlimited seats, resale in end products, and merchandising.",
+      name: data?.label ?? LICENSE_LABELS.extended,
+      price: base === 0 ? 29 : Math.round((base * multiplier) / 5) * 5,
+      blurb: data?.blurb ?? "Unlimited seats, resale in end products, and merchandising.",
     },
   ]
 }

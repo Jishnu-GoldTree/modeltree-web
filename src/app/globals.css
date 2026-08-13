@@ -149,6 +149,25 @@
   html {
     @apply font-sans;
   }
+  /* Geist carries no Hebrew glyphs. Heebo must come FIRST here, not after
+     Geist: next/font expands --font-geist-sans to "Geist, Geist Fallback", and
+     that generated fallback is a local face with broad Unicode coverage — it
+     matches Hebrew before the stack ever reaches Heebo, so Heebo never loads
+     and Hebrew renders in a system font. Heebo covers Latin too, so Latin runs
+     on Hebrew pages stay in one consistent family. */
+  :lang(he) {
+    font-family:
+      var(--font-hebrew), var(--font-geist-sans), ui-sans-serif, system-ui,
+      sans-serif;
+  }
+
+  /* User-authored content is English while the interface may be Hebrew.
+     Direction-neutral punctuation otherwise inherits the RTL paragraph and
+     jumps to the wrong end — "Wolf, rigged." renders as ".Wolf, rigged".
+     Isolation keeps each run resolving on its own. */
+  [data-user-text] {
+    unicode-bidi: isolate;
+  }
 }
 
 @layer components {

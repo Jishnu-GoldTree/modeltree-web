@@ -90,10 +90,10 @@ const ORDER_FIXTURES: Record<
 };
 
 /** Fixtures name models by slug; anything the generator no longer emits is skipped. */
-export function getOrders(userId: string): Order[] {
-  return (ORDER_FIXTURES[userId] ?? [])
-    .map((fixture) => {
-      const model = getModel(fixture.slug);
+export async function getOrders(userId: string): Promise<Order[]> {
+  const resolved = await Promise.all(
+    (ORDER_FIXTURES[userId] ?? []).map(async (fixture) => {
+      const model = await getModel(fixture.slug);
       if (!model) return null;
       return {
         id: fixture.id,
@@ -102,12 +102,13 @@ export function getOrders(userId: string): Order[] {
         license: model.license,
         total: model.price === "free" ? 0 : model.price,
       };
-    })
-    .filter((order): order is Order => order !== null);
+    }),
+  );
+  return resolved.filter((order): order is Order => order !== null);
 }
 
-export function getAccountStats(userId: string) {
-  const orders = getOrders(userId);
+export async function getAccountStats(userId: string) {
+  const orders = await getOrders(userId);
   return {
     purchases: orders.length,
     spent: orders.reduce((sum, order) => sum + order.total, 0),

@@ -1,6 +1,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
 
 import { getModel } from "@/lib/data/catalog"
 import { readFavorites, writeFavorites } from "@/lib/favorites"
@@ -17,16 +18,28 @@ function refresh() {
   revalidatePath("/3d-models")
 }
 
+/** Only same-site relative paths; anything else would be an open redirect. */
+function safeReturnTo(value: FormDataEntryValue | null) {
+  const path = typeof value === "string" ? value : ""
+  return path.startsWith("/") && !path.startsWith("//") ? path : "/favorites"
+}
+
 export async function toggleFavorite(formData: FormData) {
   const slug = formData.get("slug")
   // Untrusted input: ignore anything that isn't a real model.
-  if (typeof slug !== "string" || !getModel(slug)) return
+  if (typeof slug !== "string" || !(await getModel(slug))) return
 
   const saved = await readFavorites()
   await writeFavorites(
     saved.includes(slug) ? saved.filter((s) => s !== slug) : [...saved, slug],
   )
   refresh()
+
+  // Redirect back to the page the heart was clicked on. Hearting does not
+  // otherwise navigate, and the header count lives in a client cache that only
+  // refreshes on navigation — without this the badge stays stale until the
+  // visitor happens to move elsewhere. Same reason the cart actions redirect.
+  redirect(safeReturnTo(formData.get("returnTo")))
 }
 
 /**
@@ -36,7 +49,7 @@ export async function toggleFavorite(formData: FormData) {
  */
 export async function addFavorite(formData: FormData) {
   const slug = formData.get("slug")
-  if (typeof slug !== "string" || !getModel(slug)) return
+  if (typeof slug !== "string" || !(await getModel(slug))) return
 
   const saved = await readFavorites()
   if (!saved.includes(slug)) await writeFavorites([...saved, slug])

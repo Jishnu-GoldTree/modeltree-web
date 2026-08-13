@@ -45,8 +45,8 @@ export async function writeFavorites(slugs: string[]) {
 /** Newest first — the last thing you saved is the thing you're looking for. */
 export async function getFavoriteModels(): Promise<CatalogModel[]> {
   const slugs = await readFavorites()
-  return slugs
-    .map((slug) => getModel(slug))
+  const models = await Promise.all(slugs.map((slug) => getModel(slug)))
+  return models
     .filter((model): model is CatalogModel => model !== undefined)
     .reverse()
 }

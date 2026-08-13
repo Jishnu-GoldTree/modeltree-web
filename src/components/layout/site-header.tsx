@@ -27,6 +27,7 @@ import {
 import { Logo } from "@/components/layout/logo"
 import { AccountMenu } from "@/components/layout/account-menu"
 import { HeaderBadges } from "@/components/layout/header-badges"
+import { LocaleSwitcher } from "@/components/layout/locale-switcher"
 import { SearchForm } from "@/components/forms/search-form"
 
 /**
@@ -105,7 +106,7 @@ export function SiteHeader({ solid = false }: { solid?: boolean }) {
         {/* Compact search only earns its space once the hero search is gone. */}
         <div
           className={cn(
-            "ml-auto hidden max-w-xs flex-1 transition-all duration-300 md:block",
+            "ms-auto hidden max-w-xs flex-1 transition-all duration-300 md:block",
             stuck
               ? "pointer-events-auto translate-y-0 opacity-100"
               : "pointer-events-none -translate-y-1 opacity-0"
@@ -118,8 +119,9 @@ export function SiteHeader({ solid = false }: { solid?: boolean }) {
             there the compact search above carries the auto margin instead.
             Below md that search is display:none, so this must keep its own or
             the actions collapse against the logo. */}
-        <div className={cn("flex items-center gap-1 ml-auto", stuck && "md:ml-0")}>
+        <div className={cn("flex items-center gap-1 ms-auto", stuck && "md:ms-0")}>
           <HeaderBadges />
+          <LocaleSwitcher />
 
           <Separator
             orientation="vertical"
@@ -148,7 +150,7 @@ function MobileNav() {
           <Menu className="size-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-[320px] overflow-y-auto p-0">
+      <SheetContent side="end" className="w-[320px] overflow-y-auto p-0">
         <SheetHeader className="border-b">
           <SheetTitle>
             <Logo tone="dark" />

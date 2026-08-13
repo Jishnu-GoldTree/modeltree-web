@@ -1,10 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
 import { Heart, ShoppingCart } from "lucide-react"
 
+import { useCounts } from "@/lib/queries/counts"
 import { Button } from "@/components/ui/button"
 
 /**
@@ -12,40 +11,21 @@ import { Button } from "@/components/ui/button"
  *
  * Counts are fetched rather than server-rendered: the header sits on the
  * statically prerendered model pages, and reading the cookies during render
- * would make all 72 of them dynamic. One request covers both. Refetches on
- * navigation, which catches every mutation since they all redirect or
- * revalidate.
+ * would make all of them dynamic. Both badges read one shared query, so this
+ * costs a single request no matter how many badges exist.
  */
-
-type Counts = { cart: number; favorites: number }
 
 function Badge({ value }: { value: number }) {
   if (value <= 0) return null
   return (
-    <span className="absolute -top-0.5 -right-0.5 inline-flex min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-semibold text-brand-foreground tabular-nums">
+    <span className="absolute -top-0.5 -end-0.5 inline-flex min-w-4 items-center justify-center rounded-full bg-brand px-1 text-[10px] font-semibold text-brand-foreground tabular-nums">
       {value}
     </span>
   )
 }
 
 export function HeaderBadges() {
-  const pathname = usePathname()
-  const [counts, setCounts] = useState<Counts>({ cart: 0, favorites: 0 })
-
-  useEffect(() => {
-    let active = true
-    fetch("/api/counts")
-      .then((res) => res.json())
-      .then((data: Counts) => {
-        if (active) setCounts({ cart: data.cart ?? 0, favorites: data.favorites ?? 0 })
-      })
-      .catch(() => {
-        // A failed count must not blank the links themselves.
-      })
-    return () => {
-      active = false
-    }
-  }, [pathname])
+  const counts = useCounts()
 
   return (
     <>

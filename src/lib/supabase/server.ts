@@ -8,7 +8,7 @@ import { createServerClient } from "@supabase/ssr"
  *
  * `setAll` is wrapped in try/catch because Server Components are not allowed to
  * write cookies — only Server Actions and Route Handlers are. Token refresh
- * during a render therefore fails silently here, which is fine: middleware
+ * during a render therefore fails silently here, which is fine: the proxy
  * refreshes the session on every request, so the write always has somewhere
  * legitimate to happen.
  */
@@ -27,7 +27,7 @@ export async function createClient() {
               cookieStore.set(name, value, options)
             }
           } catch {
-            // Called from a Server Component — middleware handles the refresh.
+            // Called from a Server Component — the proxy handles the refresh.
           }
         },
       },

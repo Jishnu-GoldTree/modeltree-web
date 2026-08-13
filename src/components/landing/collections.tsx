@@ -26,7 +26,7 @@ export function Collections() {
               <Button variant="outline" size="sm" asChild className="shrink-0">
                 <Link href={`/collections/${collection.slug}`}>
                   View all
-                  <ArrowRight className="size-4" aria-hidden />
+                  <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden />
                 </Link>
               </Button>
             </header>
@@ -49,7 +49,7 @@ export function Collections() {
                   {collection.featured.cta}
                   <ArrowRight
                     aria-hidden
-                    className="size-4 transition-transform group-hover:translate-x-0.5"
+                    className="size-4 transition-transform group-hover:translate-x-0.5 rtl:-scale-x-100"
                   />
                 </span>
               </div>

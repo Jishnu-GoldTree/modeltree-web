@@ -52,7 +52,7 @@ export function PromoBanner() {
             <p className="text-xs text-muted-foreground">Get as low as</p>
             <p className="mt-1 text-3xl font-semibold tracking-tight">
               $2.36
-              <span className="ml-1 text-sm font-normal text-muted-foreground">
+              <span className="ms-1 text-sm font-normal text-muted-foreground">
                 / model
               </span>
             </p>

@@ -14,19 +14,19 @@ import { readCart, writeCart } from "@/lib/cart"
  */
 
 /** Form input is untrusted: a slug or licence that doesn't exist is ignored. */
-function validate(slug: unknown, license: unknown) {
+async function validate(slug: unknown, license: unknown) {
   if (typeof slug !== "string") return null
-  const model = getModel(slug)
+  const model = await getModel(slug)
   if (!model) return null
 
-  const options = getLicenseOptions(model)
+  const options = await getLicenseOptions(model)
   const chosen =
     options.find((option) => option.id === license) ?? options[0]
   return { slug: model.slug, license: chosen.id }
 }
 
 export async function addToCart(formData: FormData) {
-  const entry = validate(formData.get("slug"), formData.get("license"))
+  const entry = await validate(formData.get("slug"), formData.get("license"))
   if (!entry) return
 
   const cart = await readCart()
@@ -49,7 +49,7 @@ export async function removeFromCart(formData: FormData) {
 }
 
 export async function setLineLicense(formData: FormData) {
-  const entry = validate(formData.get("slug"), formData.get("license"))
+  const entry = await validate(formData.get("slug"), formData.get("license"))
   if (!entry) return
 
   const cart = await readCart()

@@ -65,15 +65,17 @@ export async function writeCart(entries: CartEntry[]) {
 /**
  * Resolves entries to models and prices. Anything whose slug or licence no
  * longer exists is dropped rather than rendered as a broken row.
+ *
+ * Async because the catalog is a database now: each entry needs a lookup, and
+ * they run concurrently rather than one after another.
  */
-export function toLines(entries: CartEntry[]): CartLine[] {
-  return entries
-    .map((entry) => {
-      const model = getModel(entry.slug)
+export async function toLines(entries: CartEntry[]): Promise<CartLine[]> {
+  const resolved = await Promise.all(
+    entries.map(async (entry) => {
+      const model = await getModel(entry.slug)
       if (!model) return null
-      const option =
-        getLicenseOptions(model).find((o) => o.id === entry.license) ??
-        getLicenseOptions(model)[0]
+      const options = await getLicenseOptions(model)
+      const option = options.find((o) => o.id === entry.license) ?? options[0]
       if (!option) return null
       return {
         model,
@@ -81,8 +83,9 @@ export function toLines(entries: CartEntry[]): CartLine[] {
         licenseName: option.name,
         price: option.price,
       }
-    })
-    .filter((line): line is CartLine => line !== null)
+    }),
+  )
+  return resolved.filter((line): line is CartLine => line !== null)
 }
 
 export function cartTotals(lines: CartLine[]) {
@@ -91,6 +94,6 @@ export function cartTotals(lines: CartLine[]) {
 }
 
 export async function getCart() {
-  const lines = toLines(await readCart())
+  const lines = await toLines(await readCart())
   return { lines, ...cartTotals(lines) }
 }

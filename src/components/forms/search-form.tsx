@@ -59,7 +59,7 @@ export function SearchForm({
               <div
                 className={cn(
                   "flex items-center gap-2 rounded-full border border-white/15 bg-white/95 shadow-lg shadow-black/10 backdrop-blur focus-within:border-brand focus-within:ring-3 focus-within:ring-brand/30",
-                  isHero ? "p-1.5 pl-5" : "p-1 pl-4"
+                  isHero ? "p-1.5 ps-5" : "p-1 ps-4"
                 )}
               >
                 <Search

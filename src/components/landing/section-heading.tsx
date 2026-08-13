@@ -43,7 +43,7 @@ export function SectionHeading({
           {action.label}
           <ArrowRight
             aria-hidden
-            className="size-4 transition-transform group-hover:translate-x-0.5"
+            className="size-4 transition-transform group-hover:translate-x-0.5 rtl:-scale-x-100"
           />
         </Link>
       )}

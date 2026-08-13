@@ -8,6 +8,8 @@ import {
   CatalogFilters,
   catalogHref,
 } from "@/components/marketplace/catalog-filters"
+import { getTranslations } from "next-intl/server"
+
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -24,7 +26,7 @@ type Params = Record<string, string | undefined>
  * routes can't drift. Filters live in a sheet below `lg`, where a permanent
  * rail would eat the whole screen.
  */
-export function CatalogView({
+export async function CatalogView({
   base,
   params,
   result,
@@ -38,6 +40,7 @@ export function CatalogView({
   favorites: Set<string>
 }) {
   const { items, total, page, pageCount, facets } = result
+  const t = await getTranslations("catalog")
   const filters = (
     <CatalogFilters
       base={base}
@@ -53,12 +56,9 @@ export function CatalogView({
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center justify-between gap-3 pb-5">
-          <p className="text-sm text-muted-foreground">
-            <span className="font-medium text-foreground tabular-nums">
-              {total.toLocaleString()}
-            </span>{" "}
-            {total === 1 ? "model" : "models"}
-          </p>
+          {/* One interpolated message, not a number glued to a noun: word
+              order differs per language and concatenation breaks in RTL. */}
+          <p className="text-sm text-muted-foreground">{t("count", { count: total })}</p>
 
           <div className="flex items-center gap-2">
             <Sheet>
@@ -68,7 +68,7 @@ export function CatalogView({
                   Filters
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] overflow-y-auto">
+              <SheetContent side="start" className="w-[300px] overflow-y-auto">
                 <SheetHeader>
                   <SheetTitle>Filters</SheetTitle>
                 </SheetHeader>
@@ -104,13 +104,12 @@ export function CatalogView({
         {items.length === 0 ? (
           <div className="flex flex-col items-center rounded-xl border py-20 text-center">
             <SearchX className="size-8 text-muted-foreground" aria-hidden />
-            <h2 className="mt-4 font-semibold">No models match those filters</h2>
+            <h2 className="mt-4 font-semibold">{t("emptyTitle")}</h2>
             <p className="mt-1.5 max-w-sm text-sm text-muted-foreground">
-              Try removing a filter — combining a narrow category with a rare
-              file format usually comes up empty.
+              {t("emptyBody")}
             </p>
             <Button asChild variant="outline" className="mt-5 h-9">
-              <Link href={base}>Clear all filters</Link>
+              <Link href={base}>{t("clearAll")}</Link>
             </Button>
           </div>
         ) : (

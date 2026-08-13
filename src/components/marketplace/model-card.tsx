@@ -1,8 +1,9 @@
 import Link from "next/link"
-import { Heart, Star } from "lucide-react"
+import { Star } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { toggleFavorite } from "@/lib/actions/favorites"
+import { UserText } from "@/components/user-text"
+import { FavoriteButton } from "@/components/marketplace/favorite-button"
 import type { ModelCard as ModelCardData } from "@/lib/data/landing"
 import { Thumb } from "@/components/marketplace/thumb"
 import { Badge } from "@/components/ui/badge"
@@ -40,34 +41,11 @@ export function ModelCard({
         className="aspect-4/3 shrink-0 transition-transform duration-300 group-hover:scale-[1.04]"
       >
         {model.badge && (
-          <Badge className="absolute top-2.5 left-2.5 border-0 bg-black/55 text-white backdrop-blur">
+          <Badge className="absolute top-2.5 start-2.5 border-0 bg-black/55 text-white backdrop-blur">
             {model.badge}
           </Badge>
         )}
-        {/* z-10 lifts this above the stretched link's ::after overlay, which
-            covers the whole card and would otherwise swallow the click. */}
-        <form
-          action={toggleFavorite}
-          className={cn(
-            "absolute top-2 right-2 z-10 transition-opacity",
-            favorited
-              ? "opacity-100"
-              : "opacity-0 group-hover:opacity-100 focus-within:opacity-100",
-          )}
-        >
-          <input type="hidden" name="slug" value={model.slug} />
-          <button
-            type="submit"
-            aria-label={favorited ? `Remove ${model.title} from saved` : `Save ${model.title}`}
-            aria-pressed={favorited}
-            className="inline-flex size-8 items-center justify-center rounded-full bg-black/45 text-white outline-none backdrop-blur hover:bg-black/65 focus-visible:ring-3 focus-visible:ring-brand/50"
-          >
-            <Heart
-              className={cn("size-4", favorited && "fill-brand text-brand")}
-              aria-hidden
-            />
-          </button>
-        </form>
+        <FavoriteButton slug={model.slug} title={model.title} favorited={favorited} />
       </Thumb>
 
       <div className="flex flex-1 flex-col p-3">
@@ -85,11 +63,13 @@ export function ModelCard({
             href={`/3d-model/${model.slug}`}
             className="after:absolute after:inset-0 after:content-[''] hover:underline"
           >
-            <span className="line-clamp-2">{model.title}</span>
+            <UserText className="line-clamp-2">{model.title}</UserText>
           </Link>
         </h3>
 
-        <p className="mt-1 text-xs text-muted-foreground">by {model.author}</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          by <UserText>{model.author}</UserText>
+        </p>
 
         <div className="mt-auto flex items-center justify-between gap-2 pt-2.5">
           <span
