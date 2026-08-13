@@ -1,3 +1,5 @@
+import { getTranslations } from "next-intl/server";
+
 import {
   ASSET_CATEGORIES,
   ASSET_TABS,
@@ -18,7 +20,9 @@ import { ValueProps } from "@/components/landing/value-props";
 import { CustomSolutions } from "@/components/landing/custom-solutions";
 import { BusinessAccount } from "@/components/landing/business-account";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const t = await getTranslations("landing.explore");
+
   return (
     <>
       <SiteHeader />
@@ -27,31 +31,27 @@ export default function HomePage() {
         <PromoBanner />
         <JewelleryLibrary />
         <CategoryExplorer
-          title="Explore 3D assets"
-          description="Find the perfect 3D asset for any search or style with our curated themed packs."
+          title={t("assetsTitle")}
+          description={t("assetsDescription")}
           chips={ASSET_TABS}
+          chipNamespace="assetTabs"
           chipBase="/3d-models"
           categories={ASSET_CATEGORIES}
           categoryBase="/3d-models"
-          action={{ label: "Browse all 3D models", href: "/3d-models" }}
-          footerAction={{ label: "Show all categories", href: "/categories" }}
+          action={{ label: t("assetsAction"), href: "/3d-models" }}
+          footerAction={{ label: t("showAll"), href: "/categories" }}
         />
 
         <CategoryExplorer
-          title="Explore 3D print ready models"
-          description="Find the perfect 3D asset for any search or style with our curated themed packs."
+          title={t("printTitle")}
+          description={t("printDescription")}
           chips={PRINT_TABS}
+          chipNamespace="printTabs"
           chipBase="/3d-print-models"
           categories={PRINT_CATEGORIES}
           categoryBase="/3d-print-models"
-          action={{
-            label: "Browse all 3D print models",
-            href: "/3d-print-models",
-          }}
-          footerAction={{
-            label: "Show all categories",
-            href: "/categories?type=print",
-          }}
+          action={{ label: t("printAction"), href: "/3d-print-models" }}
+          footerAction={{ label: t("showAll"), href: "/categories?type=print" }}
         />
 
         <Collections />

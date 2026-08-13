@@ -27,7 +27,7 @@ function FieldError({ message }: { message?: string }) {
   return <p className="text-xs text-destructive">{message}</p>
 }
 
-function SaveButton() {
+function SaveButton({ label }: { label: string }) {
   const { pending } = useFormStatus()
   return (
     <Button
@@ -36,13 +36,14 @@ function SaveButton() {
       className="h-10 bg-brand text-brand-foreground hover:bg-brand/85"
     >
       {pending && <Loader2 className="size-4 animate-spin" aria-hidden />}
-      Save changes
+      {label}
     </Button>
   )
 }
 
 export function ProfileForm({ profile }: { profile: Profile }) {
   const t = useTranslations("toast")
+  const f = useTranslations("profileForm")
   const [state, formAction] = useActionState<ProfileState, FormData>(updateProfile, {})
 
   // useActionState keeps the same object identity across renders, so key the
@@ -67,7 +68,7 @@ export function ProfileForm({ profile }: { profile: Profile }) {
       )}
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="fullName">Name</Label>
+        <Label htmlFor="fullName">{f("name")}</Label>
         <Input
           id="fullName"
           name="fullName"
@@ -79,9 +80,9 @@ export function ProfileForm({ profile }: { profile: Profile }) {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="handle">Handle</Label>
+        <Label htmlFor="handle">{f("handle")}</Label>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">modeltree.com/designers/</span>
+          <span className="text-sm text-muted-foreground">{f("handlePrefix")}</span>
           <Input
             id="handle"
             name="handle"
@@ -91,17 +92,17 @@ export function ProfileForm({ profile }: { profile: Profile }) {
           />
         </div>
         <p className="text-xs text-muted-foreground">
-          Your public storefront address. Changing it breaks existing links.
+          {f("handleHint")}
         </p>
         <FieldError message={state.fieldErrors?.handle} />
       </div>
 
       <fieldset className="flex flex-col gap-1.5">
-        <legend className="text-sm font-medium">Account type</legend>
+        <legend className="text-sm font-medium">{f("accountType")}</legend>
         <div className="mt-1 grid grid-cols-2 gap-2">
           {[
-            { value: "buyer", label: "Buyer", hint: "Browse and license models" },
-            { value: "designer", label: "Designer", hint: "Publish and earn royalties" },
+            { value: "buyer", label: f("buyer"), hint: f("buyerHint") },
+            { value: "designer", label: f("designer"), hint: f("designerHint") },
           ].map((option) => (
             <label
               key={option.value}
@@ -126,34 +127,34 @@ export function ProfileForm({ profile }: { profile: Profile }) {
       </fieldset>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="location">Location</Label>
+        <Label htmlFor="location">{f("location")}</Label>
         <Input
           id="location"
           name="location"
           defaultValue={profile.location ?? ""}
-          placeholder="Tel Aviv, Israel"
+          placeholder={f("locationPlaceholder")}
           className="h-10"
         />
         <FieldError message={state.fieldErrors?.location} />
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="bio">Bio</Label>
+        <Label htmlFor="bio">{f("bio")}</Label>
         <textarea
           id="bio"
           name="bio"
           rows={4}
           defaultValue={profile.bio ?? ""}
-          placeholder="What you make, and who it's for."
+          placeholder={f("bioPlaceholder")}
           className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
         />
         <p className="text-xs text-muted-foreground">
-          Shown on your public storefront. Up to 500 characters.
+          {f("bioHint")}
         </p>
         <FieldError message={state.fieldErrors?.bio} />
       </div>
 
-      <SaveButton />
+      <SaveButton label={f("save")} />
     </form>
   )
 }

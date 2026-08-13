@@ -4,13 +4,21 @@ import { ArrowLeft } from "lucide-react"
 
 import { getCurrentUser } from "@/lib/supabase/server"
 import { getProfile } from "@/lib/data/profile"
+import { getTranslations } from "next-intl/server"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { ProfileForm } from "@/components/forms/profile-form"
 
-export const metadata = { title: "Profile settings" }
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/profile/settings">) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "profile" })
+  return { title: t("settings") }
+}
 
 export default async function ProfileSettingsPage() {
+  const t = await getTranslations("profile")
   const user = await getCurrentUser()
   if (!user) redirect("/login?next=/profile/settings")
 
@@ -30,13 +38,12 @@ export default async function ProfileSettingsPage() {
             className="inline-flex items-center gap-1.5 rounded-md text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-brand/50"
           >
             <ArrowLeft className="size-4 rtl:-scale-x-100" aria-hidden />
-            Back to profile
+            {t("backToProfile")}
           </Link>
 
-          <h1 className="mt-5 text-2xl font-semibold tracking-tight">Profile settings</h1>
+          <h1 className="mt-5 text-2xl font-semibold tracking-tight">{t("settings")}</h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
-            {user.email}. Your email is managed by your sign-in method and
-            can&apos;t be changed here.
+            {user.email}. {t("emailManaged")}
           </p>
 
           <div className="mt-8">

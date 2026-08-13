@@ -208,12 +208,12 @@ export function LoginForm({
 
       {demoEnabled && (
         <div className="rounded-lg border border-dashed p-3 text-xs text-muted-foreground">
-          <p className="font-medium text-foreground">Demo accounts</p>
+          <p className="font-medium text-foreground">{t("demoTitle")}</p>
           <p className="mt-1">
-            Buyer <code className="font-mono">omri@goldtree.com</code> · Designer{" "}
+            {t("demoBuyer")} <code className="font-mono">omri@goldtree.com</code> · {t("demoDesigner")}{" "}
             <code className="font-mono">designer@modeltree.demo</code>
             <br />
-            Password <code className="font-mono">demo1234</code>
+            {t("demoPassword")} <code className="font-mono">demo1234</code>
           </p>
         </div>
       )}

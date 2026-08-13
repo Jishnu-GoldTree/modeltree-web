@@ -14,7 +14,6 @@ import {
 
 import { ASSET_CATEGORIES } from "@/lib/data/landing"
 import {
-  LICENSE_LABELS,
   allModelSlugs,
   getFiles,
   getLicenseOptions,
@@ -67,6 +66,9 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
   if (!model) notFound()
 
   const t = await getTranslations("product")
+  const cat = await getTranslations("landing")
+  const lic = await getTranslations("license")
+  const common = await getTranslations("common")
   const category = ASSET_CATEGORIES.find((c) => c.slug === model.category)
   const related = await getRelated(model)
   const price = model.price === "free" ? "Free" : `$${model.price}`
@@ -78,7 +80,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
     { label: t("polygons"), value: number(model.polygons) },
     { label: t("vertices"), value: number(model.vertices) },
     { label: t("formats"), value: model.formats.join(", ") },
-    { label: t("license"), value: LICENSE_LABELS[model.license] },
+    { label: t("license"), value: lic(model.license) },
     { label: t("rigged"), value: model.rigged ? t("yes") : t("no") },
     { label: t("animated"), value: model.animated ? t("yes") : t("no") },
     { label: t("pbr"), value: model.pbr ? t("yes") : t("no") },
@@ -95,7 +97,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
             <ol className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
               <li>
                 <Link href="/3d-models" className="hover:text-foreground">
-                  3D models
+                  {cat("footer.models")}
                 </Link>
               </li>
               {category && (
@@ -106,7 +108,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                       href={`/3d-models/${category.slug}`}
                       className="hover:text-foreground"
                     >
-                      {category.label}
+                      {cat(`categories.${category.key}`)}
                     </Link>
                   </li>
                 </>
@@ -144,12 +146,12 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                 <span className="flex items-center gap-1">
                   <Star className="size-4 fill-amber-400 text-amber-400" aria-hidden />
                   {model.rating}
-                  <span className="sr-only">out of 5 from</span>
-                  <span>({number(model.reviews)} reviews)</span>
+                  <span className="sr-only">{common("outOf5From")}</span>
+                  <span>{t("reviewsCount", { count: number(model.reviews) })}</span>
                 </span>
                 <span className="flex items-center gap-1">
                   <Download className="size-4" aria-hidden />
-                  {number(model.downloads)} downloads
+                  {t("downloadsCount", { count: number(model.downloads) })}
                 </span>
               </div>
 
@@ -204,7 +206,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                 <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
                   <Star className="size-4 fill-amber-400 text-amber-400" aria-hidden />
                   <span className="font-medium text-foreground">{model.rating}</span>
-                  out of 5 · {number(model.reviews)} reviews
+                  {t("ratingLine", { count: number(model.reviews) })}
                 </p>
               </div>
 
@@ -264,8 +266,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                 </div>
 
                 <p className="mt-1.5 text-xs text-muted-foreground">
-                  {LICENSE_LABELS[model.license]} license, commercial use
-                  included.
+                  {t("commercial", { license: lic(model.license) })}
                 </p>
 
                 {/* The licence picker and the add button are one form, so
@@ -276,7 +277,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                   <input type="hidden" name="slug" value={model.slug} />
 
                   <fieldset>
-                    <legend className="sr-only">Choose a license</legend>
+                    <legend className="sr-only">{t("chooseLicense")}</legend>
                     <ul className="flex flex-col gap-2">
                       {licenses.map((option, index) => (
                         <li key={option.id}>
@@ -291,13 +292,13 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                               className="sr-only"
                             />
                             <span className="flex items-baseline justify-between gap-2">
-                              <span className="text-sm font-medium">{option.name}</span>
+                              <span className="text-sm font-medium">{lic(option.id)}</span>
                               <span className="text-sm font-semibold tabular-nums">
                                 {option.price === 0 ? "Free" : `$${option.price}`}
                               </span>
                             </span>
                             <span className="text-xs text-muted-foreground">
-                              {option.blurb}
+                              {lic(`blurb${option.id === "editorial" ? "Editorial" : option.id === "extended" ? "Extended" : "Royalty"}`)}
                             </span>
                           </label>
                         </li>
@@ -327,9 +328,9 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
 
                 <ul className="mt-5 flex flex-col gap-2 border-t pt-4">
                   {[
-                    `${model.formats.length} file formats included`,
-                    "Free lifetime updates",
-                    "Invoice issued on purchase",
+                    t("formatsIncluded", { count: model.formats.length }),
+                    t("updates"),
+                    t("invoice"),
                   ].map((item) => (
                     <li
                       key={item}
@@ -360,7 +361,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                     </Link>
                     <p className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Star className="size-3 fill-amber-400 text-amber-400" aria-hidden />
-                      {model.rating} · {number(model.downloads)} downloads
+                      {t("ratingDownloads", { rating: model.rating, count: number(model.downloads) })}
                     </p>
                   </div>
                 </div>
@@ -379,7 +380,9 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
           {related.length > 0 && (
             <section className="mt-16">
               <h2 className="text-lg font-semibold tracking-tight">
-                More in {category?.label ?? "this category"}
+                {category
+                  ? t("moreIn", { category: cat(`categories.${category.key}`) })
+                  : t("moreInGeneric")}
               </h2>
               <ul className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
                 {related.map((item) => (

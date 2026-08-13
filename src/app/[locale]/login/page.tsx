@@ -3,13 +3,18 @@ import { getTranslations } from "next-intl/server"
 import Link from "next/link"
 import { ArrowLeft, Check } from "lucide-react"
 
-import { SITE } from "@/lib/data/landing"
 import { Logo } from "@/components/layout/logo"
 import { Thumb } from "@/components/marketplace/thumb"
 import { LoginForm } from "@/components/forms/login-form"
 import { ENABLED_OAUTH_PROVIDERS, SHOW_DEMO_HINT } from "@/lib/auth-config"
 
-export const metadata = { title: "Log in" }
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/login">) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "auth" })
+  return { title: t("logInTitle") }
+}
 
 /**
  * Auth pages deliberately drop the marketplace header and footer: the whole
@@ -17,11 +22,7 @@ export const metadata = { title: "Log in" }
  * wall of exits from it. The logo still links home, so the way out is obvious.
  */
 
-const BENEFITS = [
-  "Royalty-free models, textures and print-ready assets",
-  "Licenses and invoices kept in one place",
-  "Sell your own work and earn on every download",
-]
+const BENEFITS = ["login1", "login2", "login3"]
 
 /**
  * Auth.js redirects provider and callback failures here with `?error=`. Map the
@@ -36,6 +37,8 @@ const AUTH_ERRORS: Record<string, string> = {
 
 export default async function LoginPage({ searchParams }: PageProps<"/[locale]/login">) {
   const t = await getTranslations("auth")
+  const aside = await getTranslations("authAside")
+  const land = await getTranslations("landing")
   const stats = await getMarketplaceStats()
   const { error, next } = await searchParams
 
@@ -69,13 +72,13 @@ export default async function LoginPage({ searchParams }: PageProps<"/[locale]/l
 
         <div className="relative max-w-md">
           <h2 className="text-3xl font-semibold tracking-tight text-balance">
-            {SITE.tagline}
+            {aside("loginTitle")}
           </h2>
           <ul className="mt-8 flex flex-col gap-4">
             {BENEFITS.map((benefit) => (
               <li key={benefit} className="flex items-start gap-3 text-sm text-white/80">
                 <Check className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
-                {benefit}
+                {aside(benefit)}
               </li>
             ))}
           </ul>
@@ -83,9 +86,9 @@ export default async function LoginPage({ searchParams }: PageProps<"/[locale]/l
 
         <dl className="relative flex gap-10">
           {[
-            { value: formatStat(stats.models), label: "3D models" },
-            { value: formatStat(stats.designers), label: "Designers" },
-            { value: formatStat(stats.downloads), label: "Downloads" },
+            { value: formatStat(stats.models), label: land("heroStats.models") },
+            { value: formatStat(stats.designers), label: land("heroStats.designers") },
+            { value: formatStat(stats.downloads), label: land("heroStats.downloads") },
           ].map((stat) => (
             <div key={stat.label}>
               <dt className="text-2xl font-semibold">{stat.value}</dt>
@@ -124,13 +127,13 @@ export default async function LoginPage({ searchParams }: PageProps<"/[locale]/l
         </div>
 
         <p className="mx-auto max-w-sm text-center text-xs text-muted-foreground">
-          By logging in you agree to our{" "}
+          {t("legal")}{" "}
           <Link href="/terms" className="underline hover:text-foreground">
-            Terms
+            {t("terms")}
           </Link>{" "}
           and{" "}
           <Link href="/privacy" className="underline hover:text-foreground">
-            Privacy Policy
+            {t("privacy")}
           </Link>
           .
         </p>

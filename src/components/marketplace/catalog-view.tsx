@@ -41,6 +41,7 @@ export async function CatalogView({
 }) {
   const { items, total, page, pageCount, facets } = result
   const t = await getTranslations("catalog")
+  const s = await getTranslations("sort")
   const filters = (
     <CatalogFilters
       base={base}
@@ -93,7 +94,7 @@ export async function CatalogView({
                         "border-brand bg-brand-muted font-medium text-brand-accent",
                     )}
                   >
-                    {sort.label}
+                    {s(sort.value)}
                   </Link>
                 )
               })}

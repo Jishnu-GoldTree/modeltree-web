@@ -7,7 +7,6 @@ import { Download, MapPin, Package, Receipt, Star } from "lucide-react"
 import { getCurrentUser } from "@/lib/supabase/server"
 
 import { getDesignerStats, getMyPurchases, getProfile } from "@/lib/data/profile"
-import { LICENSE_LABELS } from "@/lib/data/catalog"
 import { getFavoriteModels } from "@/lib/favorites"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
@@ -17,7 +16,13 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
-export const metadata = { title: "Your profile" }
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/profile">) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "profile" })
+  return { title: t("yourProfile") }
+}
 
 const money = (value: number) =>
   value === 0 ? "Free" : `$${value.toLocaleString("en-US")}`
@@ -31,6 +36,7 @@ export default async function ProfilePage() {
   // Everything here now comes from the profiles/orders tables; the demo
   // fixtures only survive as a fallback for the display name.
   const t = await getTranslations("profile")
+  const lic = await getTranslations("license")
   const profile = await getProfile(user_.id)
   const name =
     profile?.fullName ??
@@ -186,7 +192,7 @@ export default async function ProfilePage() {
                         {order.model.title}
                       </Link>
                       <p className="mt-0.5 text-xs text-muted-foreground">
-                        by {order.model.author} · {LICENSE_LABELS[order.licenseCode as keyof typeof LICENSE_LABELS]}
+                        by {order.model.author} · {lic(order.licenseCode)}
                       </p>
                       <p className="mt-1 font-mono text-[11px] text-muted-foreground">
                         {order.reference} · {order.placedOn}

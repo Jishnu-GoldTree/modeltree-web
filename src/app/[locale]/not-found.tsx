@@ -21,6 +21,7 @@ const SUGGESTED = ASSET_CATEGORIES.slice(0, 4)
 
 export default async function NotFound() {
   const t = await getTranslations("notFound")
+  const cat = await getTranslations("landing")
   return (
     <>
       <SiteHeader />
@@ -79,7 +80,7 @@ export default async function NotFound() {
                 >
                   <div className="relative flex w-full items-center justify-between gap-2">
                     <span className="text-sm font-medium text-white drop-shadow">
-                      {category.label}
+                      {cat(`categories.${category.key}`)}
                     </span>
                     <span className="rounded-full bg-black/40 px-2 py-0.5 text-[11px] text-white/85 backdrop-blur">
                       {category.count}

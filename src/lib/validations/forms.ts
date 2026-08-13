@@ -37,17 +37,17 @@ export type LoginValues = z.infer<typeof loginSchema>
  */
 export const PASSWORD_RULES = [
   {
-    label: "At least 8 characters",
+    key: "ruleLength",
     message: "Use at least 8 characters",
     test: (value: string) => value.length >= 8,
   },
   {
-    label: "One letter",
+    key: "ruleLetter",
     message: "Include at least one letter",
     test: (value: string) => /[A-Za-z]/.test(value),
   },
   {
-    label: "One number",
+    key: "ruleNumber",
     message: "Include at least one number",
     test: (value: string) => /[0-9]/.test(value),
   },

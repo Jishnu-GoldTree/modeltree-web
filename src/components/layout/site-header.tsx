@@ -44,7 +44,7 @@ import { SearchForm } from "@/components/forms/search-form"
  * Top-level nav labels come from PRIMARY_NAV, which is data rather than copy.
  * Mapping by href keeps the translation next to the routing instead of
  * duplicating the menu structure into the message catalogs. Dropdown children
- * are catalog terminology and stay in English for now.
+ * carry their own keys under `landing.navChildren`.
  */
 const NAV_KEYS: Record<string, "models" | "printing" | "custom" | "designers"> = {
   "/3d-models": "models",
@@ -55,6 +55,7 @@ const NAV_KEYS: Record<string, "models" | "printing" | "custom" | "designers"> =
 
 export function SiteHeader({ solid = false }: { solid?: boolean }) {
   const t = useTranslations("nav")
+  const nav = useTranslations("landing.navChildren")
   const [scrolled, setScrolled] = useState(false)
   const stuck = solid || scrolled
 
@@ -95,17 +96,17 @@ export function SiteHeader({ solid = false }: { solid?: boolean }) {
                       so a 4px gutter left neighbouring fills visually touching. */}
                   <ul className="grid w-[520px] gap-2 p-2 md:grid-cols-2">
                     {item.children?.map((child) => (
-                      <li key={child.label}>
+                      <li key={child.key}>
                         <NavigationMenuLink asChild>
                           <Link
                             href={child.href}
                             className="block rounded-md p-3 leading-tight no-underline outline-none transition-colors hover:bg-accent focus:bg-accent"
                           >
                             <div className="text-sm font-medium">
-                              {child.label}
+                              {nav(`${child.key}.label`)}
                             </div>
                             <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
-                              {child.description}
+                              {nav(`${child.key}.description`)}
                             </p>
                           </Link>
                         </NavigationMenuLink>
@@ -156,6 +157,7 @@ export function SiteHeader({ solid = false }: { solid?: boolean }) {
 
 function MobileNav() {
   const t = useTranslations("nav")
+  const nav = useTranslations("landing.navChildren")
 
   return (
     <Sheet>
@@ -184,13 +186,13 @@ function MobileNav() {
               </p>
               <ul className="space-y-1">
                 {item.children?.map((child) => (
-                  <li key={child.label}>
+                  <li key={child.key}>
                     <SheetClose asChild>
                       <Link
                         href={child.href}
                         className="block rounded-md px-2 py-1.5 text-sm hover:bg-accent"
                       >
-                        {child.label}
+                        {nav(`${child.key}.label`)}
                       </Link>
                     </SheetClose>
                   </li>

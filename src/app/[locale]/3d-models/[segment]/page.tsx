@@ -10,6 +10,7 @@ import { toParams, toQuery } from "@/lib/data/catalog-params"
 import { getFavoriteSet } from "@/lib/favorites"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
+import { getTranslations } from "next-intl/server"
 import { CatalogView } from "@/components/marketplace/catalog-view"
 
 /**
@@ -23,6 +24,7 @@ import { CatalogView } from "@/components/marketplace/catalog-view"
  */
 
 async function resolve(segment: string) {
+  const t = await getTranslations("segment")
   // Categories come from the database, not the hardcoded ASSET_CATEGORIES list:
   // that list held only asset categories, so /3d-models/jewelry 404'd even
   // though the category exists — and jewellery is the client's core inventory.
@@ -34,8 +36,8 @@ async function resolve(segment: string) {
 
   if (category) {
     return {
-      title: `${category.label} 3D models`,
-      description: `Browse ${category.label.toLowerCase()} models, filtered by format and license.`,
+      title: t("title", { category: category.label }),
+      description: t("description", { category: category.label.toLowerCase() }),
       patch: { category: category.slug } satisfies Partial<CatalogQuery>,
       lockedCategory: category.slug,
     }

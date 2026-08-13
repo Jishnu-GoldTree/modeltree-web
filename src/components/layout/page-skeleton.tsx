@@ -1,3 +1,5 @@
+import { getTranslations } from "next-intl/server"
+
 import { SiteHeader } from "@/components/layout/site-header"
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -14,7 +16,9 @@ import { Skeleton } from "@/components/ui/skeleton"
  * anchoring it under a short skeleton only to push it down a moment later is
  * worse than not drawing it at all.
  */
-export function PageSkeleton({ children }: { children: React.ReactNode }) {
+export async function PageSkeleton({ children }: { children: React.ReactNode }) {
+  const t = await getTranslations("common")
+
   return (
     <>
       <SiteHeader solid />
@@ -22,7 +26,7 @@ export function PageSkeleton({ children }: { children: React.ReactNode }) {
         {/* One live region for the whole fallback. Screen readers announce
             "Loading" once; the shapes below are decorative and stay silent. */}
         <p role="status" className="sr-only">
-          Loading
+          {t("loading")}
         </p>
         <div aria-hidden className="shell py-10">
           {children}

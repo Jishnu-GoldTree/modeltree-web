@@ -108,7 +108,17 @@
     "privacy": "Privacy Policy",
     "badCredentials": "That email and password don't match an account.",
     "showPassword": "Show password",
-    "hidePassword": "Hide password"
+    "hidePassword": "Hide password",
+    "demoTitle": "Demo accounts",
+    "demoBuyer": "Buyer",
+    "demoDesigner": "Designer",
+    "demoPassword": "Password",
+    "ruleLength": "At least 8 characters",
+    "ruleLetter": "One letter",
+    "ruleNumber": "One number",
+    "ruleMet": "met",
+    "ruleNotMet": "not met",
+    "legal": "By logging in you agree to our"
   },
   "product": {
     "by": "by",
@@ -138,7 +148,14 @@
     "invoice": "Invoice issued on purchase",
     "checked": "Every model is checked against our publishing guidelines before it goes on sale.",
     "commercial": "{license} license, commercial use included.",
-    "daysAgo": "{days} days ago"
+    "daysAgo": "{days} days ago",
+    "moreInGeneric": "More in this category",
+    "reviewsCount": "({count} reviews)",
+    "downloadsCount": "{count} downloads",
+    "ratingLine": "out of 5 · {count} reviews",
+    "ratingDownloads": "{rating} · {count} downloads",
+    "chooseLicense": "Choose a license",
+    "formatsIncluded": "{count} file formats included"
   },
   "profile": {
     "editProfile": "Edit profile",
@@ -169,7 +186,8 @@
     "accountType": "Account type",
     "saveChanges": "Save changes",
     "saved": "Profile saved.",
-    "dashboard": "Designer dashboard"
+    "dashboard": "Designer dashboard",
+    "yourProfile": "Your profile"
   },
   "sell": {
     "title": "Turn the models you've already made into income",
@@ -195,7 +213,13 @@
     "step3Title": "Get paid monthly",
     "step3Body": "Licensing, invoicing and payouts are handled for you.",
     "modelsStat": "Models in the catalog",
-    "designersStat": "Designers selling"
+    "designersStat": "Designers selling",
+    "term1": "Keep publishing elsewhere; nothing here is exclusive",
+    "term2": "Set your own price, or give a model away to build an audience",
+    "term3": "Withdraw once your balance clears the payout minimum",
+    "term0": "No listing fees and no subscription: you pay a commission only when a model sells",
+    "metaTitle": "Sell your 3D models",
+    "metaDescription": "Publish your 3D models on ModelTree. No listing fees and no subscription: you pay a commission only when a model sells."
   },
   "dashboard": {
     "title": "Designer dashboard",
@@ -217,7 +241,9 @@
     "newsletter": "Weekly drops in your inbox",
     "newsletterHint": "New collections, free assets and designer spotlights.",
     "subscribe": "Subscribe",
-    "rights": "© {year} MODELTREE. All rights reserved."
+    "rights": "© {year} MODELTREE. All rights reserved.",
+    "subscribed": "You're subscribed. Watch your inbox for weekly drops.",
+    "emailLabel": "Email address"
   },
   "promo": {
     "badge": "Monthly bundle",
@@ -263,5 +289,365 @@
     "signInFailed": "Check your email and password",
     "signedOut": "Signed out",
     "subscribed": "You're subscribed"
+  },
+  "landing": {
+    "navChildren": {
+      "allModels": {
+        "label": "All 3D models",
+        "description": "Browse the full catalog"
+      },
+      "freeModels": {
+        "label": "Free 3D models",
+        "description": "Zero-cost assets with commercial licensing"
+      },
+      "textures": {
+        "label": "PBR textures",
+        "description": "Scanned and procedural material libraries"
+      },
+      "rigged": {
+        "label": "Rigged & animated",
+        "description": "Production-ready characters and creatures"
+      },
+      "lowPoly": {
+        "label": "Low poly",
+        "description": "Game-optimized meshes under 10k triangles"
+      },
+      "scanned": {
+        "label": "Scanned models",
+        "description": "Photogrammetry captures of real-world objects"
+      },
+      "printReady": {
+        "label": "Print-ready models",
+        "description": "Watertight STL and 3MF files, ready to slice"
+      },
+      "freeStl": {
+        "label": "Free STL files",
+        "description": "Community-shared prints at no cost"
+      },
+      "miniatures": {
+        "label": "Miniatures & tabletop",
+        "description": "Supported and pre-supported minis"
+      },
+      "functional": {
+        "label": "Functional parts",
+        "description": "Brackets, jigs, enclosures and spares"
+      },
+      "modelry": {
+        "label": "Modelry",
+        "description": "Full-service 3D model creation, managed end to end"
+      },
+      "projects": {
+        "label": "3D Projects",
+        "description": "Post a brief and hire a designer directly"
+      },
+      "enterprise": {
+        "label": "Enterprise solutions",
+        "description": "Team seats, invoicing and extended licensing"
+      },
+      "startSelling": {
+        "label": "Start selling",
+        "description": "Upload your models and earn on every sale"
+      },
+      "dashboard": {
+        "label": "Designer dashboard",
+        "description": "Track sales, payouts and buyer messages"
+      },
+      "guidelines": {
+        "label": "Publishing guidelines",
+        "description": "Quality bar, licensing and file requirements"
+      }
+    },
+    "heroFilters": {
+      "trending": "Trending",
+      "blender": "Blender",
+      "textures": "PBR textures",
+      "rigged": "Rigged",
+      "animated": "Animated",
+      "free": "Free models",
+      "lowPoly": "Low poly"
+    },
+    "heroStats": {
+      "models": "3D models",
+      "designers": "Designers",
+      "downloads": "Downloads"
+    },
+    "explore": {
+      "assetsTitle": "Explore 3D assets",
+      "assetsDescription": "Find the perfect 3D asset for any search or style with our curated themed packs.",
+      "assetsAction": "Browse all 3D models",
+      "printTitle": "Explore 3D print ready models",
+      "printDescription": "Find the perfect 3D asset for any search or style with our curated themed packs.",
+      "printAction": "Browse all 3D print models",
+      "showAll": "Show all categories"
+    },
+    "assetTabs": {
+      "trending": "Trending",
+      "business": "Business",
+      "deliveryRobot": "Delivery robot",
+      "cinema": "Cinema",
+      "houseExterior": "House exterior",
+      "comicBook": "Comic book",
+      "store": "Store",
+      "restaurant": "Restaurant"
+    },
+    "printTabs": {
+      "trending": "Trending",
+      "dndTools": "D&D tools",
+      "jewelryMold": "Jewelry mold",
+      "europe": "Europe",
+      "cars": "Cars",
+      "batteries": "Batteries",
+      "anime": "Anime",
+      "vintage": "Vintage",
+      "toyHolders": "Toy holders"
+    },
+    "categories": {
+      "exterior": "Exterior",
+      "car": "Car",
+      "aircraft": "Aircraft",
+      "furniture": "Furniture",
+      "military": "Military",
+      "character": "Character",
+      "animal": "Animal",
+      "plant": "Plant",
+      "food": "Food",
+      "art": "Art",
+      "gamesToys": "Games & Toys",
+      "jewelry": "Jewelry",
+      "miniatures": "Miniatures",
+      "hobbyDiy": "Hobby & DIY",
+      "fashion": "Fashion",
+      "buildings": "Buildings",
+      "house": "House",
+      "tools": "Tools & Organizers"
+    },
+    "collections": {
+      "viewAll": "View all",
+      "cta": "Go to collection",
+      "modelsKicker": "Discover Curated 3D Model Collections",
+      "modelsBlurb": "Explore curated collections of 3D models hand-picked for fast discovery and better landing pages.",
+      "modelsTitle": "Rigged 3D Characters for Games",
+      "modelsDescription": "A curated selection of rigged 3D character models designed for use in games. These assets support different rig types and standard skeletons, so they drop straight into your engine.",
+      "printKicker": "Discover Curated 3D Print Collections",
+      "printBlurb": "Targeted collections of 3D print-ready models to support campaigns and seasonal promos.",
+      "printTitle": "RC & Model Car Parts",
+      "printDescription": "Browse designs and parts applied for cars, print-ready wheels, body shells, chassis components and custom upgrades."
+    },
+    "designer": {
+      "section": "Featured Designer",
+      "browseAll": "Browse all designers",
+      "bio": "Character and creature specialists producing game-ready, fully rigged assets with consistent topology and PBR texture sets.",
+      "models": "Models",
+      "since": "Selling since",
+      "reviews": "({count} reviews)",
+      "viewStorefront": "View storefront",
+      "tagCharacters": "Characters",
+      "tagRigged": "Rigged",
+      "tagGameReady": "Game-ready",
+      "tagPbr": "PBR",
+      "work1": "Sci-fi Squad Pack",
+      "work2": "Medieval Villagers",
+      "work3": "Stylized Heroes Vol. 2",
+      "work4": "Creature Anatomy Kit"
+    },
+    "browse": {
+      "typeHeading": "Browse by Type",
+      "typeBlurb": "Find content based on the type of asset your project needs.",
+      "formatHeading": "Browse by Format",
+      "formatBlurb": "Find 3D models designed for your preferred software.",
+      "saleTitle": "On sale",
+      "saleBody": "Discounted assets from designers running promotions this week.",
+      "saleCta": "Browse deals",
+      "freeTitle": "Free models",
+      "freeBody": "Thousands of royalty-free assets you can download right now.",
+      "freeCta": "Get free models",
+      "animated": "Animated",
+      "rigged": "Rigged",
+      "pbr": "PBR",
+      "lowPoly": "Low poly",
+      "printModels": "3D print models",
+      "textures": "Textures",
+      "pbrTextures": "PBR Textures",
+      "scripts": "Scripts & Plugins",
+      "scanned": "Scanned",
+      "vr": "VR models"
+    },
+    "trending": {
+      "title": "Trending 3D models",
+      "description": "Discover the most popular 3D models and assets trending right now.",
+      "action": "Browse all models"
+    },
+    "valueProps": {
+      "title": "What sets {name} apart?",
+      "aTitle": "Production-ready 3D models, ready to license",
+      "aBody": "MODELTREE is a hub for using and contributing to the world of 3D design. Whether you're seeking assets for your projects or offering your own creations, MODELTREE provides the platform and community to make it happen.",
+      "bTitle": "Clear pricing, no surprises",
+      "bBody": "Every model shows its licence and price up front, so you can budget a project without requesting a quote or negotiating terms.",
+      "cTitle": "Curated Quality Standard",
+      "cBody": "No more guesswork. The Quality Standard highlights the key technical characteristics of every file, including PBR textures, making it easier and faster to find the right models."
+    },
+    "custom": {
+      "badge": "Custom 3D solutions",
+      "title": "Need something unique? Let's create it",
+      "body": "Two ways to get a model that doesn't exist yet: hand the whole brief to our production team, or hire a designer directly.",
+      "why": "Why {name}",
+      "modelryName": "Modelry",
+      "modelrySubtitle": "Full-service 3D model creation",
+      "modelryCta": "Get a quote",
+      "modelryStep1Title": "Upload images",
+      "modelryStep1Body": "Send us reference images or product links. No technical expertise needed.",
+      "modelryStep2Title": "3D Model Creation",
+      "modelryStep2Body": "We handle modeling, asset production, designer selection and in-house quality assurance.",
+      "modelryStep3Title": "Approve and Use",
+      "modelryStep3Body": "Review and accept the final 3D model and images, ready for publishing.",
+      "modelryBenefit1": "End-to-end service, no vendor juggling",
+      "modelryBenefit2": "Consistent quality across every batch",
+      "modelryBenefit3": "Fixed pricing, no hourly surprises",
+      "modelryBenefit4": "Scalable production for thousands of SKUs",
+      "projectsName": "3D Projects",
+      "projectsSubtitle": "Work directly with a designer",
+      "projectsCta": "Post a Project",
+      "projectsStep1Title": "Create a Listing",
+      "projectsStep1Body": "Describe your project with requirements, budget and timeline.",
+      "projectsStep2Title": "Select a Designer",
+      "projectsStep2Body": "Browse designers who applied for your job, compare their portfolios and offered prices, then choose who to work with.",
+      "projectsStep3Title": "Get Your Model",
+      "projectsStep3Body": "Collaborate directly with the designer to finalize your 3D model.",
+      "projectsBenefit1": "Direct collaboration: talk to the designer",
+      "projectsBenefit2": "Flexible iterations: adjust designs as the brief evolves",
+      "projectsBenefit3": "Best-fit creative projects: ideal for custom or one-off work"
+    },
+    "business": {
+      "badge": "Solution for enterprise",
+      "title": "{name} Business Account",
+      "body": "Production-ready assets from verified designers, licensed for your whole team. Review the models you need instantly and move a project from concept to completion without procurement overhead.",
+      "cta": "Apply for a Business Account",
+      "aTitle": "Easy Asset Sharing Across Teams",
+      "aBody": "Share 3D models with your team without the usual hassle. Store an asset once and it's available to everyone who needs it, with no duplicate purchases.",
+      "bTitle": "Streamlined Payments",
+      "bBody": "Make 3D asset purchases simpler with flexible billing options. Consolidate invoicing and stop chasing receipts, whether it's one purchase or a hundred.",
+      "cTitle": "Clear Licensing Terms",
+      "cBody": "We offer a range of flexible licensing options to suit your needs. Whether you need a simple license for personal use or a more comprehensive one for commercial projects, we have you covered."
+    },
+    "footer": {
+      "company": "Company",
+      "marketplace": "Marketplace",
+      "forDesigners": "For designers",
+      "support": "Support",
+      "about": "About us",
+      "careers": "Careers",
+      "press": "Press",
+      "blog": "Blog",
+      "contact": "Contact",
+      "models": "3D models",
+      "printModels": "3D print models",
+      "textures": "Textures",
+      "freeModels": "Free models",
+      "collections": "Collections",
+      "startSelling": "Start selling",
+      "royalties": "Royalty rates",
+      "guidelines": "Publishing guidelines",
+      "forum": "Designer forum",
+      "challenges": "Challenges",
+      "help": "Help center",
+      "licensing": "Licensing",
+      "refunds": "Refund policy",
+      "report": "Report content",
+      "status": "System status",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "cookies": "Cookies",
+      "licensingLink": "Licensing"
+    }
+  },
+  "site": {
+    "tagline": "40,000 jewellery models, cast-ready and yours to license",
+    "description": "A jewellery-first 3D marketplace from GoldTree. Rings, pendants and settings modelled in-house for casting and print, plus a wider catalog of production-ready assets, or commission exactly what you need."
+  },
+  "listing": {
+    "title": "Title",
+    "titlePlaceholder": "Rally Car (Rigged)",
+    "description": "Description",
+    "descriptionPlaceholder": "Topology, texture sets, what's included, what it's good for.",
+    "category": "Category",
+    "choose": "Choose a category",
+    "price": "Price (USD)",
+    "priceHint": "Leave at 0 to give it away.",
+    "license": "License",
+    "formats": "File formats included",
+    "polygons": "Polygon count",
+    "features": "Features",
+    "rigged": "Rigged",
+    "animated": "Animated",
+    "pbr": "PBR materials",
+    "publish": "Publish",
+    "saveDraft": "Save as draft",
+    "newTitle": "New listing",
+    "newBody": "Describe the model and set a price. You can save a draft and come back. Nothing is visible to buyers until you publish."
+  },
+  "profileForm": {
+    "name": "Name",
+    "handle": "Handle",
+    "handleHint": "Your public storefront address. Changing it breaks existing links.",
+    "accountType": "Account type",
+    "buyer": "Buyer",
+    "designer": "Designer",
+    "buyerHint": "Browse and license models",
+    "designerHint": "Publish and earn royalties",
+    "location": "Location",
+    "locationPlaceholder": "Tel Aviv, Israel",
+    "bio": "Bio",
+    "bioPlaceholder": "What you make, and who it's for.",
+    "bioHint": "Shown on your public storefront. Up to 500 characters.",
+    "save": "Save changes",
+    "handlePrefix": "modeltree.com/designers/"
+  },
+  "searchPage": {
+    "title": "Search 3D models",
+    "results": "Results for “{query}”",
+    "stubTitle": "Catalog search isn't wired up yet",
+    "stubBody": "This route is a stub so search has a destination. Results land here once the catalog search API exists."
+  },
+  "common": {
+    "loading": "Loading",
+    "by": "by",
+    "outOf5From": "out of 5 from",
+    "viewImage": "View image {n} of {total}",
+    "badgeTopRated": "Top rated",
+    "badgeAssets": "{count} assets",
+    "badgeFree": "Free",
+    "badgeEditors": "Editor's pick"
+  },
+  "license": {
+    "royalty-free": "Royalty-free",
+    "editorial": "Editorial use",
+    "extended": "Extended commercial",
+    "blurbRoyalty": "One seat. Commercial use in games, film and visualisation.",
+    "blurbEditorial": "Editorial and non-commercial use. One seat.",
+    "blurbExtended": "Unlimited seats, resale in end products, and merchandising."
+  },
+  "sort": {
+    "label": "Sort",
+    "trending": "Trending",
+    "newest": "Newest",
+    "price-asc": "Price: low to high",
+    "price-desc": "Price: high to low",
+    "rating": "Top rated"
+  },
+  "segment": {
+    "title": "{category} 3D models",
+    "description": "Browse {category} models, filtered by format and license."
+  },
+  "authAside": {
+    "loginTitle": "40,000 jewellery models, cast-ready and yours to license",
+    "login1": "Royalty-free models, textures and print-ready assets",
+    "login2": "Licenses and invoices kept in one place",
+    "login3": "Sell your own work and earn on every download",
+    "signupTitle": "Turn your 3D work into revenue",
+    "signup1": "Publish unlimited models and earn on every sale",
+    "signup2": "Reach studios, architects and product teams browsing the catalog",
+    "signup3": "Licensing, invoicing and payouts handled for you",
+    "asideTitle": "Turn your 3D work into revenue",
+    "freeToJoin": "Free to join. No listing fees and no subscription: you only pay a commission when a model sells."
   }
 }

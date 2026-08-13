@@ -5,12 +5,14 @@ import { cn } from "@/lib/utils"
 import { UserText } from "@/components/user-text"
 import { FavoriteButton } from "@/components/marketplace/favorite-button"
 import type { ModelCard as ModelCardData } from "@/lib/data/landing"
+import { useTranslations } from "next-intl"
+
 import { Thumb } from "@/components/marketplace/thumb"
 import { tempPreview } from "@/lib/temp-previews"
 import { Badge } from "@/components/ui/badge"
 
-function formatPrice(price: ModelCardData["price"]) {
-  return price === "free" ? "Free" : `$${price}`
+function formatPrice(price: ModelCardData["price"], free: string) {
+  return price === "free" ? free : `$${price}`
 }
 
 export function ModelCard({
@@ -28,6 +30,8 @@ export function ModelCard({
    */
   favorited?: boolean
 }) {
+  const t = useTranslations("common")
+
   return (
     <article
       className={cn(
@@ -43,7 +47,7 @@ export function ModelCard({
       >
         {model.badge && (
           <Badge className="absolute top-2.5 start-2.5 border-0 bg-black/55 text-white backdrop-blur">
-            {model.badge}
+            {t(model.badge, { count: 147 })}
           </Badge>
         )}
       </Thumb>
@@ -77,7 +81,7 @@ export function ModelCard({
         </h3>
 
         <p className="mt-1 text-xs text-muted-foreground">
-          by <UserText>{model.author}</UserText>
+          {t("by")} <UserText>{model.author}</UserText>
         </p>
 
         <div className="mt-auto flex items-center justify-between gap-2 pt-2.5">
@@ -87,12 +91,12 @@ export function ModelCard({
               model.price === "free" && "text-brand-accent"
             )}
           >
-            {formatPrice(model.price)}
+            {formatPrice(model.price, t("badgeFree"))}
           </span>
           <span className="flex items-center gap-1 text-xs text-muted-foreground">
             <Star className="size-3.5 fill-amber-400 text-amber-400" aria-hidden />
             {model.rating}
-            <span className="sr-only">out of 5 from</span>({model.reviews})
+            <span className="sr-only">{t("outOf5From")}</span>({model.reviews})
           </span>
         </div>
 

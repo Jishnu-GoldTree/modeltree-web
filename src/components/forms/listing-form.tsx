@@ -27,7 +27,7 @@ function FieldError({ message }: { message?: string }) {
   return <p className="text-xs text-destructive">{message}</p>
 }
 
-function SubmitButtons() {
+function SubmitButtons({ publish, draft }: { publish: string; draft: string }) {
   // Pending state has to come from a child of <form>, which is what
   // useFormStatus requires.
   const { pending } = useFormStatus()
@@ -41,10 +41,10 @@ function SubmitButtons() {
         className="h-10 bg-brand text-brand-foreground hover:bg-brand/85"
       >
         {pending && <Loader2 className="size-4 animate-spin" aria-hidden />}
-        Publish
+        {publish}
       </Button>
       <Button type="submit" name="publish" value="0" variant="outline" disabled={pending} className="h-10">
-        Save as draft
+        {draft}
       </Button>
     </div>
   )
@@ -58,6 +58,7 @@ export function ListingForm({
   licenses: { code: string; label: string; blurb: string }[]
 }) {
   const feedback = useTranslations("toast")
+  const t = useTranslations("listing")
   const [state, formAction] = useActionState<ListingState, FormData>(createListing, {})
 
   // Only the failure path needs a toast here — a successful create redirects to
@@ -88,18 +89,18 @@ export function ListingForm({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="title">Title</Label>
-        <Input id="title" name="title" placeholder="Rally Car (Rigged)" className="h-10" required />
+        <Label htmlFor="title">{t("title")}</Label>
+        <Input id="title" name="title" placeholder={t("titlePlaceholder")} className="h-10" required />
         <FieldError message={state.fieldErrors?.title} />
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="description">Description</Label>
+        <Label htmlFor="description">{t("description")}</Label>
         <textarea
           id="description"
           name="description"
           rows={5}
-          placeholder="Topology, texture sets, what's included, what it's good for."
+          placeholder={t("descriptionPlaceholder")}
           className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           required
         />
@@ -112,7 +113,7 @@ export function ListingForm({
 
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="categoryId">Category</Label>
+          <Label htmlFor="categoryId">{t("category")}</Label>
           <select
             id="categoryId"
             name="categoryId"
@@ -139,7 +140,7 @@ export function ListingForm({
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="price">Price (USD)</Label>
+          <Label htmlFor="price">{t("price")}</Label>
           <Input
             id="price"
             name="price"
@@ -149,13 +150,13 @@ export function ListingForm({
             defaultValue={0}
             className="h-10"
           />
-          <p className="text-xs text-muted-foreground">Leave at 0 to give it away.</p>
+          <p className="text-xs text-muted-foreground">{t("priceHint")}</p>
           <FieldError message={state.fieldErrors?.price} />
         </div>
       </div>
 
       <fieldset className="flex flex-col gap-1.5">
-        <legend className="text-sm font-medium">License</legend>
+        <legend className="text-sm font-medium">{t("license")}</legend>
         <div className="mt-1 grid gap-2 sm:grid-cols-3">
           {licenses.map((l, i) => (
             <label
@@ -181,7 +182,7 @@ export function ListingForm({
       </fieldset>
 
       <fieldset className="flex flex-col gap-1.5">
-        <legend className="text-sm font-medium">File formats included</legend>
+        <legend className="text-sm font-medium">{t("formats")}</legend>
         <div className="mt-1 flex flex-wrap gap-2">
           {FORMATS.map((f) => (
             <label
@@ -202,13 +203,13 @@ export function ListingForm({
 
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="polygons">Polygon count</Label>
+          <Label htmlFor="polygons">{t("polygons")}</Label>
           <Input id="polygons" name="polygons" type="number" min={0} placeholder="24000" className="h-10" />
           <FieldError message={state.fieldErrors?.polygons} />
         </div>
 
         <fieldset className="flex flex-col gap-2">
-          <legend className="mb-1 text-sm font-medium">Features</legend>
+          <legend className="mb-1 text-sm font-medium">{t("features")}</legend>
           {[
             { name: "rigged", label: "Rigged" },
             { name: "animated", label: "Animated" },
@@ -232,7 +233,7 @@ export function ListingForm({
         once previews are generated and the files pass checks.
       </p>
 
-      <SubmitButtons />
+      <SubmitButtons publish={t("publish")} draft={t("saveDraft")} />
     </form>
   )
 }

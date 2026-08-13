@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import Image from "next/image"
 
 import { cn } from "@/lib/utils"
@@ -19,6 +20,7 @@ export function ProductGallery({
   images: readonly string[]
   title: string
 }) {
+  const t = useTranslations("common")
   const [active, setActive] = useState(0)
 
   return (
@@ -41,7 +43,7 @@ export function ProductGallery({
               <button
                 type="button"
                 onClick={() => setActive(i)}
-                aria-label={`View image ${i + 1} of ${images.length}`}
+                aria-label={t("viewImage", { n: i + 1, total: images.length })}
                 aria-pressed={i === active}
                 className={cn(
                   "relative block aspect-4/3 w-full overflow-hidden rounded-lg border bg-ink outline-none transition-colors",

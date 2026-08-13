@@ -6,10 +6,10 @@ import { toParams, toQuery } from "@/lib/data/catalog-params"
 import { getTranslations, setRequestLocale } from "next-intl/server"
 import { getFavoriteSet } from "@/lib/favorites"
 
-export const metadata = {
-  title: "3D models",
-  description:
-    "Browse royalty-free 3D models by category, file format and license.",
+export async function generateMetadata({ params }: PageProps<"/[locale]/3d-models">) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "catalog" })
+  return { title: t("title"), description: t("description") }
 }
 
 export default async function ModelsPage({

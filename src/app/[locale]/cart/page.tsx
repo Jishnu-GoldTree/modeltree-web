@@ -10,13 +10,20 @@ import { Thumb } from "@/components/marketplace/thumb"
 import { Button } from "@/components/ui/button"
 import { getTranslations } from "next-intl/server"
 
-export const metadata = { title: "Cart" }
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/cart">) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "cart" })
+  return { title: t("title") }
+}
 
 const money = (value: number) =>
   value === 0 ? "Free" : `$${value.toLocaleString("en-US")}`
 
 export default async function CartPage() {
   const t = await getTranslations("cart")
+  const lic = await getTranslations("license")
   const { lines, subtotal, itemCount, total } = await getCart()
   const optionsBySlug = new Map(
     await Promise.all(
@@ -106,7 +113,7 @@ export default async function CartPage() {
                               >
                                 {options.map((option) => (
                                   <option key={option.id} value={option.id}>
-                                    {option.name} ({money(option.price)})
+                                    {lic(option.id)} ({money(option.price)})
                                   </option>
                                 ))}
                               </select>

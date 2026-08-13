@@ -1,7 +1,9 @@
 import { formatStat, getMarketplaceStats } from "@/lib/data/stats"
 import Link from "next/link"
 
-import { HERO_FILTERS, SITE } from "@/lib/data/landing"
+import { getTranslations } from "next-intl/server"
+
+import { HERO_FILTERS } from "@/lib/data/landing"
 import { SearchForm } from "@/components/forms/search-form"
 
 /**
@@ -52,16 +54,18 @@ function HeroBackdrop() {
 
 export async function Hero() {
   const stats = await getMarketplaceStats()
+  const t = await getTranslations("landing")
+  const site = await getTranslations("site")
   return (
     <section className="relative isolate pt-16">
       <HeroBackdrop />
 
       <div className="shell relative flex flex-col items-center pt-16 pb-14 text-center sm:pt-24 sm:pb-20">
         <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl">
-          {SITE.tagline}
+          {site("tagline")}
         </h1>
         <p className="mt-4 max-w-xl text-sm text-pretty text-white/70 sm:text-base">
-          {SITE.description}
+          {site("description")}
         </p>
 
         <div className="mt-8 w-full max-w-2xl">
@@ -70,12 +74,12 @@ export async function Hero() {
 
         <ul className="no-scrollbar mt-6 flex max-w-full items-center gap-2 overflow-x-auto pb-1">
           {HERO_FILTERS.map((filter) => (
-            <li key={filter.label}>
+            <li key={filter.key}>
               <Link
                 href={filter.href}
                 className="inline-flex shrink-0 items-center rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-sm text-white/85 whitespace-nowrap backdrop-blur transition-colors hover:border-brand/60 hover:bg-white/10 hover:text-white"
               >
-                {filter.label}
+                {t(`heroFilters.${filter.key}`)}
               </Link>
             </li>
           ))}
@@ -83,9 +87,9 @@ export async function Hero() {
 
         <dl className="mt-10 grid grid-cols-3 gap-6 text-white sm:gap-12">
           {[
-            { value: formatStat(stats.models), label: "3D models" },
-            { value: formatStat(stats.designers), label: "Designers" },
-            { value: formatStat(stats.downloads), label: "Downloads" },
+            { value: formatStat(stats.models), label: t("heroStats.models") },
+            { value: formatStat(stats.designers), label: t("heroStats.designers") },
+            { value: formatStat(stats.downloads), label: t("heroStats.downloads") },
           ].map((stat) => (
             <div key={stat.label}>
               <dt className="sr-only">{stat.label}</dt>

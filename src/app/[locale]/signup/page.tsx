@@ -7,7 +7,13 @@ import { Thumb } from "@/components/marketplace/thumb"
 import { SignupForm } from "@/components/forms/signup-form"
 import { ENABLED_OAUTH_PROVIDERS } from "@/lib/auth-config"
 
-export const metadata = { title: "Create an account" }
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/signup">) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "auth" })
+  return { title: t("signUpTitle") }
+}
 
 /**
  * Mirrors /login: same split layout and same reasons for dropping the site
@@ -15,14 +21,11 @@ export const metadata = { title: "Create an account" }
  * convincing — buyers can browse without an account at all.
  */
 
-const BENEFITS = [
-  "Publish unlimited models and earn on every sale",
-  "Reach studios, architects and product teams browsing the catalog",
-  "Licensing, invoicing and payouts handled for you",
-]
+const BENEFITS = ["signup1", "signup2", "signup3"]
 
 export default async function SignupPage() {
   const t = await getTranslations("auth")
+  const aside = await getTranslations("authAside")
   return (
     <main className="grid min-h-svh lg:grid-cols-2">
       <aside className="relative hidden flex-col justify-between overflow-hidden bg-ink p-10 text-white lg:flex">
@@ -37,7 +40,7 @@ export default async function SignupPage() {
 
         <div className="relative max-w-md">
           <h2 className="text-3xl font-semibold tracking-tight text-balance">
-            Turn your 3D work into revenue
+            {aside("asideTitle")}
           </h2>
           <ul className="mt-8 flex flex-col gap-4">
             {BENEFITS.map((benefit) => (
@@ -46,15 +49,14 @@ export default async function SignupPage() {
                 className="flex items-start gap-3 text-sm text-white/80"
               >
                 <Check className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
-                {benefit}
+                {aside(benefit)}
               </li>
             ))}
           </ul>
         </div>
 
         <p className="relative max-w-md text-sm text-white/60">
-          Free to join. No listing fees and no subscription: you only pay a
-          commission when a model sells.
+          {aside("freeToJoin")}
         </p>
       </aside>
 

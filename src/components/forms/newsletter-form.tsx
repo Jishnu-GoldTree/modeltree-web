@@ -20,6 +20,7 @@ import {
 
 export function NewsletterForm() {
   const feedback = useTranslations("toast")
+  const t = useTranslations("footer")
   const [done, setDone] = useState(false)
   const form = useForm<NewsletterValues>({
     resolver: zodResolver(newsletterSchema),
@@ -38,7 +39,7 @@ export function NewsletterForm() {
     return (
       <p className="flex items-center gap-2 text-sm text-brand">
         <Check className="size-4" aria-hidden />
-        You&apos;re subscribed. Watch your inbox for weekly drops.
+        {t("subscribed")}
       </p>
     )
   }
@@ -60,7 +61,7 @@ export function NewsletterForm() {
                     {...field}
                     type="email"
                     autoComplete="email"
-                    aria-label="Email address"
+                    aria-label={t("emailLabel")}
                     placeholder="you@studio.com"
                     className="h-10 border-white/15 bg-white/5 text-white placeholder:text-white/40"
                   />
@@ -73,7 +74,7 @@ export function NewsletterForm() {
                   {form.formState.isSubmitting && (
                     <Loader2 className="size-4 animate-spin" aria-hidden />
                   )}
-                  Subscribe
+                  {t("subscribe")}
                 </Button>
               </div>
               <FormMessage className="text-xs" />

@@ -17,18 +17,18 @@ import { Button } from "@/components/ui/button"
 const EXAMPLE_SALE = 100
 const COMMISSION_RATE = 0.2
 
-export const metadata = {
-  title: "Sell your 3D models",
-  description:
-    "Publish your 3D models on ModelTree. No listing fees and no subscription: you pay a commission only when a model sells.",
+export async function generateMetadata({ params }: PageProps<"/[locale]/sell">) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "sell" })
+  return { title: t("metaTitle"), description: t("metaDescription") }
 }
 
 
 const TERMS = [
-  "No listing fees and no subscription: you pay a commission only when a model sells",
-  "Keep publishing elsewhere; nothing here is exclusive",
-  "Set your own price, or give a model away to build an audience",
-  "Withdraw once your balance passes $50",
+  "term0",
+  "term1",
+  "term2",
+  "term3",
 ]
 
 export default async function SellPage() {
@@ -115,7 +115,7 @@ export default async function SellPage() {
                 {TERMS.map((term) => (
                   <li key={term} className="flex items-start gap-2.5 text-sm">
                     <Check className="mt-0.5 size-4 shrink-0 text-brand-accent" aria-hidden />
-                    {term}
+                    {t(term)}
                   </li>
                 ))}
               </ul>

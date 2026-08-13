@@ -38,18 +38,8 @@ import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation";
 
 const ACCOUNT_OPTIONS = [
-  {
-    value: "buyer",
-    label: "I'm buying",
-    hint: "Browse and license models",
-    Icon: ShoppingBag,
-  },
-  {
-    value: "designer",
-    label: "I'm selling",
-    hint: "Publish and earn royalties",
-    Icon: Upload,
-  },
+  { value: "buyer", labelKey: "buying", hintKey: "buyingHint", Icon: ShoppingBag },
+  { value: "designer", labelKey: "selling", hintKey: "sellingHint", Icon: Upload },
 ] as const;
 
 export function SignupForm({
@@ -181,10 +171,10 @@ export function SignupForm({
                           aria-hidden
                         />
                         <span className="text-sm font-medium">
-                          {option.label}
+                          {t(option.labelKey)}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          {option.hint}
+                          {t(option.hintKey)}
                         </span>
                       </label>
                     ))}
@@ -277,7 +267,7 @@ export function SignupForm({
                     const met = rule.test(password);
                     return (
                       <li
-                        key={rule.label}
+                        key={rule.key}
                         className={cn(
                           "flex items-center gap-1.5 text-xs",
                           met
@@ -291,9 +281,9 @@ export function SignupForm({
                           className={cn("size-3.5", !met && "opacity-40")}
                           aria-hidden
                         />
-                        {rule.label}
+                        {t(rule.key)}
                         <span className="sr-only">
-                          {met ? "met" : "not met"}
+                          {met ? t("ruleMet") : t("ruleNotMet")}
                         </span>
                       </li>
                     );
@@ -330,14 +320,14 @@ export function SignupForm({
                       href="/terms"
                       className="text-brand-accent hover:underline"
                     >
-                      Terms of Service
+                      {t("terms")}
                     </Link>{" "}
                     and{" "}
                     <Link
                       href="/privacy"
                       className="text-brand-accent hover:underline"
                     >
-                      Privacy Policy
+                      {t("privacy")}
                     </Link>
                   </Label>
                 </div>

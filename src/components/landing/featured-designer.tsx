@@ -1,6 +1,8 @@
 import Link from "next/link"
 import { Star } from "lucide-react"
 
+import { useTranslations } from "next-intl"
+
 import { FEATURED_DESIGNER } from "@/lib/data/landing"
 import { Thumb } from "@/components/marketplace/thumb"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -9,13 +11,14 @@ import { Button } from "@/components/ui/button"
 import { SectionHeading } from "@/components/landing/section-heading"
 
 export function FeaturedDesigner() {
+  const t = useTranslations("landing.designer")
   const designer = FEATURED_DESIGNER
 
   return (
     <section className="shell">
       <SectionHeading
-        title="Featured Designer"
-        action={{ label: "Browse all designers", href: "/designers" }}
+        title={t("section")}
+        action={{ label: t("browseAll"), href: "/designers" }}
       />
 
       <div className="mt-6 grid gap-6 rounded-2xl border bg-card p-6 lg:grid-cols-[280px_1fr]">
@@ -42,21 +45,21 @@ export function FeaturedDesigner() {
             </div>
             <span className="text-sm font-medium">{designer.rating}</span>
             <span className="text-sm text-muted-foreground">
-              ({designer.reviews.toLocaleString()} reviews)
+              {t("reviews", { count: designer.reviews.toLocaleString() })}
             </span>
           </div>
 
           <p className="mt-4 text-sm text-pretty text-muted-foreground">
-            {designer.bio}
+            {t("bio")}
           </p>
 
           <dl className="mt-4 flex gap-6 text-sm">
             <div>
-              <dt className="text-muted-foreground">Models</dt>
+              <dt className="text-muted-foreground">{t("models")}</dt>
               <dd className="font-medium">{designer.models}</dd>
             </div>
             <div>
-              <dt className="text-muted-foreground">Selling since</dt>
+              <dt className="text-muted-foreground">{t("since")}</dt>
               <dd className="font-medium">{designer.since}</dd>
             </div>
           </dl>
@@ -65,7 +68,7 @@ export function FeaturedDesigner() {
             {designer.tags.map((tag) => (
               <li key={tag}>
                 <Badge variant="secondary" className="font-normal">
-                  {tag}
+                  {t(tag)}
                 </Badge>
               </li>
             ))}
@@ -73,7 +76,7 @@ export function FeaturedDesigner() {
 
           <Button variant="outline" asChild className="mt-5 w-full">
             <Link href={`/designers/${designer.handle.replace("@", "")}`}>
-              View storefront
+              {t("viewStorefront")}
             </Link>
           </Button>
         </div>
@@ -92,7 +95,7 @@ export function FeaturedDesigner() {
                 />
                 <div className="bg-background p-3">
                   <p className="line-clamp-1 text-sm font-medium">
-                    {work.title}
+                    {t(work.key)}
                   </p>
                   <p className="mt-0.5 text-sm text-muted-foreground">
                     ${work.price}

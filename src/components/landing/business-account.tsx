@@ -1,6 +1,8 @@
 import Link from "next/link"
 import { Building2, CreditCard, FileCheck, Users } from "lucide-react"
 
+import { useTranslations } from "next-intl"
+
 import { BUSINESS_PERKS, SITE, TRUSTED_BY } from "@/lib/data/landing"
 import { Button } from "@/components/ui/button"
 
@@ -11,24 +13,24 @@ const ICONS = {
 } as const
 
 export function BusinessAccount() {
+  const t = useTranslations("landing.business")
+
   return (
     <section>
       <div className="shell">
         <div className="flex flex-col items-center text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium text-muted-foreground">
             <Building2 className="size-3.5" aria-hidden />
-            Solution for enterprise
+            {t("badge")}
           </span>
           <h2 className="mt-4 text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-            {SITE.name} Business Account
+            {t("title", { name: SITE.name })}
           </h2>
           <p className="mt-3 max-w-2xl text-sm text-pretty text-muted-foreground">
-            Every asset needs production-ready, created by verified artists and
-            industry experts. Review the models you need instantly, accelerating
-            your project timeline from concept to completion.
+            {t("body")}
           </p>
           <Button asChild size="lg" className="mt-6">
-            <Link href="/business">Apply for a Business Account</Link>
+            <Link href="/business">{t("cta")}</Link>
           </Button>
         </div>
 
@@ -36,15 +38,15 @@ export function BusinessAccount() {
           {BUSINESS_PERKS.map((perk) => {
             const Icon = ICONS[perk.icon]
             return (
-              <li key={perk.title} className="rounded-2xl border bg-card p-6">
+              <li key={perk.key} className="rounded-2xl border bg-card p-6">
                 <span className="inline-flex size-11 items-center justify-center rounded-xl bg-brand/15 text-brand-accent">
                   <Icon className="size-5" aria-hidden />
                 </span>
                 <h3 className="mt-4 font-semibold tracking-tight">
-                  {perk.title}
+                  {t(`${perk.key}Title`)}
                 </h3>
                 <p className="mt-2 text-sm text-pretty text-muted-foreground">
-                  {perk.body}
+                  {t(`${perk.key}Body`)}
                 </p>
               </li>
             )

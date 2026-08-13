@@ -1,6 +1,8 @@
 import Link from "next/link"
 import { ArrowRight, Download, Gift } from "lucide-react"
 
+import { useTranslations } from "next-intl"
+
 import { BROWSE_BY_FORMAT, BROWSE_BY_TYPE } from "@/lib/data/landing"
 
 function BrowseList({
@@ -72,34 +74,39 @@ function FreeCard({
 }
 
 export function BrowseBy() {
+  const t = useTranslations("landing.browse")
+
+  // Type labels are translated; format names are product names and are not.
+  const types = BROWSE_BY_TYPE.map((item) => ({ ...item, label: t(item.key) }))
+
   return (
     <section className="shell">
       <div className="grid gap-10 rounded-2xl border bg-card p-6 sm:p-8 lg:grid-cols-3">
         <BrowseList
-          heading="Browse by Type"
-          blurb="Find content based on the type of asset your project needs."
-          items={BROWSE_BY_TYPE}
+          heading={t("typeHeading")}
+          blurb={t("typeBlurb")}
+          items={types}
         />
         <BrowseList
-          heading="Browse by Format"
-          blurb="Find 3D models designed for your preferred software."
+          heading={t("formatHeading")}
+          blurb={t("formatBlurb")}
           items={BROWSE_BY_FORMAT}
         />
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
           <FreeCard
             icon={Gift}
-            title="On sale"
-            body="Discounted assets from designers running promotions this week."
+            title={t("saleTitle")}
+            body={t("saleBody")}
             href="/3d-models?sale=1"
-            cta="Browse deals"
+            cta={t("saleCta")}
           />
           <FreeCard
             icon={Download}
-            title="Free models"
-            body="Thousands of royalty-free assets you can download right now."
+            title={t("freeTitle")}
+            body={t("freeBody")}
             href="/3d-models/free"
-            cta="Get free models"
+            cta={t("freeCta")}
           />
         </div>
       </div>

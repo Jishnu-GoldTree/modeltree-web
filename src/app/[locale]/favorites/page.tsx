@@ -11,7 +11,13 @@ import { ModelCard } from "@/components/marketplace/model-card"
 import { Button } from "@/components/ui/button"
 import { getTranslations } from "next-intl/server"
 
-export const metadata = { title: "Saved models" }
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/favorites">) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "favorites" })
+  return { title: t("title") }
+}
 
 const money = (value: number) =>
   value === 0 ? "Free" : `$${value.toLocaleString("en-US")}`

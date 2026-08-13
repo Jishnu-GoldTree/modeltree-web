@@ -93,6 +93,8 @@ export async function CatalogFilters({
   lockedCategory?: string
 }) {
   const t = await getTranslations("catalog")
+  const cat = await getTranslations("landing")
+  const lic = await getTranslations("license")
   const toggle = (key: string, value: string) =>
     href(base, params, { [key]: params[key] === value ? undefined : value })
 
@@ -138,7 +140,7 @@ export async function CatalogFilters({
                 key={category.slug}
                 href={toggle("category", category.slug)}
                 active={params.category === category.slug}
-                label={category.label}
+                label={cat(`categories.${category.key}`)}
                 count={facets.categories[category.slug] ?? 0}
               />
             ))}
@@ -162,12 +164,12 @@ export async function CatalogFilters({
 
       <Group title={t("licenseGroup")}>
         <div className="flex flex-col gap-0.5">
-          {Object.entries(LICENSE_LABELS).map(([value, label]) => (
+          {Object.keys(LICENSE_LABELS).map((value) => (
             <Option
               key={value}
               href={toggle("license", value)}
               active={params.license === value}
-              label={label}
+              label={lic(value)}
               count={facets.licenses[value] ?? 0}
             />
           ))}

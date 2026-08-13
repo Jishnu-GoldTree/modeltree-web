@@ -13,7 +13,13 @@ import { UserText } from "@/components/user-text"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
-export const metadata = { title: "Designer dashboard" }
+export async function generateMetadata({
+  params,
+}: PageProps<"/[locale]/dashboard">) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "dashboard" })
+  return { title: t("title") }
+}
 
 const money = (cents: number) =>
   cents === 0 ? "Free" : `$${(cents / 100).toLocaleString("en-US")}`

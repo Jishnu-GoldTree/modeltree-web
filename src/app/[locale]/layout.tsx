@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Heebo } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import "../globals.css";
 
 import { SITE } from "@/lib/data/landing";
@@ -36,13 +36,15 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export const metadata: Metadata = {
+async function buildMetadata(locale: string): Promise<Metadata> {
+  const t = await getTranslations({ locale, namespace: "site" });
+  return {
   metadataBase: new URL("https://modeltree.vercel.app"),
   title: {
-    default: `${SITE.name} | ${SITE.tagline}`,
+    default: `${SITE.name} | ${t("tagline")}`,
     template: `%s | ${SITE.name}`,
   },
-  description: SITE.description,
+  description: t("description"),
   applicationName: SITE.name,
   keywords: [
     "3D models",
@@ -64,8 +66,8 @@ export const metadata: Metadata = {
     languages: { en: "/", he: "/he" },
   },
   openGraph: {
-    title: `${SITE.name} | ${SITE.tagline}`,
-    description: SITE.description,
+    title: `${SITE.name} | ${t("tagline")}`,
+    description: t("description"),
     siteName: SITE.name,
     url: "/",
     locale: "en_US",
@@ -73,8 +75,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE.name} | ${SITE.tagline}`,
-    description: SITE.description,
+    title: `${SITE.name} | ${t("tagline")}`,
+    description: t("description"),
   },
   robots: {
     index: true,
@@ -90,7 +92,16 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false,
   },
-};
+  };
+}
+
+/** Metadata has to be per-locale, so the tab title and share cards translate. */
+export async function generateMetadata({
+  params,
+}: LayoutProps<"/[locale]">): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata(hasLocale(routing.locales, locale) ? locale : routing.defaultLocale);
+}
 
 export default async function LocaleLayout({
   children,

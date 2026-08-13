@@ -1,6 +1,8 @@
 import Link from "next/link"
 
 import { cn } from "@/lib/utils"
+import { useTranslations } from "next-intl"
+
 import type { CategoryTile } from "@/lib/data/landing"
 import { Thumb } from "@/components/marketplace/thumb"
 import { SectionHeading } from "@/components/landing/section-heading"
@@ -13,6 +15,7 @@ export function CategoryExplorer({
   title,
   description,
   chips,
+  chipNamespace,
   chipBase,
   categories,
   categoryBase,
@@ -22,7 +25,9 @@ export function CategoryExplorer({
 }: {
   title: string
   description?: string
+  /** Message keys under `landing.assetTabs` / `landing.printTabs`. */
   chips: string[]
+  chipNamespace: "assetTabs" | "printTabs"
   chipBase: string
   categories: CategoryTile[]
   categoryBase: string
@@ -30,6 +35,8 @@ export function CategoryExplorer({
   footerAction: { label: string; href: string }
   className?: string
 }) {
+  const t = useTranslations("landing")
+
   return (
     <section className={cn("shell", className)}>
       <SectionHeading
@@ -42,10 +49,10 @@ export function CategoryExplorer({
         {chips.map((chip) => (
           <li key={chip}>
             <Link
-              href={`${chipBase}?q=${encodeURIComponent(chip)}`}
+              href={`${chipBase}?q=${encodeURIComponent(t(`${chipNamespace}.${chip}`))}`}
               className="inline-flex shrink-0 items-center rounded-full border bg-background px-3.5 py-1.5 text-sm whitespace-nowrap transition-colors hover:border-brand hover:text-brand-accent"
             >
-              {chip}
+              {t(`${chipNamespace}.${chip}`)}
             </Link>
           </li>
         ))}
@@ -79,7 +86,7 @@ export function CategoryExplorer({
               >
                 <div className="relative flex w-full items-center justify-between gap-2">
                   <span className="text-sm font-medium text-white drop-shadow">
-                    {category.label}
+                    {t(`categories.${category.key}`)}
                   </span>
                   <span className="rounded-full bg-black/40 px-2 py-0.5 text-[11px] text-white/85 backdrop-blur">
                     {category.count}
