@@ -1,11 +1,14 @@
 import Link from "next/link"
+import { getTranslations } from "next-intl/server"
 
 import { FOOTER_COLUMNS, SITE } from "@/lib/data/landing"
 import { Logo } from "@/components/layout/logo"
 import { NewsletterForm } from "@/components/forms/newsletter-form"
 import { Separator } from "@/components/ui/separator"
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const t = await getTranslations("footer")
+
   return (
     <footer className="bg-ink text-ink-foreground">
       <div className="shell py-14">
@@ -13,11 +16,10 @@ export function SiteFooter() {
           <div>
             <Logo />
             <p className="mt-4 max-w-xs text-sm text-white/60">
-              The world&apos;s largest 3D model marketplace. Buy, sell and
-              commission production-ready assets.
+              {t("tagline")}
             </p>
             <div className="mt-6">
-              <p className="text-sm font-medium">Weekly drops in your inbox</p>
+              <p className="text-sm font-medium">{t("newsletter")}</p>
               <p className="mt-1 mb-3 text-sm text-white/55">
                 New collections, free assets and designer spotlights.
               </p>

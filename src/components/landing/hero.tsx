@@ -1,3 +1,4 @@
+import { formatStat, getMarketplaceStats } from "@/lib/data/stats"
 import Link from "next/link"
 
 import { HERO_FILTERS, SITE } from "@/lib/data/landing"
@@ -49,7 +50,8 @@ function HeroBackdrop() {
   )
 }
 
-export function Hero() {
+export async function Hero() {
+  const stats = await getMarketplaceStats()
   return (
     <section className="relative isolate pt-16">
       <HeroBackdrop />
@@ -81,9 +83,9 @@ export function Hero() {
 
         <dl className="mt-10 grid grid-cols-3 gap-6 text-white sm:gap-12">
           {[
-            { value: "1.9M+", label: "3D models" },
-            { value: "200K+", label: "Designers" },
-            { value: "80%", label: "Designer royalty" },
+            { value: formatStat(stats.models), label: "3D models" },
+            { value: formatStat(stats.designers), label: "Designers" },
+            { value: formatStat(stats.downloads), label: "Downloads" },
           ].map((stat) => (
             <div key={stat.label}>
               <dt className="sr-only">{stat.label}</dt>

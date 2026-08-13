@@ -5,6 +5,7 @@ import { getFavoriteModels } from "@/lib/favorites"
 import { clearFavorites } from "@/lib/actions/favorites"
 import { addToCart } from "@/lib/actions/cart"
 import { getLicenseOptions } from "@/lib/data/catalog"
+import { FlashToast } from "@/components/layout/flash-toast"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { ModelCard } from "@/components/marketplace/model-card"
@@ -34,6 +35,7 @@ export default async function FavoritesPage() {
 
   return (
     <>
+      <FlashToast />
       <SiteHeader solid />
 
       <main className="flex-1 pt-16">

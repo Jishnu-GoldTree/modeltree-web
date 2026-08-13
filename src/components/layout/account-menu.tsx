@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+import { initials } from "@/lib/utils"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import type { User as SupabaseUser } from "@supabase/supabase-js"
@@ -8,7 +10,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Heart, LayoutDashboard, LogOut, Package, User } from "lucide-react"
 
 import { signOutAction } from "@/lib/actions/auth"
-import { initials } from "@/lib/data/account"
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -22,11 +24,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 const LINKS = [
-  { href: "/profile", label: "Your profile", Icon: User },
-  { href: "/profile#purchases", label: "Purchases", Icon: Package },
-  { href: "/favorites", label: "Saved models", Icon: Heart },
-  { href: "/dashboard", label: "Designer dashboard", Icon: LayoutDashboard },
-]
+  { href: "/profile", key: "profile", Icon: User },
+  { href: "/profile#purchases", key: "purchases", Icon: Package },
+  { href: "/favorites", key: "saved", Icon: Heart },
+  { href: "/dashboard", key: "dashboard", Icon: LayoutDashboard },
+] as const
 
 /**
  * Signed-out: the login/signup pair. Signed-in: an avatar menu.
@@ -37,6 +39,7 @@ const LINKS = [
  * session lands.
  */
 export function AccountMenu() {
+  const t = useTranslations("nav")
   const [user, setUser] = useState<SupabaseUser | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -68,13 +71,13 @@ export function AccountMenu() {
           className="hidden text-white/85 hover:bg-white/10 hover:text-white sm:inline-flex"
           asChild
         >
-          <Link href="/login">Log in</Link>
+          <Link href="/login">{t("logIn")}</Link>
         </Button>
         <Button
           className="hidden bg-brand text-brand-foreground hover:bg-brand/85 sm:inline-flex"
           asChild
         >
-          <Link href="/signup">Sign up</Link>
+          <Link href="/signup">{t("signUp")}</Link>
         </Button>
       </>
     )
@@ -107,11 +110,11 @@ export function AccountMenu() {
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {LINKS.map(({ href, label, Icon }) => (
+        {LINKS.map(({ href, key, Icon }) => (
           <DropdownMenuItem key={href} asChild>
             <Link href={href}>
               <Icon className="size-4" aria-hidden />
-              {label}
+              {t(key)}
             </Link>
           </DropdownMenuItem>
         ))}
@@ -122,7 +125,7 @@ export function AccountMenu() {
           <form action={signOutAction}>
             <button type="submit" className="flex w-full items-center gap-2">
               <LogOut className="size-4" aria-hidden />
-              Log out
+              {t("logOut")}
             </button>
           </form>
         </DropdownMenuItem>

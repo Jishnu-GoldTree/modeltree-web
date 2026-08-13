@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { Download, Plus, Star, Trash2, Wallet } from "lucide-react"
@@ -5,6 +6,7 @@ import { Download, Plus, Star, Trash2, Wallet } from "lucide-react"
 import { getCurrentUser } from "@/lib/supabase/server"
 import { getDesignerEarnings, getMyModels } from "@/lib/data/designer"
 import { deleteListing } from "@/lib/actions/models"
+import { FlashToast } from "@/components/layout/flash-toast"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { Thumb } from "@/components/marketplace/thumb"
@@ -25,25 +27,24 @@ const STATUS_STYLE: Record<string, string> = {
   archived: "bg-muted text-muted-foreground",
 }
 
-export default async function DashboardPage({
-  searchParams,
-}: PageProps<"/[locale]/dashboard">) {
+export default async function DashboardPage() {
   const user = await getCurrentUser()
   if (!user) redirect("/login?next=/dashboard")
 
-  const { created } = await searchParams
+  const t = await getTranslations("dashboard")
   const [models, earnings] = await Promise.all([getMyModels(), getDesignerEarnings()])
 
   const published = models.filter((m) => m.status === "published").length
   const tiles = [
-    { label: "Listings", value: String(models.length), Icon: Plus },
-    { label: "Published", value: String(published), Icon: Star },
-    { label: "Downloads", value: String(models.reduce((s, m) => s + m.downloads, 0)), Icon: Download },
-    { label: "Earned (30 days)", value: money(earnings.last30Cents), Icon: Wallet },
+    { label: t("listings"), value: String(models.length), Icon: Plus },
+    { label: t("publishedCount"), value: String(published), Icon: Star },
+    { label: t("downloads"), value: String(models.reduce((s, m) => s + m.downloads, 0)), Icon: Download },
+    { label: t("earned30"), value: money(earnings.last30Cents), Icon: Wallet },
   ]
 
   return (
     <>
+      <FlashToast />
       <SiteHeader solid />
 
       <main className="flex-1 pt-16">
@@ -51,7 +52,7 @@ export default async function DashboardPage({
           <div className="shell flex flex-wrap items-center justify-between gap-4 py-10">
             <div>
               <h1 className="text-2xl font-semibold tracking-tight text-white">
-                Designer dashboard
+                {t("title")}
               </h1>
               <p className="mt-1.5 text-sm text-white/60">
                 {money(earnings.grossCents)} earned across {earnings.salesCount}{" "}
@@ -61,18 +62,13 @@ export default async function DashboardPage({
             <Button asChild className="h-10 bg-brand text-brand-foreground hover:bg-brand/85">
               <Link href="/dashboard/upload">
                 <Plus className="size-4" aria-hidden />
-                New listing
+                {t("newListing")}
               </Link>
             </Button>
           </div>
         </div>
 
         <div className="shell flex flex-col gap-10 py-10">
-          {created === "1" && (
-            <p role="status" className="rounded-lg border border-brand bg-brand-muted/50 p-3 text-sm">
-              Listing saved. It appears in the catalog once processing finishes.
-            </p>
-          )}
 
           <ul className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {tiles.map((tile) => (
@@ -87,17 +83,16 @@ export default async function DashboardPage({
           </ul>
 
           <section>
-            <h2 className="text-lg font-semibold tracking-tight">Your listings</h2>
+            <h2 className="text-lg font-semibold tracking-tight">{t("yourListings")}</h2>
 
             {models.length === 0 ? (
               <div className="mt-4 flex flex-col items-center rounded-xl border border-dashed py-16 text-center">
-                <h3 className="font-semibold">Nothing published yet</h3>
+                <h3 className="font-semibold">{t("nothingYet")}</h3>
                 <p className="mt-1.5 max-w-sm text-sm text-muted-foreground">
-                  Upload your first model to start selling. You can save it as a
-                  draft and finish later.
+                  {t("nothingYetBody")}
                 </p>
                 <Button asChild className="mt-6 h-10 bg-brand text-brand-foreground hover:bg-brand/85">
-                  <Link href="/dashboard/upload">Upload a model</Link>
+                  <Link href="/dashboard/upload">{t("uploadFirst")}</Link>
                 </Button>
               </div>
             ) : (
@@ -125,7 +120,7 @@ export default async function DashboardPage({
                         </Badge>
                       </div>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        {model.formats.length > 0 ? model.formats.join(", ") : "No files yet"}
+                        {model.formats.length > 0 ? model.formats.join(", ") : t("noFiles")}
                         {" · "}
                         {model.downloads} downloads
                       </p>

@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
+import { withFlash } from "@/lib/flash"
+
 import { getLicenseOptions, getModel } from "@/lib/data/catalog"
 import { readCart, writeCart } from "@/lib/cart"
 
@@ -36,7 +38,7 @@ export async function addToCart(formData: FormData) {
   await writeCart(next)
 
   revalidatePath("/cart")
-  redirect("/cart")
+  redirect(withFlash("/cart", "addedToCart"))
 }
 
 export async function removeFromCart(formData: FormData) {
@@ -46,6 +48,7 @@ export async function removeFromCart(formData: FormData) {
   const cart = await readCart()
   await writeCart(cart.filter((item) => item.slug !== slug))
   revalidatePath("/cart")
+  redirect(withFlash("/cart", "removedFromCart"))
 }
 
 export async function setLineLicense(formData: FormData) {
@@ -57,9 +60,11 @@ export async function setLineLicense(formData: FormData) {
     cart.map((item) => (item.slug === entry.slug ? entry : item)),
   )
   revalidatePath("/cart")
+  redirect(withFlash("/cart", "licenseUpdated"))
 }
 
 export async function clearCart() {
   await writeCart([])
   revalidatePath("/cart")
+  redirect(withFlash("/cart", "cartCleared"))
 }

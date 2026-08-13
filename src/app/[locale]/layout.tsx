@@ -9,6 +9,7 @@ import "../globals.css";
 import { SITE } from "@/lib/data/landing";
 import { LOCALE_DIR, routing, type Locale } from "@/i18n/routing";
 import { Providers } from "@/components/providers";
+import { Toaster } from "@/components/layout/toaster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -109,7 +110,10 @@ export default async function LocaleLayout({
     >
       <body className="flex min-h-full flex-col bg-background">
         <NextIntlClientProvider>
-          <Providers>{children}</Providers>
+          <Providers>
+            {children}
+            <Toaster />
+          </Providers>
         </NextIntlClientProvider>
       </body>
     </html>

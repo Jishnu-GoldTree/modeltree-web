@@ -1,3 +1,5 @@
+import { getTranslations } from "next-intl/server"
+import { initials } from "@/lib/utils"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import {
@@ -30,7 +32,7 @@ import { addToCart } from "@/lib/actions/cart"
 import { addFavorite } from "@/lib/actions/favorites"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
-import { initials } from "@/lib/data/account"
+
 import { UserText } from "@/components/user-text"
 
 /**
@@ -63,6 +65,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
   const model = await getModel(slug)
   if (!model) notFound()
 
+  const t = await getTranslations("product")
   const category = ASSET_CATEGORIES.find((c) => c.slug === model.category)
   const related = await getRelated(model)
   const price = model.price === "free" ? "Free" : `$${model.price}`
@@ -71,14 +74,14 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
   const licenses = await getLicenseOptions(model)
 
   const specs = [
-    { label: "Polygons", value: number(model.polygons) },
-    { label: "Vertices", value: number(model.vertices) },
-    { label: "Formats", value: model.formats.join(", ") },
-    { label: "License", value: LICENSE_LABELS[model.license] },
-    { label: "Rigged", value: model.rigged ? "Yes" : "No" },
-    { label: "Animated", value: model.animated ? "Yes" : "No" },
-    { label: "PBR materials", value: model.pbr ? "Yes" : "No" },
-    { label: "Downloads", value: number(model.downloads) },
+    { label: t("polygons"), value: number(model.polygons) },
+    { label: t("vertices"), value: number(model.vertices) },
+    { label: t("formats"), value: model.formats.join(", ") },
+    { label: t("license"), value: LICENSE_LABELS[model.license] },
+    { label: t("rigged"), value: model.rigged ? t("yes") : t("no") },
+    { label: t("animated"), value: model.animated ? t("yes") : t("no") },
+    { label: t("pbr"), value: model.pbr ? t("yes") : t("no") },
+    { label: t("downloads"), value: number(model.downloads) },
   ]
 
   return (
@@ -143,7 +146,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
 
               <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
                 <span>
-                  by{" "}
+                  {t("by")}{" "}
                   <Link
                     href={`/designers/${model.author}`}
                     className="font-medium text-brand-accent hover:underline"
@@ -171,7 +174,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
               </UserText>
 
               <h2 className="mt-10 text-lg font-semibold tracking-tight">
-                Specifications
+                {t("specifications")}
               </h2>
               <dl className="mt-4 grid grid-cols-1 gap-x-8 sm:grid-cols-2">
                 {specs.map((spec) => (
@@ -188,7 +191,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
               </dl>
 
               <h2 className="mt-10 text-lg font-semibold tracking-tight">
-                What you get
+                {t("whatYouGet")}
               </h2>
               <ul className="mt-4 flex flex-col gap-2">
                 {files.map((file) => (
@@ -210,7 +213,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
               <Separator className="mt-10" />
 
               <div className="mt-8 flex flex-wrap items-baseline justify-between gap-3">
-                <h2 className="text-lg font-semibold tracking-tight">Reviews</h2>
+                <h2 className="text-lg font-semibold tracking-tight">{t("reviewsTitle")}</h2>
                 <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
                   <Star className="size-4 fill-amber-400 text-amber-400" aria-hidden />
                   <span className="font-medium text-foreground">{model.rating}</span>
@@ -320,7 +323,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                       type="submit"
                       className="h-10 bg-brand text-brand-foreground hover:bg-brand/85"
                     >
-                      {model.price === "free" ? "Get this model" : "Add to cart"}
+                      {model.price === "free" ? t("getModel") : t("addToCart")}
                     </Button>
                   </div>
                 </form>
@@ -331,7 +334,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                   <input type="hidden" name="slug" value={model.slug} />
                   <Button type="submit" variant="outline" className="h-10 w-full">
                     <Heart className="size-4" aria-hidden />
-                    Save for later
+                    {t("save")}
                   </Button>
                 </form>
 
@@ -375,14 +378,13 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                   </div>
                 </div>
                 <Button asChild variant="outline" className="mt-4 h-9 w-full">
-                  <Link href={`/designers/${model.author}`}>View storefront</Link>
+                  <Link href={`/designers/${model.author}`}>{t("viewStorefront")}</Link>
                 </Button>
               </div>
 
               <p className="mt-4 flex items-start gap-2 text-xs text-muted-foreground">
                 <ShieldCheck className="mt-px size-4 shrink-0 text-brand-accent" aria-hidden />
-                Every model is checked against our publishing guidelines before it
-                goes on sale.
+                {t("checked")}
               </p>
             </aside>
           </div>

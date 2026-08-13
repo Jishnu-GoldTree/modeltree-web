@@ -115,23 +115,23 @@ export async function CatalogFilters({
         )}
       </div>
 
-      <Group title="Price">
+      <Group title={t("price")}>
         <div className="flex flex-col gap-0.5">
           <Option
             href={toggle("price", "free")}
             active={params.price === "free"}
-            label="Free"
+            label={t("free")}
           />
           <Option
             href={toggle("price", "paid")}
             active={params.price === "paid"}
-            label="Paid"
+            label={t("paid")}
           />
         </div>
       </Group>
 
       {!lockedCategory && (
-        <Group title="Category">
+        <Group title={t("category")}>
           <div className="flex flex-col gap-0.5">
             {ASSET_CATEGORIES.map((category) => (
               <Option
@@ -146,7 +146,7 @@ export async function CatalogFilters({
         </Group>
       )}
 
-      <Group title="File format">
+      <Group title={t("fileFormat")}>
         <div className="flex flex-col gap-0.5">
           {FORMATS.map((format) => (
             <Option
@@ -160,7 +160,7 @@ export async function CatalogFilters({
         </div>
       </Group>
 
-      <Group title="License">
+      <Group title={t("licenseGroup")}>
         <div className="flex flex-col gap-0.5">
           {Object.entries(LICENSE_LABELS).map(([value, label]) => (
             <Option
@@ -174,12 +174,12 @@ export async function CatalogFilters({
         </div>
       </Group>
 
-      <Group title="Features">
+      <Group title={t("features")}>
         <div className="flex flex-col gap-0.5">
           {[
-            { key: "rigged", label: "Rigged" },
-            { key: "animated", label: "Animated" },
-            { key: "pbr", label: "PBR materials" },
+            { key: "rigged", label: t("rigged") },
+            { key: "animated", label: t("animated") },
+            { key: "pbr", label: t("pbr") },
           ].map((feature) => (
             <Option
               key={feature.key}

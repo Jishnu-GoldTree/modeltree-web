@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server"
 import Link from "next/link"
 import { ArrowLeft, Check } from "lucide-react"
 
@@ -15,12 +16,13 @@ export const metadata = { title: "Create an account" }
  */
 
 const BENEFITS = [
-  "Publish unlimited models and keep up to 80% of every sale",
-  "Reach 200,000+ studios and buyers already on the platform",
+  "Publish unlimited models and earn on every sale",
+  "Reach studios, architects and product teams browsing the catalog",
   "Licensing, invoicing and payouts handled for you",
 ]
 
-export default function SignupPage() {
+export default async function SignupPage() {
+  const t = await getTranslations("auth")
   return (
     <main className="grid min-h-svh lg:grid-cols-2">
       <aside className="relative hidden flex-col justify-between overflow-hidden bg-ink p-10 text-white lg:flex">
@@ -66,16 +68,16 @@ export default function SignupPage() {
             className="inline-flex items-center gap-1.5 rounded-md text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-brand/50"
           >
             <ArrowLeft className="size-4 rtl:-scale-x-100" aria-hidden />
-            Back to marketplace
+            {t("backToMarket")}
           </Link>
         </div>
 
         <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-10">
           <h1 className="text-2xl font-semibold tracking-tight">
-            Create your account
+            {t("signUpTitle")}
           </h1>
           <p className="mt-1.5 mb-8 text-sm text-muted-foreground">
-            One account to buy, license and sell 3D models.
+            {t("signUpSubtitle")}
           </p>
 
           <SignupForm enabledProviders={ENABLED_OAUTH_PROVIDERS} />

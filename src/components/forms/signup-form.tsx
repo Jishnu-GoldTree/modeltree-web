@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl"
 import { useState } from "react";
 import Link from "next/link";
 import { useForm, useWatch } from "react-hook-form";
@@ -55,6 +56,7 @@ export function SignupForm({
 }: {
   enabledProviders: string[];
 }) {
+  const t = useTranslations("auth");
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
@@ -115,7 +117,7 @@ export function SignupForm({
   return (
     <div className="flex flex-col gap-6">
       <SocialAuthButtons
-        dividerLabel="or sign up with email"
+        dividerLabel={t("orSignUpEmail")}
         enabledProviders={enabledProviders}
         onUnavailable={(provider) =>
           setNotice(
@@ -134,7 +136,7 @@ export function SignupForm({
             name="accountType"
             render={({ field }) => (
               <FormItem className="gap-1.5">
-                <FormLabel>What brings you here?</FormLabel>
+                <FormLabel>{t("accountType")}</FormLabel>
                 <FormControl>
                   <div role="radiogroup" className="grid grid-cols-2 gap-2">
                     {ACCOUNT_OPTIONS.map((option) => (
@@ -179,7 +181,7 @@ export function SignupForm({
             name="name"
             render={({ field }) => (
               <FormItem className="gap-1.5">
-                <FormLabel>Name</FormLabel>
+                <FormLabel>{t("name")}</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -198,7 +200,7 @@ export function SignupForm({
             name="email"
             render={({ field }) => (
               <FormItem className="gap-1.5">
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t("email")}</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -218,7 +220,7 @@ export function SignupForm({
             name="password"
             render={({ field, fieldState }) => (
               <FormItem className="gap-1.5">
-                <FormLabel>Password</FormLabel>
+                <FormLabel>{t("password")}</FormLabel>
                 <div className="relative">
                   <FormControl>
                     <Input
@@ -304,7 +306,7 @@ export function SignupForm({
                     htmlFor="terms"
                     className="text-sm leading-snug font-normal"
                   >
-                    I agree to the{" "}
+                    {t("agree")}{" "}
                     <Link
                       href="/terms"
                       className="text-brand-accent hover:underline"
@@ -343,18 +345,18 @@ export function SignupForm({
             {form.formState.isSubmitting && (
               <Loader2 className="size-4 animate-spin" aria-hidden />
             )}
-            Create account
+            {t("createAccount")}
           </Button>
         </form>
       </Form>
 
       <p className="text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
+        {t("haveAccount")}{" "}
         <Link
           href="/login"
           className="font-medium text-brand-accent hover:underline"
         >
-          Log in
+          {t("login")}
         </Link>
       </p>
     </div>

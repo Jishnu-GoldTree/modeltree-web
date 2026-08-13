@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
+
+import { withFlash } from "@/lib/flash"
 import { z } from "zod"
 
 import { createClient, getCurrentUser } from "@/lib/supabase/server"
@@ -137,7 +139,7 @@ export async function createListing(
 
   revalidatePath("/dashboard")
   revalidatePath("/3d-models")
-  redirect("/dashboard?created=1")
+  redirect(withFlash("/dashboard", v.publish ? "listingPublished" : "listingCreated"))
 }
 
 export async function deleteListing(formData: FormData) {

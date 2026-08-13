@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Menu, Upload } from "lucide-react"
@@ -39,7 +40,21 @@ import { SearchForm } from "@/components/forms/search-form"
  * with a light background the entire header renders invisible. Any page that
  * doesn't open on a dark band wants `solid`.
  */
+/**
+ * Top-level nav labels come from PRIMARY_NAV, which is data rather than copy.
+ * Mapping by href keeps the translation next to the routing instead of
+ * duplicating the menu structure into the message catalogs. Dropdown children
+ * are catalog terminology and stay in English for now.
+ */
+const NAV_KEYS: Record<string, "models" | "printing" | "custom" | "designers"> = {
+  "/3d-models": "models",
+  "/3d-print-models": "printing",
+  "/custom-work": "custom",
+  "/designers": "designers",
+}
+
 export function SiteHeader({ solid = false }: { solid?: boolean }) {
+  const t = useTranslations("nav")
   const [scrolled, setScrolled] = useState(false)
   const stuck = solid || scrolled
 
@@ -73,7 +88,7 @@ export function SiteHeader({ solid = false }: { solid?: boolean }) {
                     keeps both, and the base's `data-open:hover:bg-muted` wins
                     the cascade, leaving white text on a near-white pill. */}
                 <NavigationMenuTrigger className="bg-transparent text-sm font-medium text-white/85 hover:bg-white/10 hover:text-white focus:bg-white/10 data-open:bg-white/10 data-open:text-white data-open:hover:bg-white/10 data-open:focus:bg-white/10 data-popup-open:bg-white/10 data-popup-open:hover:bg-white/10">
-                  {item.label}
+                  {NAV_KEYS[item.href] ? t(NAV_KEYS[item.href]) : item.label}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   {/* gap-2, not gap-1: each row paints a full-width hover fill,
@@ -138,13 +153,15 @@ export function SiteHeader({ solid = false }: { solid?: boolean }) {
 }
 
 function MobileNav() {
+  const t = useTranslations("nav")
+
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Button
           variant="ghost"
           size="icon"
-          aria-label="Open menu"
+          aria-label={t("openMenu")}
           className="text-white hover:bg-white/10 lg:hidden"
         >
           <Menu className="size-5" />
@@ -161,7 +178,7 @@ function MobileNav() {
           {PRIMARY_NAV.map((item) => (
             <div key={item.label}>
               <p className="mb-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                {item.label}
+                {NAV_KEYS[item.href] ? t(NAV_KEYS[item.href]) : item.label}
               </p>
               <ul className="space-y-1">
                 {item.children?.map((child) => (
@@ -185,11 +202,11 @@ function MobileNav() {
           <Button asChild className="bg-brand text-brand-foreground hover:bg-brand/85">
             <Link href="/sell">
               <Upload className="size-4" />
-              Start selling
+              {t("sell")}
             </Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link href="/login">Log in</Link>
+            <Link href="/login">{t("logIn")}</Link>
           </Button>
         </div>
       </SheetContent>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Search } from "lucide-react"
@@ -26,12 +27,14 @@ type SearchFormProps = {
 }
 
 export function SearchForm({
-  placeholder = "Search over 1.9 million 3D models",
+  placeholder,
   size = "hero",
   className,
   autoFocus,
 }: SearchFormProps) {
   const router = useRouter()
+  const t = useTranslations("nav")
+  const label = placeholder ?? t("search")
   const form = useForm<SearchValues>({
     resolver: zodResolver(searchSchema),
     defaultValues: { q: "" },
@@ -74,7 +77,7 @@ export function SearchForm({
                     {...field}
                     autoFocus={autoFocus}
                     aria-label="Search 3D models"
-                    placeholder={placeholder}
+                    placeholder={label}
                     className={cn(
                       "border-0 bg-transparent px-0 text-neutral-900 shadow-none placeholder:text-neutral-500 focus-visible:ring-0 dark:bg-transparent",
                       isHero ? "h-11 text-base" : "h-8 text-sm"
@@ -83,7 +86,7 @@ export function SearchForm({
                 </FormControl>
                 <Button
                   type="submit"
-                  aria-label="Search"
+                  aria-label={t("search")}
                   className={cn(
                     "shrink-0 rounded-full bg-brand text-brand-foreground hover:bg-brand/85",
                     isHero ? "size-11" : "size-8"

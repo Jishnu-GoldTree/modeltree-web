@@ -38,9 +38,13 @@ export type NavItem = {
 
 export const SITE = {
   name: "MODELTREE",
-  tagline: "World's largest 3D model marketplace",
+  // Jewellery-first, because that is the business: GoldTree is a gold trading
+  // company with an in-house library of 40,000 jewellery models built by four
+  // designers over two years. Claims here must stay defensible — the earlier
+  // "world's largest" was invented placeholder and had to go.
+  tagline: "40,000 jewellery models, cast-ready and yours to license",
   description:
-    "Buy and sell royalty-free 3D models, textures and print-ready assets. Over 1.9 million assets from 200,000+ designers.",
+    "A jewellery-first 3D marketplace from GoldTree. Rings, pendants and settings modelled in-house for casting and print — plus a wider catalog of production-ready assets, or commission exactly what you need.",
 } as const;
 
 export const PRIMARY_NAV: NavItem[] = [
@@ -51,7 +55,7 @@ export const PRIMARY_NAV: NavItem[] = [
       {
         label: "All 3D models",
         href: "/3d-models",
-        description: "Browse the full catalog of 1.9M+ assets",
+        description: "Browse the full catalog",
       },
       {
         label: "Free 3D models",
@@ -134,7 +138,7 @@ export const PRIMARY_NAV: NavItem[] = [
       {
         label: "Start selling",
         href: "/sell",
-        description: "Upload your models and earn up to 80% royalties",
+        description: "Upload your models and earn on every sale",
       },
       {
         label: "Designer dashboard",
@@ -368,7 +372,7 @@ export const TRENDING_MODELS: ModelCard[] = [
 
 export const VALUE_PROPS = [
   {
-    title: "Over 1.9 million 3D models at your fingertips",
+    title: "Production-ready 3D models, ready to license",
     body: "MODELTREE is the leading 3D model marketplace, a hub for using and contributing to the world of 3D design. Whether you're seeking assets for your projects or offering your own creations, MODELTREE provides the platform and community to make it happen.",
     icon: "layers",
   },

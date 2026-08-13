@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server"
 import Link from "next/link"
 
 import { ASSET_CATEGORIES } from "@/lib/data/landing"
@@ -18,7 +19,8 @@ import { Button } from "@/components/ui/button"
 
 const SUGGESTED = ASSET_CATEGORIES.slice(0, 4)
 
-export default function NotFound() {
+export default async function NotFound() {
+  const t = await getTranslations("notFound")
   return (
     <>
       <SiteHeader />
@@ -27,17 +29,15 @@ export default function NotFound() {
       <main className="flex-1 bg-ink pt-16">
         <section className="shell flex flex-col items-center py-20 text-center md:py-28">
           <p className="font-mono text-xs tracking-[0.3em] text-brand uppercase">
-            Error 404
+            {t("eyebrow")}
           </p>
 
           <h1 className="mt-5 max-w-2xl text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-            This model isn&apos;t in the catalog
+            {t("title")}
           </h1>
 
           <p className="mt-4 max-w-xl text-white/65">
-            The page you were looking for was moved, renamed, or never existed.
-            Search the catalog instead, or pick up from one of the categories
-            below.
+            {t("body")}
           </p>
 
           <div className="mt-9 w-full max-w-xl">
@@ -46,7 +46,7 @@ export default function NotFound() {
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <Button asChild size="lg">
-              <Link href="/">Back to home</Link>
+              <Link href="/">{t("home")}</Link>
             </Button>
             <Button
               asChild
@@ -54,7 +54,7 @@ export default function NotFound() {
               variant="outline"
               className="border-white/25 bg-transparent text-white hover:bg-white/10 hover:text-white"
             >
-              <Link href="/3d-models">Browse 3D models</Link>
+              <Link href="/3d-models">{t("browse")}</Link>
             </Button>
           </div>
         </section>
@@ -62,7 +62,7 @@ export default function NotFound() {
 
       <section className="shell py-16">
         <h2 className="text-lg font-semibold tracking-tight">
-          Popular categories
+          {t("popular")}
         </h2>
         <ul className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {SUGGESTED.map((category) => (

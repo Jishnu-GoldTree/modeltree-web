@@ -1,3 +1,5 @@
+import { formatStat, getMarketplaceStats } from "@/lib/data/stats"
+import { getTranslations } from "next-intl/server"
 import Link from "next/link"
 import { ArrowLeft, Check } from "lucide-react"
 
@@ -16,9 +18,9 @@ export const metadata = { title: "Log in" }
  */
 
 const BENEFITS = [
-  "1.9M+ royalty-free models, textures and print-ready assets",
+  "Royalty-free models, textures and print-ready assets",
   "Licenses and invoices kept in one place",
-  "Sell your own work and keep up to 80% royalties",
+  "Sell your own work and earn on every download",
 ]
 
 /**
@@ -33,6 +35,8 @@ const AUTH_ERRORS: Record<string, string> = {
 }
 
 export default async function LoginPage({ searchParams }: PageProps<"/[locale]/login">) {
+  const t = await getTranslations("auth")
+  const stats = await getMarketplaceStats()
   const { error, next } = await searchParams
 
   // Only same-site relative paths. Accepting an arbitrary `next` would make the
@@ -79,9 +83,9 @@ export default async function LoginPage({ searchParams }: PageProps<"/[locale]/l
 
         <dl className="relative flex gap-10">
           {[
-            { value: "1.9M+", label: "3D models" },
-            { value: "200K+", label: "Designers" },
-            { value: "80%", label: "Designer royalty" },
+            { value: formatStat(stats.models), label: "3D models" },
+            { value: formatStat(stats.designers), label: "Designers" },
+            { value: formatStat(stats.downloads), label: "Downloads" },
           ].map((stat) => (
             <div key={stat.label}>
               <dt className="text-2xl font-semibold">{stat.value}</dt>
@@ -101,14 +105,14 @@ export default async function LoginPage({ searchParams }: PageProps<"/[locale]/l
             className="inline-flex items-center gap-1.5 rounded-md text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-brand/50"
           >
             <ArrowLeft className="size-4 rtl:-scale-x-100" aria-hidden />
-            Back to marketplace
+            {t("backToMarket")}
           </Link>
         </div>
 
         <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-10">
-          <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("logInTitle")}</h1>
           <p className="mt-1.5 mb-8 text-sm text-muted-foreground">
-            Log in to reach your purchases, licenses and designer dashboard.
+            {t("logInSubtitle")}
           </p>
 
           <LoginForm

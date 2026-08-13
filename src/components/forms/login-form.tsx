@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 import Link from "next/link"
 import { Eye, EyeOff, Info, Loader2 } from "lucide-react"
@@ -33,6 +34,7 @@ export function LoginForm({
   demoEnabled: boolean
   redirectTo: string
 }) {
+  const t = useTranslations("auth")
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [notice, setNotice] = useState<string | null>(authError ?? null)
@@ -58,7 +60,7 @@ export function LoginForm({
     // One message for every failure: distinguishing "no such account" from
     // "wrong password" turns the form into an account-existence oracle.
     if (error) {
-      setNotice("That email and password don't match an account.")
+      setNotice(t("badCredentials"))
       return
     }
 
@@ -71,7 +73,7 @@ export function LoginForm({
   return (
     <div className="flex flex-col gap-6">
       <SocialAuthButtons
-        dividerLabel="or continue with email"
+        dividerLabel={t("orEmail")}
         enabledProviders={enabledProviders}
         onUnavailable={(provider) =>
           setNotice(
@@ -87,7 +89,7 @@ export function LoginForm({
             name="email"
             render={({ field }) => (
               <FormItem className="gap-1.5">
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t("email")}</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -108,12 +110,12 @@ export function LoginForm({
             render={({ field }) => (
               <FormItem className="gap-1.5">
                 <div className="flex items-center justify-between">
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>{t("password")}</FormLabel>
                   <Link
                     href="/forgot-password"
                     className="text-xs text-brand-accent hover:underline"
                   >
-                    Forgot password?
+                    {t("forgot")}
                   </Link>
                 </div>
                 <div className="relative">
@@ -129,7 +131,7 @@ export function LoginForm({
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                     aria-pressed={showPassword}
                     className="absolute inset-y-0 end-0 inline-flex w-10 items-center justify-center rounded-e-lg text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
                   >
@@ -165,7 +167,7 @@ export function LoginForm({
                   />
                 </FormControl>
                 <Label htmlFor="remember" className="text-sm font-normal">
-                  Keep me signed in for 30 days
+                  {t("remember")}
                 </Label>
               </FormItem>
             )}
@@ -189,7 +191,7 @@ export function LoginForm({
             {form.formState.isSubmitting && (
               <Loader2 className="size-4 animate-spin" aria-hidden />
             )}
-            Log in
+            {t("login")}
           </Button>
         </form>
       </Form>
@@ -207,9 +209,9 @@ export function LoginForm({
       )}
 
       <p className="text-center text-sm text-muted-foreground">
-        New to MODELTREE?{" "}
+        {t("newHere")}{" "}
         <Link href="/signup" className="font-medium text-brand-accent hover:underline">
-          Create an account
+          {t("createOne")}
         </Link>
       </p>
     </div>

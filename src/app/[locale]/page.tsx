@@ -8,6 +8,7 @@ import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { Hero } from "@/components/landing/hero"
 import { PromoBanner } from "@/components/landing/promo-banner"
+import { JewelleryLibrary } from "@/components/landing/jewellery-library"
 import { CategoryExplorer } from "@/components/landing/category-explorer"
 import { Collections } from "@/components/landing/collections"
 import { FeaturedDesigner } from "@/components/landing/featured-designer"
@@ -25,6 +26,8 @@ export default function HomePage() {
       <main className="flex-1">
         <Hero />
         <PromoBanner />
+
+        <JewelleryLibrary />
 
         <CategoryExplorer
           title="Explore 3D assets"
