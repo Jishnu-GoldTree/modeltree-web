@@ -108,7 +108,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
     <>
       <SiteHeader solid />
 
-      <main className="flex-1 pt-16">
+      <main id="main-content" className="flex-1 pt-16">
         <div className="shell py-6">
           <nav aria-label="Breadcrumb">
             <ol className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
@@ -131,7 +131,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                 </>
               )}
               <ChevronRight className="size-3 rtl:-scale-x-100" aria-hidden />
-              <li aria-current="page" className="truncate text-foreground">
+              <li aria-current="page" title={model.title} className="truncate text-foreground">
                 {model.title}
               </li>
             </ol>
@@ -403,6 +403,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                   <div className="min-w-0">
                     <Link
                       href={`/designers/${model.author}`}
+                      title={model.author}
                       className="block truncate text-sm font-medium hover:underline"
                     >
                       {model.author}

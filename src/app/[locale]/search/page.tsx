@@ -26,7 +26,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/[locale]/
     <>
       <SiteHeader />
 
-      <main className="flex-1 bg-ink pt-16">
+      <main id="main-content" className="flex-1 bg-ink pt-16">
         <div className="shell py-16">
           <h1 className="text-2xl font-semibold tracking-tight text-white">
             {query ? t("results", { query }) : t("title")}

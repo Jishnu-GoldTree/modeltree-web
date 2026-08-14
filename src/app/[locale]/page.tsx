@@ -21,7 +21,7 @@ export default async function HomePage() {
   return (
     <>
       <SiteHeader />
-      <main className="section-flow flex-1">
+      <main id="main-content" className="section-flow flex-1">
         <Hero />
         <PromoBanner />
         <JewelleryLibrary />

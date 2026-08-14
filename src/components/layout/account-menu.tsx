@@ -106,7 +106,8 @@ export function AccountMenu() {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          aria-label={`Account menu for ${name}`}
+          aria-label={`${t("account")}: ${name}`}
+          title={name}
           className="inline-flex items-center gap-2 rounded-full outline-none focus-visible:ring-3 focus-visible:ring-brand/50"
         >
           <Avatar className="size-8 border border-white/20">
@@ -120,7 +121,10 @@ export function AccountMenu() {
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="flex flex-col gap-0.5">
           <span className="text-sm font-medium">{name}</span>
-          <span className="truncate text-xs font-normal text-muted-foreground">
+          <span
+            title={user.email}
+            className="truncate text-xs font-normal text-muted-foreground"
+          >
             {user.email}
           </span>
         </DropdownMenuLabel>

@@ -77,6 +77,7 @@ export function ModelCard({
               the Car category. */}
           <Link
             href={`/3d-model/${model.slug}`}
+            title={model.title}
             className="after:absolute after:inset-0 after:content-[''] hover:underline"
           >
             <UserText className="line-clamp-2">{model.title}</UserText>
