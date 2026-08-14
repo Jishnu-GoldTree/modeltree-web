@@ -66,6 +66,7 @@ function Option({
     <Link
       href={to}
       aria-current={active ? "true" : undefined}
+      title={label}
       className={cn(
         "flex items-center justify-between gap-2 rounded-md px-2 py-1 text-sm outline-none",
         "hover:bg-accent focus-visible:ring-3 focus-visible:ring-brand/50",

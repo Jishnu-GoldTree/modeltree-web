@@ -182,9 +182,10 @@ function MobileNav() {
           variant="ghost"
           size="icon"
           aria-label={t("openMenu")}
+          title={t("openMenu")}
           className="text-white hover:bg-white/10 lg:hidden"
         >
-          <Menu className="size-5" />
+          <Menu className="size-5" aria-hidden />
         </Button>
       </SheetTrigger>
       <SheetContent side="end" className="w-[320px] overflow-y-auto p-0">
@@ -221,7 +222,7 @@ function MobileNav() {
         <div className="flex flex-col gap-2 border-t p-4">
           <Button asChild className="bg-brand text-brand-foreground hover:bg-brand/85">
             <Link href="/sell">
-              <Upload className="size-4" />
+              <Upload className="size-4" aria-hidden />
               {t("sell")}
             </Link>
           </Button>

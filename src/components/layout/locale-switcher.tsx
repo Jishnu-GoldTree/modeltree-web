@@ -1,7 +1,7 @@
 "use client"
 
 import { useTransition } from "react"
-import { useLocale } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { useParams } from "next/navigation"
 import { Languages } from "lucide-react"
 
@@ -25,10 +25,12 @@ import {
  */
 export function LocaleSwitcher() {
   const locale = useLocale() as Locale
+  const t = useTranslations("locale")
   const pathname = usePathname()
   const params = useParams()
   const router = useRouter()
   const [pending, startTransition] = useTransition()
+  const currentLabel = LOCALE_LABELS[locale]
 
   function select(next: Locale) {
     if (next === locale) return
@@ -48,11 +50,12 @@ export function LocaleSwitcher() {
         <Button
           variant="ghost"
           size="icon"
-          aria-label={LOCALE_LABELS[locale]}
+          aria-label={`${t("label")}: ${currentLabel}`}
+          title={`${t("label")}: ${currentLabel}`}
           disabled={pending}
           className="text-white/85 hover:bg-white/10 hover:text-white"
         >
-          <Languages className="size-5" />
+          <Languages className="size-5" aria-hidden />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">

@@ -77,7 +77,7 @@ export default async function ProfilePage() {
     <>
       <SiteHeader solid />
 
-      <main className="flex-1 pt-16">
+      <main id="main-content" className="flex-1 pt-16">
         <div className="border-b bg-ink">
           <div className="shell flex flex-col gap-5 py-10 sm:flex-row sm:items-center">
             <Avatar className="size-20 border-2 border-white/15">

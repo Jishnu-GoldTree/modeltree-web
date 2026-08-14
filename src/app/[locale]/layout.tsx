@@ -9,6 +9,7 @@ import "../globals.css";
 import { SITE } from "@/lib/data/landing";
 import { LOCALE_DIR, routing, type Locale } from "@/i18n/routing";
 import { Providers } from "@/components/providers";
+import { SkipLink } from "@/components/layout/skip-link";
 import { Toaster } from "@/components/layout/toaster";
 import { FlashToast } from "@/components/layout/flash-toast";
 
@@ -123,6 +124,7 @@ export default async function LocaleLayout({
       <body className="flex min-h-full flex-col bg-background">
         <NextIntlClientProvider>
           <Providers>
+            <SkipLink />
             {children}
             <Toaster />
             <FlashToast />

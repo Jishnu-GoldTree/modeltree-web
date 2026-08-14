@@ -32,9 +32,15 @@ export async function WhatsAppButton({
           : "h-10 w-full"
       }
     >
-      <a href={url} target="_blank" rel="noopener noreferrer">
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={t("waOpen")}
+      >
         <MessageCircle className="size-4" aria-hidden />
         {t("waOpen")}
+        <span className="sr-only"> ({t("waOpenNewTab")})</span>
       </a>
     </Button>
   )
