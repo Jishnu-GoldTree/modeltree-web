@@ -4,8 +4,24 @@ import { cn } from "@/lib/utils";
 import { SITE } from "@/lib/data/landing";
 
 /**
- * MODELTREE wordmark. The glyph is an isometric cube drawn as three rhombus
- * faces — the build volume every model sits in.
+ * MODELTREE wordmark.
+ *
+ * The glyph is the same solitaire the admin uses in its sidebar header —
+ * identical paths, identical viewBox — so the two products carry one mark.
+ * Seen from the side rather than in plan: table and crown above the girdle, the
+ * pavilion falling to a point below it, drawn as a wireframe.
+ *
+ * It replaced an isometric cube, the build volume every model sits in. That was
+ * an honest mark for a general 3D marketplace and said nothing about this one.
+ * The business is jewellery, and what it actually trades in is geometry, so the
+ * mark is a stone drawn the way a CAD file draws one.
+ *
+ * Strokes are currentColor, and `tone` picks it:
+ *
+ *   light — on the ink header, gold, exactly as the admin sidebar renders it.
+ *   dark  — on white, gold measures 2.01:1 and a hairline wireframe in it
+ *           disappears, so the glyph takes the foreground ink instead. Same
+ *           geometry, legible ground. Only the colour differs between the two.
  */
 export function Logo({
   className,
@@ -24,26 +40,24 @@ export function Logo({
       )}
     >
       <svg
-        viewBox="0 0 32 32"
-        className="size-7 shrink-0"
-        aria-hidden
+        viewBox="0 0 24 24"
         fill="none"
+        aria-hidden
+        className={cn(
+          "size-7 shrink-0",
+          tone === "light" ? "text-brand" : "text-foreground",
+        )}
       >
         <path
-          d="M16 2.5 29 10v12L16 29.5 3 22V10L16 2.5Z"
-          fill="currentColor"
-          opacity={0.14}
-        />
-        <path d="M16 2.5 29 10 16 17.5 3 10 16 2.5Z" fill="var(--brand)" />
-        <path
-          d="M3 10v12l13 7.5V17.5L3 10Z"
-          fill="currentColor"
-          opacity={0.75}
+          d="M4 9.5 12 3l8 6.5-8 12-8-12Z"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
         />
         <path
-          d="M29 10v12l-13 7.5V17.5L29 10Z"
-          fill="currentColor"
-          opacity={0.45}
+          d="M4 9.5h16M12 3 8.5 9.5 12 21.5 15.5 9.5 12 3Z"
+          stroke="currentColor"
+          strokeWidth="1.2"
         />
       </svg>
       <span
