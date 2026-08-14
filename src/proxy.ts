@@ -28,7 +28,22 @@ const intlProxy = createIntlProxy(routing)
  * just skip locale handling.
  */
 function isNonLocalisedRoute(pathname: string) {
-  return pathname.startsWith("/api/") || pathname.startsWith("/auth/")
+  return (
+    pathname.startsWith("/api/") ||
+    pathname.startsWith("/auth/") ||
+    isMetadataImage(pathname)
+  )
+}
+
+/**
+ * Share cards live under `[locale]`, so their URLs carry a locale segment even
+ * for the default one — `/he/opengraph-image/default`. Left to next-intl that
+ * gets redirected to the unprefixed `/opengraph-image/default`, which matches
+ * no route, and the Hebrew card 404s for every crawler that follows the
+ * og:image tag. Serving these paths verbatim is the whole fix.
+ */
+function isMetadataImage(pathname: string) {
+  return /\/(opengraph-image|twitter-image)(\/|$)/.test(pathname)
 }
 
 export async function proxy(request: NextRequest) {
