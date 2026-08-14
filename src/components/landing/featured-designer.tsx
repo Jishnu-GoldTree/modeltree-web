@@ -86,6 +86,7 @@ export function FeaturedDesigner() {
             <li key={work.seed}>
               <Link
                 href={`/3d-models/${work.seed}`}
+                title={t(work.key)}
                 className="group block overflow-hidden rounded-xl border outline-none focus-visible:ring-3 focus-visible:ring-brand/50"
               >
                 <Thumb

@@ -45,7 +45,7 @@ export default async function SellPage() {
     <>
       <SiteHeader solid />
 
-      <main className="flex-1 pt-16">
+      <main id="main-content" className="flex-1 pt-16">
         <section className="relative overflow-hidden border-b bg-ink">
           <Thumb seed="sell-hero" className="absolute inset-0 opacity-30 blur-[1px]" />
           <div className="shell relative py-16 md:py-24">

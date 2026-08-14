@@ -27,7 +27,7 @@ export default async function SignupPage() {
   const t = await getTranslations("auth")
   const aside = await getTranslations("authAside")
   return (
-    <main className="grid min-h-svh lg:grid-cols-2">
+    <main id="main-content" className="grid min-h-svh lg:grid-cols-2">
       <aside className="relative hidden flex-col justify-between overflow-hidden bg-ink p-10 text-white lg:flex">
         <Thumb
           seed="modeltree-signup"

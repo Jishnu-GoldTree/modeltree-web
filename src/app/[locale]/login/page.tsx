@@ -54,7 +54,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/[locale]/l
       : undefined
 
   return (
-    <main className="grid min-h-svh lg:grid-cols-2">
+    <main id="main-content" className="grid min-h-svh lg:grid-cols-2">
       {/* Brand panel — decorative, so it's hidden rather than stacked on
           mobile, where it would push the form below the fold. */}
       <aside className="relative hidden flex-col justify-between overflow-hidden bg-ink p-10 text-white lg:flex">
