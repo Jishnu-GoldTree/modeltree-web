@@ -561,6 +561,20 @@
     "priceIls": "Price (₪)",
     "priceHintIls": "Leave at 0 to give it away. Prices are in shekels."
   },
+  "upload": {
+    "filesLegend": "Model files",
+    "filesHint": "Pick a format, then attach the file. Uploads go straight to storage — a large Rhino file will not slow the page.",
+    "imagesLegend": "Preview images",
+    "imagesHint": "Up to {max} images. The first is used as the thumbnail.",
+    "addImages": "Add preview images",
+    "imagesFormats": "JPG, PNG or WebP up to 10 MB each",
+    "uploading": "Uploading",
+    "uploaded": "Uploaded",
+    "failed": "Upload failed",
+    "uploadFailed": "Could not upload {name}",
+    "removeImage": "Remove image",
+    "publishNote": "Publishing queues the listing for processing once file uploads complete."
+  },
   "profileForm": {
     "name": "Name",
     "handle": "Handle",
