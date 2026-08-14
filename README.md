@@ -63,7 +63,50 @@ perspective grid floor, lit subject. Hues are constrained to a cool band so a
 full grid reads as one system. Replace `<Thumb>` with `next/image` once real
 renders exist — the seed field on each record can go away with it.
 
+## Cloudflare R2 uploads
+
+Model files and preview images upload directly from the browser to R2 via
+presigned PUT URLs — the app server never sees the bytes, so a 500 MB Rhino
+file bypasses the Vercel Function body limit entirely.
+
+Required env vars (see `.env.local`):
+
+| Var                    | Meaning                                                    |
+| ---------------------- | ---------------------------------------------------------- |
+| `R2_ACCOUNT_ID`        | Cloudflare account id — used to derive the S3 endpoint.    |
+| `R2_ACCESS_KEY_ID`     | R2 API token access key.                                   |
+| `R2_SECRET_ACCESS_KEY` | R2 API token secret.                                       |
+| `R2_BUCKET`            | Bucket name. Keep model files private.                     |
+| `R2_PUBLIC_BASE_URL`   | Public base for preview images (custom domain or Worker).  |
+
+**Bucket CORS** must allow PUT from the dev and production origins, e.g.:
+
+```json
+[
+  {
+    "AllowedOrigins": ["http://localhost:3001", "https://modeltree.com"],
+    "AllowedMethods": ["PUT"],
+    "AllowedHeaders": ["Content-Type"],
+    "ExposeHeaders": ["ETag"],
+    "MaxAgeSeconds": 3600
+  }
+]
+```
+
+**Storage layout:**
+
+```
+models/<userId>/<uploadId>/<format>.<ext>   private — signed download only
+images/<userId>/<uploadId>/<position>.<ext> public via R2_PUBLIC_BASE_URL
+```
+
+`<userId>` is enforced by the presign endpoint (`src/app/api/uploads/presign/route.ts`)
+so a signed-in designer cannot target another designer's namespace. The
+`<uploadId>` is a UUID minted by the listing form, so a whole draft cleans up
+as a single prefix delete.
+
 ## Next up
 
 Catalog browse + filters, model detail page, designer storefronts, auth,
-upload/publishing flow, cart and checkout.
+cart and checkout, and the file-serving side of R2 (signed downloads,
+preview image URLs).
