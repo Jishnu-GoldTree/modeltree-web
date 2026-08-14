@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import type { User as SupabaseUser } from "@supabase/supabase-js"
 
 import { createClient } from "@/lib/supabase/client"
+import { useViewer } from "@/lib/queries/viewer"
 import {
   Heart,
   LogOut,
@@ -30,8 +31,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+/**
+ * `designerOnly` keeps the seller's home out of a buyer's menu. It sits first
+ * because for a designer it is the primary destination; a buyer never sees it
+ * and starts at their profile.
+ */
 const LINKS = [
-  { href: "/dashboard", key: "dashboard", Icon: Store },
+  { href: "/dashboard", key: "dashboard", Icon: Store, designerOnly: true },
   { href: "/profile", key: "profile", Icon: User },
   { href: "/profile#purchases", key: "purchases", Icon: Package },
   { href: "/requests", key: "requests", Icon: MessagesSquare },
@@ -48,6 +54,7 @@ const LINKS = [
  */
 export function AccountMenu() {
   const t = useTranslations("nav")
+  const { data: viewer } = useViewer()
   const [user, setUser] = useState<SupabaseUser | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -118,7 +125,11 @@ export function AccountMenu() {
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {LINKS.map(({ href, key, Icon }) => (
+        {LINKS.filter(
+          // Undefined while the account type is still loading, so the item
+          // stays hidden rather than flashing in and out for a buyer.
+          (link) => !("designerOnly" in link) || viewer?.accountType === "designer",
+        ).map(({ href, key, Icon }) => (
           <DropdownMenuItem key={href} asChild>
             <Link href={href}>
               <Icon className="size-4" aria-hidden />
