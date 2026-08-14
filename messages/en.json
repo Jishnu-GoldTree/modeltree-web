@@ -819,5 +819,15 @@
     "waGreeting": "Hi, I opened a request on ModelTree:",
     "waUnavailable": "WhatsApp is not configured yet. The team will pick this up from the request queue.",
     "kindLabel": "What kind of request?"
+  },
+  "languagePrompt": {
+    "title": "Choose your language",
+    "body": "The site is available in Hebrew and English. You can change this any time from the header."
+  },
+  "cookies": {
+    "label": "Cookie notice",
+    "body": "We use cookies to keep you signed in and to remember your cart, saved models and language. No tracking or advertising cookies.",
+    "learnMore": "Learn more",
+    "accept": "Got it"
   }
 }

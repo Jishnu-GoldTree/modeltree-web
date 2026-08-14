@@ -13,6 +13,7 @@ import { SkipLink } from "@/components/layout/skip-link";
 import { Toaster } from "@/components/layout/toaster";
 import { FlashToast } from "@/components/layout/flash-toast";
 import { NewListingFab } from "@/components/layout/new-listing-fab";
+import { VisitorPrompts } from "@/components/layout/visitor-prompts";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -130,6 +131,7 @@ export default async function LocaleLayout({
             <Toaster />
             <FlashToast />
             <NewListingFab />
+            <VisitorPrompts />
           </Providers>
         </NextIntlClientProvider>
       </body>
