@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl"
 
 import type { CategoryTile } from "@/lib/data/landing"
 import { Thumb } from "@/components/marketplace/thumb"
+import { TileLabel } from "@/components/marketplace/tile-label"
 import { SectionHeading } from "@/components/landing/section-heading"
 
 /**
@@ -84,11 +85,7 @@ export function CategoryExplorer({
                   index === 0 ? "aspect-4/3 lg:aspect-auto lg:h-full" : "aspect-4/3"
                 )}
               >
-                <div className="relative flex w-full items-center justify-between gap-2">
-                  <span className="text-sm font-medium text-white drop-shadow">
-                    {t(`categories.${category.key}`)}
-                  </span>
-                </div>
+                <TileLabel>{t(`categories.${category.key}`)}</TileLabel>
               </Thumb>
             </Link>
           </li>

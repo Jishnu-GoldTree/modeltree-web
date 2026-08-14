@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { SearchForm } from "@/components/forms/search-form"
 import { Thumb } from "@/components/marketplace/thumb"
+import { TileLabel } from "@/components/marketplace/tile-label"
 import { Button } from "@/components/ui/button"
 
 /**
@@ -78,11 +79,7 @@ export default async function NotFound() {
                   sizes="(min-width: 640px) 25vw, 50vw"
                   className="flex aspect-4/3 items-end p-3 transition-transform duration-300 group-hover:scale-[1.03]"
                 >
-                  <div className="relative flex w-full items-center justify-between gap-2">
-                    <span className="text-sm font-medium text-white drop-shadow">
-                      {cat(`categories.${category.key}`)}
-                    </span>
-                  </div>
+                  <TileLabel>{cat(`categories.${category.key}`)}</TileLabel>
                 </Thumb>
               </Link>
             </li>
