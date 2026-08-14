@@ -55,13 +55,15 @@ export type CatalogModel = ModelCard & {
 }
 
 /**
- * Deliverable formats. Native CAD project files (Rhino, Matrix, 3Design) were
- * on this list and came off at the client's request — what changes hands is an
- * interchange or print file, not the modeler's working document.
+ * Deliverable formats, named by extension rather than by the software that
+ * writes them. Matrix and 3Design came off the list; 3DM is here because a
+ * jeweler asks for the file, not for "Rhino".
  */
 export const FORMATS = [
   { value: "stl", label: "STL" },
   { value: "obj", label: "OBJ" },
+  { value: "fbx", label: "FBX" },
+  { value: "3dm", label: "3DM" },
   { value: "3mf", label: "3MF" },
   { value: "step", label: "STEP" },
   { value: "max", label: "3ds Max" },
