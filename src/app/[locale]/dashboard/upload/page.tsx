@@ -1,6 +1,8 @@
 import { getLocale } from "next-intl/server"
 
-import { redirect } from "@/i18n/navigation"
+import { ArrowLeft } from "lucide-react"
+
+import { Link, redirect } from "@/i18n/navigation"
 
 import { getCurrentUser } from "@/lib/supabase/server"
 import { getCategoryOptions, getLicenseOptionsForForm } from "@/lib/data/designer"
@@ -34,7 +36,15 @@ export default async function UploadPage() {
 
       <main className="flex-1 pt-16">
         <div className="shell max-w-3xl py-10">
-          <h1 className="text-2xl font-semibold tracking-tight">{t("newTitle")}</h1>
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-1.5 rounded-md text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-brand/50"
+          >
+            <ArrowLeft className="size-4 rtl:-scale-x-100" aria-hidden />
+            {t("backToDashboard")}
+          </Link>
+
+          <h1 className="mt-5 text-2xl font-semibold tracking-tight">{t("newTitle")}</h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
             {t("newBody")}
           </p>

@@ -563,7 +563,8 @@
     "weight": "Metal weight (g)",
     "size": "Size (mm)",
     "priceIls": "Price (₪)",
-    "priceHintIls": "Leave at 0 to give it away. Prices are in shekels."
+    "priceHintIls": "Leave at 0 to give it away. Prices are in shekels.",
+    "backToDashboard": "Back to dashboard"
   },
   "upload": {
     "filesLegend": "Model files",

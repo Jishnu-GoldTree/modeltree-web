@@ -1,6 +1,8 @@
 import { getLocale, getTranslations } from "next-intl/server"
 
-import { redirect } from "@/i18n/navigation"
+import { ArrowLeft } from "lucide-react"
+
+import { Link, redirect } from "@/i18n/navigation"
 import type { Locale } from "@/i18n/routing"
 import { getCurrentUser } from "@/lib/supabase/server"
 import { getAdjustableModels } from "@/lib/data/requests"
@@ -31,7 +33,15 @@ export default async function NewRequestPage({
 
       <main className="flex-1 pt-16">
         <div className="shell max-w-2xl py-10">
-          <h1 className="text-2xl font-semibold tracking-tight">{t("new")}</h1>
+          <Link
+            href="/requests"
+            className="inline-flex items-center gap-1.5 rounded-md text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-brand/50"
+          >
+            <ArrowLeft className="size-4 rtl:-scale-x-100" aria-hidden />
+            {t("back")}
+          </Link>
+
+          <h1 className="mt-5 text-2xl font-semibold tracking-tight">{t("new")}</h1>
           <p className="mt-1.5 text-sm text-muted-foreground">{t("subtitle")}</p>
 
           <div className="mt-8">

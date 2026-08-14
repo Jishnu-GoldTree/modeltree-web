@@ -157,9 +157,13 @@ export function SiteHeader({ solid = false }: { solid?: boolean }) {
           <HeaderBadges />
           <LocaleSwitcher />
 
+          {/* data-vertical:self-center, not self-center: the base separator
+              style sets data-vertical:self-stretch, which wins on specificity
+              and makes the rule stretch to the line box before !h-5 caps it at
+              20px — leaving it sitting 6px above the avatar's centre. */}
           <Separator
             orientation="vertical"
-            className="mx-2 hidden !h-5 bg-white/20 sm:block"
+            className="mx-2 hidden !h-5 bg-white/20 data-vertical:self-center sm:block"
           />
 
           <AccountMenu />
