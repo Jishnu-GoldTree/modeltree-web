@@ -18,7 +18,8 @@
     "logOut": "Log out",
     "account": "Account",
     "menu": "Menu",
-    "production": "Production"
+    "production": "Production",
+    "requests": "Requests"
   },
   "locale": {
     "label": "Language",
@@ -291,7 +292,8 @@
     "signedIn": "Signed in. Taking you through",
     "signInFailed": "Check your email and password",
     "signedOut": "Signed out",
-    "subscribed": "You're subscribed"
+    "subscribed": "You're subscribed",
+    "requestOpened": "Request sent to the modelling team"
   },
   "landing": {
     "navChildren": {
@@ -728,7 +730,7 @@
     "eyebrow": "Modelling team",
     "title": "Talk to a modeler, not a ticket queue",
     "subtitle": "Every model here was built by our own modelers, and you can reach them. Whether a stone seat needs to move a millimetre or a customer wants something that does not exist yet, it starts as a chat.",
-    "primaryCta": "Browse models to adjust",
+    "primaryCta": "Open a request",
     "secondaryCta": "See membership",
     "adjustEyebrow": "Adjustment",
     "adjustTitle": "Change a model you already own",
@@ -756,10 +758,10 @@
     "memberTitle": "Members pay less for edits",
     "memberBody": "Membership includes two models a month and member rates on every adjustment. If you are sending work regularly, it pays for itself.",
     "memberCta": "See membership",
-    "soonTitle": "Chat is being built",
-    "soonBody": "The in-app chat is not live yet. Until it is, requests go through the contact details on the marketplace and a modeler will pick them up.",
-    "adjustCta": "Browse models you own",
-    "newCta": "Browse the catalog first"
+    "adjustCta": "Request an adjustment",
+    "newCta": "Commission a piece",
+    "howItWorksTitle": "How the conversation runs.",
+    "howItWorksBody": "You open a request here so the brief, the quote and the status stay on your account. The back-and-forth happens on WhatsApp, where the modelling team answers fastest."
   },
   "membership": {
     "badge": "Membership",
@@ -769,6 +771,51 @@
     "headerCta": "Membership",
     "stripTitle": "Two of these a month, free",
     "stripBody": "₪55 a month, any two pieces in the catalog, licences yours to keep.",
-    "stripCta": "See membership"
+    "stripCta": "See membership",
+    "adjustCta": "Need this adjusted?"
+  },
+  "requests": {
+    "metaTitle": "Custom work requests",
+    "title": "Your requests",
+    "subtitle": "Adjustments and commissions with GoldTree's modelling team.",
+    "queueTitle": "Request queue",
+    "queueSubtitle": "Open requests from buyers, newest first.",
+    "empty": "No requests yet",
+    "emptyBody": "Ask for a ring resize on a model you own, or commission a piece from scratch.",
+    "new": "New request",
+    "openAdjustment": "Request an adjustment",
+    "openCommission": "Commission a piece",
+    "kindAdjustment": "Adjustment",
+    "kindCommission": "Commission",
+    "statusOpen": "Awaiting quote",
+    "statusQuoted": "Quoted",
+    "statusAccepted": "Accepted",
+    "statusDelivered": "Delivered",
+    "statusClosed": "Closed",
+    "statusDeclined": "Declined",
+    "titleLabel": "What do you need?",
+    "titlePlaceholder": "Resize to 54, keep the stone seat",
+    "briefLabel": "Describe it",
+    "briefPlaceholder": "Ring size, stone dimensions, metal, anything the modeler should know.",
+    "modelLabel": "Which model?",
+    "modelPlaceholder": "Choose a model you own",
+    "noOwnedModels": "You have no purchased models to adjust yet.",
+    "submit": "Send request",
+    "back": "Back to requests",
+    "brief": "Brief",
+    "quote": "Quote",
+    "quoteLabel": "Your price (₪)",
+    "quoteSubmit": "Send quote",
+    "quoted": "Quoted at {amount}",
+    "accept": "Accept quote",
+    "accepted": "Quote accepted",
+    "opened": "Opened {date}",
+    "adjustmentHint": "Adjusting a model you already own costs a fraction of a new one.",
+    "waTitle": "Continue on WhatsApp",
+    "waBody": "The modelling team answers on WhatsApp. Your request reference is already in the message, so they know which piece you mean.",
+    "waOpen": "Open WhatsApp",
+    "waGreeting": "Hi, I opened a request on ModelTree:",
+    "waUnavailable": "WhatsApp is not configured yet. The team will pick this up from the request queue.",
+    "kindLabel": "What kind of request?"
   }
 }

@@ -11,6 +11,7 @@ import {
   Download,
   FileBox,
   Gem,
+  Ruler,
   Heart,
   ShieldCheck,
   Star,
@@ -293,6 +294,14 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                 {/* Priced next to the price, which is the only place the
                     comparison lands: a buyer deciding on this model is exactly
                     who the membership is for. */}
+                <Link
+                  href={`/requests/new?kind=adjustment&model=${model.id}`}
+                  className="mt-3 flex items-center justify-center gap-2 rounded-lg border p-2.5 text-xs font-medium outline-none transition-colors hover:bg-accent focus-visible:ring-3 focus-visible:ring-brand/50"
+                >
+                  <Ruler className="size-3.5 text-brand-accent" aria-hidden />
+                  {member("adjustCta")}
+                </Link>
+
                 <Link
                   href="/pricing"
                   className="mt-4 flex items-start gap-2.5 rounded-lg border border-brand bg-brand-muted p-3 outline-none transition-colors hover:bg-brand-muted/70 focus-visible:ring-3 focus-visible:ring-brand/50"

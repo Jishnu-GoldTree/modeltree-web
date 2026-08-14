@@ -7,7 +7,8 @@ import { useEffect, useState } from "react"
 import type { User as SupabaseUser } from "@supabase/supabase-js"
 
 import { createClient } from "@/lib/supabase/client"
-import { Heart, LayoutDashboard, LogOut, Package, User } from "lucide-react"
+import { Heart,
+  MessagesSquare, LayoutDashboard, LogOut, Package, User } from "lucide-react"
 
 import { signOutAction } from "@/lib/actions/auth"
 
@@ -26,6 +27,7 @@ import {
 const LINKS = [
   { href: "/profile", key: "profile", Icon: User },
   { href: "/profile#purchases", key: "purchases", Icon: Package },
+  { href: "/requests", key: "requests", Icon: MessagesSquare },
   { href: "/favorites", key: "saved", Icon: Heart },
   { href: "/dashboard", key: "dashboard", Icon: LayoutDashboard },
 ] as const
