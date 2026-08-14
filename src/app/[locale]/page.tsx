@@ -1,11 +1,6 @@
 import { getTranslations } from "next-intl/server";
 
-import {
-  ASSET_CATEGORIES,
-  ASSET_TABS,
-  PRINT_CATEGORIES,
-  PRINT_TABS,
-} from "@/lib/data/landing";
+import { ASSET_CATEGORIES, ASSET_TABS } from "@/lib/data/landing";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { Hero } from "@/components/landing/hero";
@@ -39,19 +34,7 @@ export default async function HomePage() {
           categories={ASSET_CATEGORIES}
           categoryBase="/3d-models"
           action={{ label: t("assetsAction"), href: "/3d-models" }}
-          footerAction={{ label: t("showAll"), href: "/categories" }}
-        />
-
-        <CategoryExplorer
-          title={t("printTitle")}
-          description={t("printDescription")}
-          chips={PRINT_TABS}
-          chipNamespace="printTabs"
-          chipBase="/3d-print-models"
-          categories={PRINT_CATEGORIES}
-          categoryBase="/3d-print-models"
-          action={{ label: t("printAction"), href: "/3d-print-models" }}
-          footerAction={{ label: t("showAll"), href: "/categories?type=print" }}
+          footerAction={{ label: t("showAll"), href: "/3d-models" }}
         />
 
         <Collections />

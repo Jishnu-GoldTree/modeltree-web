@@ -43,8 +43,16 @@ function rng(seed: number) {
   }
 }
 
-/** Vivid, well-separated hues. Cards pick a few each, never the whole set. */
-const HUES = [188, 258, 22, 340, 150, 45, 210, 300]
+/**
+ * Metal hues, not the vivid spectrum this used to carry.
+ *
+ * The old set (magenta, cyan, orange, violet) was neon against a gold brand and
+ * read as generic 3D filler on a jewellery catalog. These sit in the warm metal
+ * band — yellow gold, rose, champagne, bronze — with two cool greys so a wall
+ * of tiles does not turn into a single amber block. Saturation is pulled down
+ * at the call sites for the same reason.
+ */
+const HUES = [44, 38, 28, 16, 50, 34, 214, 220]
 
 const flat = (h: number, s: number, l: number) => `hsl(${h} ${s}% ${l}%)`
 
@@ -73,9 +81,9 @@ function IsoBlock({
     <g
       transform={`translate(${x - 16 * scale} ${baseY - 29.5 * scale}) scale(${scale})`}
     >
-      <path d="M16 2.5 29 10 16 17.5 3 10Z" fill={flat(hue, 74, 63)} />
-      <path d="M3 10v12l13 7.5V17.5Z" fill={flat(hue, 66, 45)} />
-      <path d="M29 10v12l-13 7.5V17.5Z" fill={flat(hue, 62, 31)} />
+      <path d="M16 2.5 29 10 16 17.5 3 10Z" fill={flat(hue, 46, 66)} />
+      <path d="M3 10v12l13 7.5V17.5Z" fill={flat(hue, 40, 47)} />
+      <path d="M29 10v12l-13 7.5V17.5Z" fill={flat(hue, 36, 32)} />
     </g>
   )
 }
@@ -121,25 +129,25 @@ function SeededArt({ seed, grid }: { seed: string; grid: boolean }) {
       className="absolute inset-0 size-full"
       aria-hidden
     >
-      <rect width={VIEW_W} height={VIEW_H} fill={flat(stageHue, 26, 13)} />
+      <rect width={VIEW_W} height={VIEW_H} fill={flat(stageHue, 14, 12)} />
 
       <circle
         cx={accentX}
         cy={92}
         r={accentR}
-        fill={flat(accentHue, 48, 26)}
+        fill={flat(accentHue, 26, 24)}
       />
 
       <rect
         y={floorY}
         width={VIEW_W}
         height={VIEW_H - floorY}
-        fill={flat(stageHue, 24, 9)}
+        fill={flat(stageHue, 12, 8)}
       />
 
       {grid && (
         <g
-          stroke={flat(stageHue, 30, 46)}
+          stroke={flat(stageHue, 16, 42)}
           strokeWidth={1}
           opacity={0.5}
         >
@@ -177,7 +185,7 @@ function SeededArt({ seed, grid }: { seed: string; grid: boolean }) {
             cy={block.baseY + 2}
             rx={13 * block.scale}
             ry={3.4 * block.scale}
-            fill={flat(stageHue, 30, 6)}
+            fill={flat(stageHue, 14, 6)}
             opacity={0.55}
           />
           <IsoBlock

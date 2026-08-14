@@ -8,7 +8,10 @@ import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { Thumb } from "@/components/marketplace/thumb"
 import { Button } from "@/components/ui/button"
-import { getTranslations } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
+
+import { formatPrice } from "@/lib/money"
+import type { Locale } from "@/i18n/routing"
 
 export async function generateMetadata({
   params,
@@ -18,10 +21,15 @@ export async function generateMetadata({
   return { title: t("title") }
 }
 
-const money = (value: number) =>
-  value === 0 ? "Free" : `$${value.toLocaleString("en-US")}`
+
 
 export default async function CartPage() {
+  const locale = await getLocale()
+  const free = await getTranslations("catalog")
+  // Shekels are the stored currency; formatPrice adds the indicative $ for
+  // English readers and omits it in Hebrew.
+  const money = (agorot: number) =>
+    formatPrice(agorot, locale as Locale, { freeLabel: free("free") }).primary
   const t = await getTranslations("cart")
   const lic = await getTranslations("license")
   const { lines, subtotal, itemCount, total } = await getCart()
@@ -113,7 +121,7 @@ export default async function CartPage() {
                               >
                                 {options.map((option) => (
                                   <option key={option.id} value={option.id}>
-                                    {lic(option.id)} ({money(option.price)})
+                                    {lic(option.id)} ({money(option.price * 100)})
                                   </option>
                                 ))}
                               </select>
@@ -133,7 +141,7 @@ export default async function CartPage() {
 
                       <div className="flex flex-col items-end justify-between gap-3">
                         <span className="font-semibold tabular-nums">
-                          {money(line.price)}
+                          {money(line.price * 100)}
                         </span>
                         <form action={removeFromCart}>
                           <input type="hidden" name="slug" value={line.model.slug} />
@@ -161,7 +169,7 @@ export default async function CartPage() {
                       <dt className="text-muted-foreground">
                         {t("subtotal", { count: itemCount })}
                       </dt>
-                      <dd className="tabular-nums">{money(subtotal)}</dd>
+                      <dd className="tabular-nums">{money(subtotal * 100)}</dd>
                     </div>
                     <div className="flex justify-between gap-4">
                       <dt className="text-muted-foreground">{t("tax")}</dt>
@@ -172,7 +180,7 @@ export default async function CartPage() {
                   <div className="mt-4 flex items-baseline justify-between border-t pt-4">
                     <span className="font-semibold">{t("total")}</span>
                     <span className="text-2xl font-semibold tracking-tight tabular-nums">
-                      {money(total)}
+                      {money(total * 100)}
                     </span>
                   </div>
 

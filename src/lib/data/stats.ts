@@ -44,3 +44,24 @@ export async function getMarketplaceStats(): Promise<MarketplaceStats> {
     ),
   }
 }
+
+/**
+ * Live counts per metal and per stone, for the landing page's browse lists.
+ *
+ * One query, grouped in memory: eleven `head: true` counts would be eleven
+ * round trips to render one card.
+ */
+export async function getFacetCounts() {
+  const { data } = await supabasePublic
+    .from("models")
+    .select("metal, stone")
+    .eq("status", "published")
+
+  const metals: Record<string, number> = {}
+  const stones: Record<string, number> = {}
+  for (const row of data ?? []) {
+    metals[row.metal] = (metals[row.metal] ?? 0) + 1
+    stones[row.stone] = (stones[row.stone] ?? 0) + 1
+  }
+  return { metals, stones }
+}

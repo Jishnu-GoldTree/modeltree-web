@@ -28,7 +28,7 @@ export async function PromoBanner() {
           className="absolute inset-0 opacity-70"
           style={{
             backgroundImage:
-              "radial-gradient(at 90% 20%, oklch(0.93 0.05 300) 0px, transparent 55%), radial-gradient(at 10% 90%, oklch(0.95 0.04 200) 0px, transparent 50%)",
+              "radial-gradient(at 90% 20%, oklch(0.95 0.035 85) 0px, transparent 55%), radial-gradient(at 10% 90%, oklch(0.96 0.022 65) 0px, transparent 50%)",
           }}
         />
 

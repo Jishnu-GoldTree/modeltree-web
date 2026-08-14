@@ -1,4 +1,7 @@
-import { getTranslations } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
+
+import { formatPrice } from "@/lib/money"
+import type { Locale } from "@/i18n/routing"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { Download, Plus, Star, Trash2, Wallet } from "lucide-react"
@@ -21,8 +24,7 @@ export async function generateMetadata({
   return { title: t("title") }
 }
 
-const money = (cents: number) =>
-  cents === 0 ? "Free" : `$${(cents / 100).toLocaleString("en-US")}`
+
 
 const STATUS_STYLE: Record<string, string> = {
   published: "bg-brand-muted text-brand-accent",
@@ -33,6 +35,12 @@ const STATUS_STYLE: Record<string, string> = {
 }
 
 export default async function DashboardPage() {
+  const locale = await getLocale()
+  const free = await getTranslations("catalog")
+  // Shekels are the stored currency; formatPrice adds the indicative $ for
+  // English readers and omits it in Hebrew.
+  const money = (agorot: number) =>
+    formatPrice(agorot, locale as Locale, { freeLabel: free("free") }).primary
   const user = await getCurrentUser()
   if (!user) redirect("/login?next=/dashboard")
 

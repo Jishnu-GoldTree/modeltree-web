@@ -8,7 +8,7 @@ import { Info, Loader2, UploadCloud } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { createListing, type ListingState } from "@/lib/actions/models"
-import { FORMATS } from "@/lib/data/catalog"
+import { FORMATS, METALS, PRODUCTION, STONES } from "@/lib/data/catalog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -25,6 +25,38 @@ import { Label } from "@/components/ui/label"
 function FieldError({ message }: { message?: string }) {
   if (!message) return null
   return <p className="text-xs text-destructive">{message}</p>
+}
+
+/** The three jewellery enums render identically; one component, three uses. */
+function Select({
+  name,
+  label,
+  options,
+  prefix,
+}: {
+  name: string
+  label: string
+  options: readonly string[]
+  prefix: string
+}) {
+  const facet = useTranslations("facet")
+  return (
+    <div className="flex flex-col gap-1.5">
+      <Label htmlFor={name}>{label}</Label>
+      <select
+        id={name}
+        name={name}
+        defaultValue={options[options.length - 1]}
+        className="h-10 rounded-lg border bg-transparent px-3 text-sm outline-none focus-visible:ring-3 focus-visible:ring-brand/50"
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {facet(`${prefix}.${option}`)}
+          </option>
+        ))}
+      </select>
+    </div>
+  )
 }
 
 function SubmitButtons({ publish, draft }: { publish: string; draft: string }) {
@@ -140,7 +172,7 @@ export function ListingForm({
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="price">{t("price")}</Label>
+          <Label htmlFor="price">{t("priceIls")}</Label>
           <Input
             id="price"
             name="price"
@@ -150,7 +182,7 @@ export function ListingForm({
             defaultValue={0}
             className="h-10"
           />
-          <p className="text-xs text-muted-foreground">{t("priceHint")}</p>
+          <p className="text-xs text-muted-foreground">{t("priceHintIls")}</p>
           <FieldError message={state.fieldErrors?.price} />
         </div>
       </div>
@@ -208,23 +240,17 @@ export function ListingForm({
           <FieldError message={state.fieldErrors?.polygons} />
         </div>
 
-        <fieldset className="flex flex-col gap-2">
-          <legend className="mb-1 text-sm font-medium">{t("features")}</legend>
-          {[
-            { name: "rigged", label: "Rigged" },
-            { name: "animated", label: "Animated" },
-            { name: "pbr", label: "PBR materials" },
-          ].map((f) => (
-            <label key={f.name} className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                name={f.name}
-                className="size-4 rounded border-input accent-brand"
-              />
-              {f.label}
-            </label>
-          ))}
-        </fieldset>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="weightGrams">{t("weight")}</Label>
+          <Input id="weightGrams" name="weightGrams" type="number" min={0} step="0.01" placeholder="3.4" className="h-10" />
+          <FieldError message={state.fieldErrors?.weightGrams} />
+        </div>
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-3">
+        <Select name="metal" label={t("metal")} options={METALS} prefix="metal" />
+        <Select name="stone" label={t("stone")} options={STONES} prefix="stone" />
+        <Select name="production" label={t("production")} options={PRODUCTION} prefix="production" />
       </div>
 
       <p className="flex items-start gap-2 rounded-lg border bg-muted/40 p-3 text-xs text-muted-foreground">

@@ -7,6 +7,7 @@ import { withFlash } from "@/lib/flash"
 import { z } from "zod"
 
 import { createClient, getCurrentUser } from "@/lib/supabase/server"
+import { METALS, PRODUCTION, STONES } from "@/lib/data/catalog"
 
 /**
  * Designer-side writes.
@@ -32,9 +33,10 @@ const listingSchema = z.object({
   price: z.coerce.number().min(0, "Price cannot be negative").max(10_000),
   formats: z.array(z.string()).min(1, "Select at least one file format"),
   polygons: z.coerce.number().int().min(0).max(100_000_000).optional(),
-  rigged: z.boolean(),
-  animated: z.boolean(),
-  pbr: z.boolean(),
+  metal: z.enum(METALS),
+  stone: z.enum(STONES),
+  production: z.enum(PRODUCTION),
+  weightGrams: z.coerce.number().min(0).max(9999).optional(),
   publish: z.boolean(),
 })
 
@@ -64,9 +66,10 @@ export async function createListing(
     price: formData.get("price") || 0,
     formats: formData.getAll("formats").map(String),
     polygons: formData.get("polygons") || undefined,
-    rigged: formData.get("rigged") === "on",
-    animated: formData.get("animated") === "on",
-    pbr: formData.get("pbr") === "on",
+    metal: formData.get("metal"),
+    stone: formData.get("stone"),
+    production: formData.get("production"),
+    weightGrams: formData.get("weightGrams") || undefined,
     publish: formData.get("publish") === "1",
   })
 
@@ -110,9 +113,10 @@ export async function createListing(
       status: v.publish ? "processing" : "draft",
       price_cents: Math.round(v.price * 100),
       license_code: v.licenseCode,
-      rigged: v.rigged,
-      animated: v.animated,
-      pbr: v.pbr,
+      metal: v.metal,
+      stone: v.stone,
+      production: v.production,
+      weight_grams: v.weightGrams ?? null,
       polygons: v.polygons ?? null,
     })
     .select("id, slug")

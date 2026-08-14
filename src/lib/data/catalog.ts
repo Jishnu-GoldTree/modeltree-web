@@ -19,13 +19,34 @@ import { supabasePublic } from "@/lib/supabase/public"
 
 export type License = "royalty-free" | "editorial" | "extended"
 
+/**
+ * Jewellery facets. These replaced rigged/animated/pbr, which are game-asset
+ * properties: jewellery is dense static geometry, so those filtered nothing.
+ * What a jeweler narrows by is metal, stone and how the piece is produced.
+ */
+export const METALS = [
+  "yellow-gold", "white-gold", "rose-gold", "platinum", "silver", "unspecified",
+] as const
+export const STONES = [
+  "round", "princess", "oval", "emerald", "pear", "marquise", "cushion", "none",
+] as const
+export const PRODUCTION = ["cast", "print", "both"] as const
+
+export type Metal = (typeof METALS)[number]
+export type Stone = (typeof STONES)[number]
+export type Production = (typeof PRODUCTION)[number]
+
 export type CatalogModel = ModelCard & {
   id: string
   category: string
   license: License
-  rigged: boolean
-  animated: boolean
-  pbr: boolean
+  metal: Metal
+  stone: Stone
+  production: Production
+  /** Authoritative amount in agorot. `price` is a major-unit convenience. */
+  priceAgorot: number
+  weightGrams: number | null
+  sizeMm: number | null
   downloads: number
   polygons: number
   vertices: number
@@ -33,17 +54,19 @@ export type CatalogModel = ModelCard & {
   publishedAt: string
 }
 
+/**
+ * Formats a jewellery CAD pipeline actually produces. The previous list was
+ * game-engine exports (Unreal, Unity, glTF) that no jeweler asks for.
+ */
 export const FORMATS = [
-  { value: "obj", label: "OBJ" },
-  { value: "fbx", label: "FBX" },
-  { value: "max", label: "3ds Max" },
   { value: "stl", label: "STL" },
-  { value: "blend", label: "Blender" },
-  { value: "c4d", label: "Cinema 4D" },
-  { value: "ma", label: "Maya" },
-  { value: "gltf", label: "glTF" },
-  { value: "uasset", label: "Unreal Engine" },
-  { value: "unity", label: "Unity 3D" },
+  { value: "3dm", label: "Rhino" },
+  { value: "3ml", label: "3Design" },
+  { value: "mtx", label: "Matrix" },
+  { value: "obj", label: "OBJ" },
+  { value: "3mf", label: "3MF" },
+  { value: "step", label: "STEP" },
+  { value: "max", label: "3ds Max" },
 ] as const
 
 export const SORTS = [
@@ -69,10 +92,9 @@ export type CatalogQuery = {
   format?: string
   price?: "free" | "paid"
   license?: License
-  rigged?: boolean
-  animated?: boolean
-  pbr?: boolean
-  maxPolygons?: number
+  metal?: Metal
+  stone?: Stone
+  production?: Production
   tag?: string
   q?: string
   sort?: SortValue
@@ -83,30 +105,15 @@ export type CatalogQuery = {
  * Path segments under /3d-models that are named filters rather than categories.
  * They exist because the nav already links them.
  */
-export const COLLECTION_SEGMENTS: Record<
-  string,
-  { title: string; description: string; patch: Partial<CatalogQuery> }
-> = {
-  free: {
-    title: "Free 3D models",
-    description: "Zero-cost assets with commercial licensing.",
-    patch: { price: "free" },
-  },
-  rigged: {
-    title: "Rigged 3D models",
-    description: "Production-ready characters and creatures with skeletons.",
-    patch: { rigged: true },
-  },
-  "low-poly": {
-    title: "Low poly 3D models",
-    description: "Game-optimized meshes under 10k triangles.",
-    patch: { maxPolygons: 10_000 },
-  },
-  scanned: {
-    title: "Scanned 3D models",
-    description: "Photogrammetry captures of real-world objects.",
-    patch: { tag: "scanned" },
-  },
+/**
+ * Path segments under /3d-models that are named filters rather than categories.
+ * Titles live in the message catalog (`segment.*`) so both locales get one;
+ * only the query patch belongs in code.
+ */
+export const COLLECTION_SEGMENTS: Record<string, { patch: Partial<CatalogQuery> }> = {
+  free: { patch: { price: "free" } },
+  "cast-ready": { patch: { production: "cast" } },
+  "print-ready": { patch: { production: "print" } },
 }
 
 export type CatalogResult = {
@@ -118,6 +125,8 @@ export type CatalogResult = {
     categories: Record<string, number>
     formats: Record<string, number>
     licenses: Record<string, number>
+    metals: Record<string, number>
+    stones: Record<string, number>
   }
 }
 
@@ -131,9 +140,11 @@ type ModelRow = {
   description: string | null
   price_cents: number
   license_code: License
-  rigged: boolean
-  animated: boolean
-  pbr: boolean
+  metal: Metal
+  stone: Stone
+  production: Production
+  weight_grams: number | null
+  size_mm: number | null
   polygons: number | null
   vertices: number | null
   download_count: number
@@ -148,7 +159,7 @@ type ModelRow = {
 
 const SELECT = `
   id, slug, title, description, price_cents, license_code,
-  rigged, animated, pbr, polygons, vertices,
+  metal, stone, production, weight_grams, size_mm, polygons, vertices,
   download_count, rating, review_count, published_at,
   formats, file_summary,
   categories ( slug ),
@@ -171,9 +182,12 @@ function toModel(row: ModelRow): CatalogModel {
     seed: row.slug,
     category: row.categories?.slug ?? "",
     license: row.license_code,
-    rigged: row.rigged,
-    animated: row.animated,
-    pbr: row.pbr,
+    priceAgorot: row.price_cents,
+    metal: row.metal,
+    stone: row.stone,
+    production: row.production,
+    weightGrams: row.weight_grams,
+    sizeMm: row.size_mm,
     downloads: row.download_count,
     polygons: row.polygons ?? 0,
     vertices: row.vertices ?? 0,
@@ -202,15 +216,15 @@ function applyFilters<T extends Builder>(query: T, q: CatalogQuery): T {
   if (q.price === "free") out = out.eq("price_cents", 0) as T
   if (q.price === "paid") out = out.gt("price_cents", 0) as T
   if (q.license) out = out.eq("license_code", q.license) as T
-  if (q.rigged) out = out.eq("rigged", true) as T
-  if (q.animated) out = out.eq("animated", true) as T
-  if (q.pbr) out = out.eq("pbr", true) as T
-  if (q.maxPolygons) out = out.lte("polygons", q.maxPolygons) as T
+  if (q.metal) out = out.eq("metal", q.metal) as T
+  if (q.stone) out = out.eq("stone", q.stone) as T
+  // "both" is a superset, so a cast/print filter must also match it.
+  if (q.production === "cast") out = out.in("production", ["cast", "both"]) as T
+  if (q.production === "print") out = out.in("production", ["print", "both"]) as T
   if (q.format) {
     const label = FORMATS.find((f) => f.value === q.format)?.label
     if (label) out = out.contains("formats", [label]) as T
   }
-  if (q.tag === "scanned") out = out.ilike("title", "%Photoscan%") as T
   if (q.q) out = out.ilike("title", `%${q.q}%`) as T
   return out
 }
@@ -245,7 +259,7 @@ function joinedSelect(q: CatalogQuery) {
   const category = q.category ? "categories!inner ( slug )" : "categories ( slug )"
   return `
     id, slug, title, description, price_cents, license_code,
-    rigged, animated, pbr, polygons, vertices,
+    metal, stone, production, weight_grams, size_mm, polygons, vertices,
     download_count, rating, review_count, published_at,
     formats, file_summary,
     ${category},
@@ -313,7 +327,7 @@ async function computeFacets(query: CatalogQuery): Promise<CatalogResult["facets
     return count ?? 0
   }
 
-  const [categories, formats, licenses] = await Promise.all([
+  const [categories, formats, licenses, metals, stones] = await Promise.all([
     (async () => {
       const { data } = await supabasePublic.from("categories").select("slug")
       const entries = await Promise.all(
@@ -334,9 +348,26 @@ async function computeFacets(query: CatalogQuery): Promise<CatalogResult["facets
       )
       return Object.fromEntries(entries)
     })(),
+    (async () => {
+      // "unspecified" is a storage default, not something to offer as a filter.
+      const entries = await Promise.all(
+        METALS.filter((m) => m !== "unspecified").map(
+          async (metal) => [metal, await countFor({ metal })] as const,
+        ),
+      )
+      return Object.fromEntries(entries)
+    })(),
+    (async () => {
+      const entries = await Promise.all(
+        STONES.filter((s) => s !== "none").map(
+          async (stone) => [stone, await countFor({ stone })] as const,
+        ),
+      )
+      return Object.fromEntries(entries)
+    })(),
   ])
 
-  return { categories, formats, licenses }
+  return { categories, formats, licenses, metals, stones }
 }
 
 export async function getModel(slug: string): Promise<CatalogModel | undefined> {

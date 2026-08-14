@@ -1,4 +1,7 @@
-import { getTranslations } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
+
+import { formatPrice } from "@/lib/money"
+import type { Locale } from "@/i18n/routing"
 import { initials } from "@/lib/utils"
 import Link from "next/link"
 import { redirect } from "next/navigation"
@@ -24,10 +27,15 @@ export async function generateMetadata({
   return { title: t("yourProfile") }
 }
 
-const money = (value: number) =>
-  value === 0 ? "Free" : `$${value.toLocaleString("en-US")}`
+
 
 export default async function ProfilePage() {
+  const locale = await getLocale()
+  const free = await getTranslations("catalog")
+  // Shekels are the stored currency; formatPrice adds the indicative $ for
+  // English readers and omits it in Hebrew.
+  const money = (agorot: number) =>
+    formatPrice(agorot, locale as Locale, { freeLabel: free("free") }).primary
   const user_ = await getCurrentUser()
   // Anonymous visitors get bounced to login with a return path, rather than an
   // empty profile that looks broken.
@@ -60,7 +68,7 @@ export default async function ProfilePage() {
 
   const tiles = [
     { label: t("purchases"), value: String(stats.purchases), Icon: Package },
-    { label: t("totalSpent"), value: money(stats.spent), Icon: Receipt },
+    { label: t("totalSpent"), value: money(stats.spent * 100), Icon: Receipt },
     { label: t("filesAvailable"), value: String(stats.downloads), Icon: Download },
     { label: t("savedModels"), value: String(favorites.length), Icon: Star },
   ]
@@ -137,7 +145,7 @@ export default async function ProfilePage() {
                 {[
                   { label: t("published"), value: designer.published.toLocaleString() },
                   { label: t("totalSales"), value: designer.sales.toLocaleString() },
-                  { label: t("earned"), value: money(designer.earnedCents / 100) },
+                  { label: t("earned"), value: money(designer.earnedCents) },
                 ].map((stat) => (
                   <li key={stat.label} className="rounded-xl border bg-brand-muted/40 p-4">
                     <p className="text-2xl font-semibold tracking-tight tabular-nums">
@@ -201,7 +209,7 @@ export default async function ProfilePage() {
 
                     <div className="flex items-center gap-3">
                       <span className="text-sm font-semibold tabular-nums">
-                        {money(order.priceCents / 100)}
+                        {money(order.priceCents)}
                       </span>
                       <Button asChild variant="outline" size="lg" className="h-9">
                         <Link href={`/3d-model/${order.model.slug}`}>

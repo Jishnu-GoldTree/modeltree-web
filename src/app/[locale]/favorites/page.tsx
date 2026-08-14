@@ -9,7 +9,10 @@ import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { ModelCard } from "@/components/marketplace/model-card"
 import { Button } from "@/components/ui/button"
-import { getTranslations } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
+
+import { formatPrice } from "@/lib/money"
+import type { Locale } from "@/i18n/routing"
 
 export async function generateMetadata({
   params,
@@ -19,10 +22,15 @@ export async function generateMetadata({
   return { title: t("title") }
 }
 
-const money = (value: number) =>
-  value === 0 ? "Free" : `$${value.toLocaleString("en-US")}`
+
 
 export default async function FavoritesPage() {
+  const locale = await getLocale()
+  const cat = await getTranslations("catalog")
+  // Shekels are the stored currency; formatPrice adds the indicative $ for
+  // English readers and omits it in Hebrew.
+  const money = (agorot: number) =>
+    formatPrice(agorot, locale as Locale, { freeLabel: cat("free") }).primary
   const t = await getTranslations("favorites")
   const models = await getFavoriteModels()
   // One licence lookup per card, resolved together rather than in sequence.
@@ -50,7 +58,7 @@ export default async function FavoritesPage() {
               {models.length > 0 && (
                 <p className="mt-1 text-sm text-muted-foreground">
                   {models.length} saved · {free} free ·{" "}
-                  {money(totalIfBought)} to buy the rest
+                  {money(totalIfBought * 100)} to buy the rest
                 </p>
               )}
             </div>
@@ -100,7 +108,7 @@ export default async function FavoritesPage() {
                         <ShoppingCart className="size-4" aria-hidden />
                         {model.price === "free"
                           ? "Get for free"
-                          : `Add for ${money(standard.price)}`}
+                          : `Add for ${money(standard.price * 100)}`}
                       </Button>
                     </form>
                   </li>

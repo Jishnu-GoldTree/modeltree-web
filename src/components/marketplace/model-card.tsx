@@ -5,15 +5,16 @@ import { cn } from "@/lib/utils"
 import { UserText } from "@/components/user-text"
 import { FavoriteButton } from "@/components/marketplace/favorite-button"
 import type { ModelCard as ModelCardData } from "@/lib/data/landing"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
+
+import { formatPrice } from "@/lib/money"
+import type { Locale } from "@/i18n/routing"
 
 import { Thumb } from "@/components/marketplace/thumb"
 import { tempPreview } from "@/lib/temp-previews"
 import { Badge } from "@/components/ui/badge"
 
-function formatPrice(price: ModelCardData["price"], free: string) {
-  return price === "free" ? free : `$${price}`
-}
+
 
 export function ModelCard({
   model,
@@ -31,6 +32,9 @@ export function ModelCard({
   favorited?: boolean
 }) {
   const t = useTranslations("common")
+  const locale = useLocale() as Locale
+  const agorot = model.price === "free" ? 0 : Math.round(model.price * 100)
+  const price = formatPrice(agorot, locale, { freeLabel: t("badgeFree") })
 
   return (
     <article
@@ -91,7 +95,13 @@ export function ModelCard({
               model.price === "free" && "text-brand-accent"
             )}
           >
-            {formatPrice(model.price, t("badgeFree"))}
+            {price.primary}
+            {price.secondary && (
+              // Shekels are what gets charged; the dollar figure is guidance.
+              <span className="ms-1.5 text-xs font-normal text-muted-foreground">
+                ≈{price.secondary}
+              </span>
+            )}
           </span>
           <span className="flex items-center gap-1 text-xs text-muted-foreground">
             <Star className="size-3.5 fill-amber-400 text-amber-400" aria-hidden />

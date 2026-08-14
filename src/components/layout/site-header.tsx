@@ -46,9 +46,9 @@ import { SearchForm } from "@/components/forms/search-form"
  * duplicating the menu structure into the message catalogs. Dropdown children
  * carry their own keys under `landing.navChildren`.
  */
-const NAV_KEYS: Record<string, "models" | "printing" | "custom" | "designers"> = {
+const NAV_KEYS: Record<string, "models" | "production" | "custom" | "designers"> = {
   "/3d-models": "models",
-  "/3d-print-models": "printing",
+  "/3d-models/cast-ready": "production",
   "/custom-work": "custom",
   "/designers": "designers",
 }

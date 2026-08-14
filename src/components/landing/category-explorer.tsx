@@ -27,7 +27,7 @@ export function CategoryExplorer({
   description?: string
   /** Message keys under `landing.assetTabs` / `landing.printTabs`. */
   chips: string[]
-  chipNamespace: "assetTabs" | "printTabs"
+  chipNamespace: "assetTabs"
   chipBase: string
   categories: CategoryTile[]
   categoryBase: string
@@ -87,9 +87,6 @@ export function CategoryExplorer({
                 <div className="relative flex w-full items-center justify-between gap-2">
                   <span className="text-sm font-medium text-white drop-shadow">
                     {t(`categories.${category.key}`)}
-                  </span>
-                  <span className="rounded-full bg-black/40 px-2 py-0.5 text-[11px] text-white/85 backdrop-blur">
-                    {category.count}
                   </span>
                 </div>
               </Thumb>

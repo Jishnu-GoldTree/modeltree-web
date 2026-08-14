@@ -8,9 +8,8 @@
     "search": "Search 3D models",
     "backToMarketplace": "Back to marketplace",
     "browseModels": "Browse 3D models",
-    "models": "3D Models",
-    "printing": "3D Printing",
-    "custom": "Custom 3D",
+    "models": "Jewellery",
+    "custom": "Custom work",
     "designers": "For Designers",
     "sell": "Start selling",
     "dashboard": "Designer dashboard",
@@ -18,15 +17,16 @@
     "purchases": "Purchases",
     "logOut": "Log out",
     "account": "Account",
-    "menu": "Menu"
+    "menu": "Menu",
+    "production": "Production"
   },
   "locale": {
     "label": "Language",
     "switchTo": "Switch to {language}"
   },
   "catalog": {
-    "title": "3D models",
-    "description": "Royalty-free assets for games, film, architecture and product visualisation. Filter by category, format and license.",
+    "title": "Jewellery models",
+    "description": "Cast-ready and print-ready jewellery from GoldTree and independent designers. Filter by piece, metal, stone and licence.",
     "count": "{count, plural, =0 {No models} one {# model} other {# models}}",
     "filters": "Filters",
     "clearAll": "Clear all",
@@ -36,12 +36,11 @@
     "category": "Category",
     "fileFormat": "File format",
     "licenseGroup": "License",
-    "features": "Features",
     "free": "Free",
     "paid": "Paid",
-    "rigged": "Rigged",
-    "animated": "Animated",
-    "pbr": "PBR materials"
+    "metal": "Metal",
+    "stone": "Stone",
+    "production": "Production"
   },
   "cart": {
     "title": "Your cart",
@@ -137,9 +136,6 @@
     "vertices": "Vertices",
     "formats": "Formats",
     "license": "License",
-    "rigged": "Rigged",
-    "animated": "Animated",
-    "pbr": "PBR materials",
     "yes": "Yes",
     "no": "No",
     "free": "Free",
@@ -155,7 +151,14 @@
     "ratingLine": "out of 5 · {count} reviews",
     "ratingDownloads": "{rating} · {count} downloads",
     "chooseLicense": "Choose a license",
-    "formatsIncluded": "{count} file formats included"
+    "formatsIncluded": "{count} file formats included",
+    "metal": "Metal",
+    "stone": "Stone",
+    "production": "Production",
+    "weight": "Metal weight",
+    "size": "Size",
+    "grams": "{value} g",
+    "mm": "{value} mm"
   },
   "profile": {
     "editProfile": "Edit profile",
@@ -293,60 +296,60 @@
   "landing": {
     "navChildren": {
       "allModels": {
-        "label": "All 3D models",
+        "label": "All jewellery models",
         "description": "Browse the full catalog"
       },
-      "freeModels": {
-        "label": "Free 3D models",
-        "description": "Zero-cost assets with commercial licensing"
+      "engagement": {
+        "label": "Engagement rings",
+        "description": "Solitaires, halos and three-stone settings"
       },
-      "textures": {
-        "label": "PBR textures",
-        "description": "Scanned and procedural material libraries"
+      "bands": {
+        "label": "Wedding bands",
+        "description": "Eternity, pavé, milgrain and plain profiles"
       },
-      "rigged": {
-        "label": "Rigged & animated",
-        "description": "Production-ready characters and creatures"
+      "pendants": {
+        "label": "Pendants",
+        "description": "Bezel, halo and drop pendants"
       },
-      "lowPoly": {
-        "label": "Low poly",
-        "description": "Game-optimized meshes under 10k triangles"
+      "earrings": {
+        "label": "Earrings",
+        "description": "Studs, hoops, drops and climbers"
       },
-      "scanned": {
-        "label": "Scanned models",
-        "description": "Photogrammetry captures of real-world objects"
+      "settings": {
+        "label": "Settings & mounts",
+        "description": "Heads, galleries and bezel mounts"
+      },
+      "castReady": {
+        "label": "Cast-ready",
+        "description": "Watertight, correct metal thickness"
       },
       "printReady": {
-        "label": "Print-ready models",
-        "description": "Watertight STL and 3MF files, ready to slice"
+        "label": "Print-ready",
+        "description": "Sized and supported for resin printing"
       },
-      "freeStl": {
-        "label": "Free STL files",
-        "description": "Community-shared prints at no cost"
+      "findings": {
+        "label": "Findings & components",
+        "description": "Clasps, jump rings and backs"
       },
-      "miniatures": {
-        "label": "Miniatures & tabletop",
-        "description": "Supported and pre-supported minis"
+      "freeModels": {
+        "label": "Free models",
+        "description": "Zero-cost pieces with commercial licensing"
       },
-      "functional": {
-        "label": "Functional parts",
-        "description": "Brackets, jigs, enclosures and spares"
+      "adjust": {
+        "label": "Adjust a model",
+        "description": "Resize or tweak a piece you already bought"
       },
-      "modelry": {
-        "label": "Modelry",
-        "description": "Full-service 3D model creation, managed end to end"
-      },
-      "projects": {
-        "label": "3D Projects",
-        "description": "Post a brief and hire a designer directly"
+      "commission": {
+        "label": "Commission a piece",
+        "description": "A new model built from your brief"
       },
       "enterprise": {
-        "label": "Enterprise solutions",
+        "label": "For workshops",
         "description": "Team seats, invoicing and extended licensing"
       },
       "startSelling": {
         "label": "Start selling",
-        "description": "Upload your models and earn on every sale"
+        "description": "Publish your models and earn on every sale"
       },
       "dashboard": {
         "label": "Designer dashboard",
@@ -358,13 +361,13 @@
       }
     },
     "heroFilters": {
-      "trending": "Trending",
-      "blender": "Blender",
-      "textures": "PBR textures",
-      "rigged": "Rigged",
-      "animated": "Animated",
-      "free": "Free models",
-      "lowPoly": "Low poly"
+      "engagement": "Engagement rings",
+      "bands": "Wedding bands",
+      "castReady": "Cast-ready",
+      "printReady": "Print-ready",
+      "yellowGold": "Yellow gold",
+      "settings": "Settings",
+      "free": "Free models"
     },
     "heroStats": {
       "models": "3D models",
@@ -372,66 +375,45 @@
       "downloads": "Downloads"
     },
     "explore": {
-      "assetsTitle": "Explore 3D assets",
-      "assetsDescription": "Find the perfect 3D asset for any search or style with our curated themed packs.",
-      "assetsAction": "Browse all 3D models",
-      "printTitle": "Explore 3D print ready models",
-      "printDescription": "Find the perfect 3D asset for any search or style with our curated themed packs.",
-      "printAction": "Browse all 3D print models",
+      "assetsTitle": "Browse jewellery by piece",
+      "assetsDescription": "Rings, pendants, earrings and the components that go with them.",
+      "assetsAction": "Browse all jewellery",
       "showAll": "Show all categories"
     },
     "assetTabs": {
-      "trending": "Trending",
-      "business": "Business",
-      "deliveryRobot": "Delivery robot",
-      "cinema": "Cinema",
-      "houseExterior": "House exterior",
-      "comicBook": "Comic book",
-      "store": "Store",
-      "restaurant": "Restaurant"
-    },
-    "printTabs": {
-      "trending": "Trending",
-      "dndTools": "D&D tools",
-      "jewelryMold": "Jewelry mold",
-      "europe": "Europe",
-      "cars": "Cars",
-      "batteries": "Batteries",
-      "anime": "Anime",
-      "vintage": "Vintage",
-      "toyHolders": "Toy holders"
+      "solitaire": "Solitaire",
+      "halo": "Halo",
+      "eternity": "Eternity",
+      "signet": "Signet",
+      "hamsa": "Hamsa",
+      "tennis": "Tennis",
+      "cuban": "Cuban link",
+      "milgrain": "Milgrain"
     },
     "categories": {
-      "exterior": "Exterior",
-      "car": "Car",
-      "aircraft": "Aircraft",
-      "furniture": "Furniture",
-      "military": "Military",
-      "character": "Character",
-      "animal": "Animal",
-      "plant": "Plant",
-      "food": "Food",
-      "art": "Art",
-      "gamesToys": "Games & Toys",
-      "jewelry": "Jewelry",
-      "miniatures": "Miniatures",
-      "hobbyDiy": "Hobby & DIY",
-      "fashion": "Fashion",
-      "buildings": "Buildings",
-      "house": "House",
-      "tools": "Tools & Organizers"
+      "rings": "Rings",
+      "engagement-rings": "Engagement rings",
+      "wedding-bands": "Wedding bands",
+      "pendants": "Pendants",
+      "earrings": "Earrings",
+      "bracelets": "Bracelets",
+      "necklaces": "Necklaces & chains",
+      "settings": "Settings & mounts",
+      "charms": "Charms & pendantry",
+      "brooches": "Brooches & pins",
+      "findings": "Findings & components"
     },
     "collections": {
       "viewAll": "View all",
       "cta": "Go to collection",
-      "modelsKicker": "Discover Curated 3D Model Collections",
-      "modelsBlurb": "Explore curated collections of 3D models hand-picked for fast discovery and better landing pages.",
-      "modelsTitle": "Rigged 3D Characters for Games",
-      "modelsDescription": "A curated selection of rigged 3D character models designed for use in games. These assets support different rig types and standard skeletons, so they drop straight into your engine.",
-      "printKicker": "Discover Curated 3D Print Collections",
-      "printBlurb": "Targeted collections of 3D print-ready models to support campaigns and seasonal promos.",
-      "printTitle": "RC & Model Car Parts",
-      "printDescription": "Browse designs and parts applied for cars, print-ready wheels, body shells, chassis components and custom upgrades."
+      "modelsKicker": "Engagement rings, ready to cast",
+      "modelsBlurb": "Solitaires, halos and three-stone settings with correct stone seats and metal thickness.",
+      "modelsTitle": "Solitaire and halo settings",
+      "modelsDescription": "A curated set of engagement ring models with standard stone seats, sized for the centre stones jewelers order most.",
+      "printKicker": "Wedding bands for every profile",
+      "printBlurb": "Eternity, pavé, milgrain and plain profiles in every metal.",
+      "printTitle": "Eternity and pavé bands",
+      "printDescription": "Channel-set, shared-prong and milgrain bands, modelled at standard ring sizes and adjustable on request."
     },
     "designer": {
       "section": "Featured Designer",
@@ -451,26 +433,16 @@
       "work4": "Creature Anatomy Kit"
     },
     "browse": {
-      "typeHeading": "Browse by Type",
-      "typeBlurb": "Find content based on the type of asset your project needs.",
-      "formatHeading": "Browse by Format",
-      "formatBlurb": "Find 3D models designed for your preferred software.",
       "saleTitle": "On sale",
       "saleBody": "Discounted assets from designers running promotions this week.",
       "saleCta": "Browse deals",
       "freeTitle": "Free models",
       "freeBody": "Thousands of royalty-free assets you can download right now.",
       "freeCta": "Get free models",
-      "animated": "Animated",
-      "rigged": "Rigged",
-      "pbr": "PBR",
-      "lowPoly": "Low poly",
-      "printModels": "3D print models",
-      "textures": "Textures",
-      "pbrTextures": "PBR Textures",
-      "scripts": "Scripts & Plugins",
-      "scanned": "Scanned",
-      "vr": "VR models"
+      "metalHeading": "Browse by metal",
+      "metalBlurb": "Narrow the catalog to the metal you cast in.",
+      "stoneHeading": "Browse by stone",
+      "stoneBlurb": "Find pieces cut for the shape you set."
     },
     "trending": {
       "title": "Trending 3D models",
@@ -540,10 +512,7 @@
       "blog": "Blog",
       "contact": "Contact",
       "models": "3D models",
-      "printModels": "3D print models",
-      "textures": "Textures",
       "freeModels": "Free models",
-      "collections": "Collections",
       "startSelling": "Start selling",
       "royalties": "Royalty rates",
       "guidelines": "Publishing guidelines",
@@ -557,7 +526,10 @@
       "terms": "Terms",
       "privacy": "Privacy",
       "cookies": "Cookies",
-      "licensingLink": "Licensing"
+      "licensingLink": "Licensing",
+      "engagement": "Engagement rings",
+      "bands": "Wedding bands",
+      "castReady": "Cast-ready"
     }
   },
   "site": {
@@ -577,13 +549,17 @@
     "formats": "File formats included",
     "polygons": "Polygon count",
     "features": "Features",
-    "rigged": "Rigged",
-    "animated": "Animated",
-    "pbr": "PBR materials",
     "publish": "Publish",
     "saveDraft": "Save as draft",
     "newTitle": "New listing",
-    "newBody": "Describe the model and set a price. You can save a draft and come back. Nothing is visible to buyers until you publish."
+    "newBody": "Describe the model and set a price. You can save a draft and come back. Nothing is visible to buyers until you publish.",
+    "metal": "Metal",
+    "stone": "Stone shape",
+    "production": "Production",
+    "weight": "Metal weight (g)",
+    "size": "Size (mm)",
+    "priceIls": "Price (₪)",
+    "priceHintIls": "Leave at 0 to give it away. Prices are in shekels."
   },
   "profileForm": {
     "name": "Name",
@@ -636,7 +612,13 @@
   },
   "segment": {
     "title": "{category} 3D models",
-    "description": "Browse {category} models, filtered by format and license."
+    "description": "Browse {category} models, filtered by format and license.",
+    "free": "Free jewellery models",
+    "freeDescription": "Zero-cost pieces with commercial licensing.",
+    "cast-ready": "Cast-ready models",
+    "cast-readyDescription": "Watertight geometry with correct metal thickness for casting.",
+    "print-ready": "Print-ready models",
+    "print-readyDescription": "Sized and supported for direct resin printing."
   },
   "authAside": {
     "loginTitle": "40,000 jewellery models, cast-ready and yours to license",
@@ -649,5 +631,30 @@
     "signup3": "Licensing, invoicing and payouts handled for you",
     "asideTitle": "Turn your 3D work into revenue",
     "freeToJoin": "Free to join. No listing fees and no subscription: you only pay a commission when a model sells."
+  },
+  "facet": {
+    "metal": {
+      "yellow-gold": "Yellow gold",
+      "white-gold": "White gold",
+      "rose-gold": "Rose gold",
+      "platinum": "Platinum",
+      "silver": "Silver",
+      "unspecified": "Not specified"
+    },
+    "stone": {
+      "round": "Round brilliant",
+      "princess": "Princess",
+      "oval": "Oval",
+      "emerald": "Emerald",
+      "pear": "Pear",
+      "marquise": "Marquise",
+      "cushion": "Cushion",
+      "none": "No stone"
+    },
+    "production": {
+      "cast": "Cast",
+      "print": "Direct print",
+      "both": "Cast or print"
+    }
   }
 }

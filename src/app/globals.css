@@ -64,13 +64,19 @@
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
-  /* MODELTREE brand — teal accent on a near-black ink base */
-  --brand: oklch(0.72 0.128 195);
-  /* Text/icon colour on solid brand fills. */
-  --brand-foreground: oklch(0.21 0.03 210);
-  /* Brand hue darkened enough to pass contrast as text on light surfaces. */
-  --brand-accent: oklch(0.51 0.093 195);
-  --brand-muted: oklch(0.96 0.022 195);
+  /* MODELTREE brand — champagne gold on a cool near-black ink base.
+     The pairing is the point: gold reads jewellery, and the ink stays a cool
+     navy-black rather than warming to match, which is what keeps the CAD/3D
+     register. It is the display-case look — warm metal on cold ground.
+     Chroma is held at 0.088 against the previous teal's 0.128, so it reads as
+     metal rather than as a yellow warning state. */
+  --brand: oklch(0.78 0.088 82);
+  /* Text/icon colour on solid brand fills. 8.2:1 on --brand. */
+  --brand-foreground: oklch(0.24 0.02 60);
+  /* Darkened to bronze so it passes as body text on white: 6.97:1. Gold at
+     fill lightness would be ~1.9:1 and unreadable. */
+  --brand-accent: oklch(0.47 0.078 62);
+  --brand-muted: oklch(0.965 0.018 84);
   --ink: oklch(0.21 0.026 255);
   --ink-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
@@ -108,10 +114,12 @@
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);
-  --brand: oklch(0.76 0.124 195);
-  --brand-foreground: oklch(0.19 0.03 210);
-  --brand-accent: oklch(0.78 0.11 195);
-  --brand-muted: oklch(0.29 0.038 205);
+  --brand: oklch(0.8 0.086 84);
+  --brand-foreground: oklch(0.22 0.02 60);
+  /* Lightened rather than darkened here: on a dark card the accent has to sit
+     above the surface, not below it. 10.2:1 on --card. */
+  --brand-accent: oklch(0.82 0.08 84);
+  --brand-muted: oklch(0.3 0.03 70);
   --ink: oklch(0.24 0.026 255);
   --ink-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.269 0 0);

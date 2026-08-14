@@ -63,14 +63,14 @@ async function buildMetadata(locale: string): Promise<Metadata> {
   alternates: {
     canonical: "/",
     // Tells Google these are translations of each other rather than duplicates.
-    languages: { en: "/", he: "/he" },
+    languages: { he: "/", en: "/en" },
   },
   openGraph: {
     title: `${SITE.name} | ${t("tagline")}`,
     description: t("description"),
     siteName: SITE.name,
     url: "/",
-    locale: "en_US",
+    locale: locale === "he" ? "he_IL" : "en_US",
     type: "website",
   },
   twitter: {

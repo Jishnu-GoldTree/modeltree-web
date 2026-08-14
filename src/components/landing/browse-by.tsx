@@ -1,9 +1,9 @@
 import Link from "next/link"
-import { ArrowRight, Download, Gift } from "lucide-react"
+import { ArrowRight, Download, Gem, Gift } from "lucide-react"
+import { getTranslations } from "next-intl/server"
 
-import { useTranslations } from "next-intl"
-
-import { BROWSE_BY_FORMAT, BROWSE_BY_TYPE } from "@/lib/data/landing"
+import { BROWSE_BY_METAL, BROWSE_BY_STONE } from "@/lib/data/landing"
+import { getFacetCounts } from "@/lib/data/stats"
 
 function BrowseList({
   heading,
@@ -12,7 +12,7 @@ function BrowseList({
 }: {
   heading: string
   blurb: string
-  items: { label: string; count: string; href: string }[]
+  items: { label: string; count: number; href: string }[]
 }) {
   return (
     <div>
@@ -20,7 +20,7 @@ function BrowseList({
       <p className="mt-1 text-sm text-muted-foreground">{blurb}</p>
       <ul className="mt-4 grid gap-1.5">
         {items.map((item) => (
-          <li key={item.label}>
+          <li key={item.href}>
             <Link
               href={item.href}
               className="flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent"
@@ -73,32 +73,45 @@ function FreeCard({
   )
 }
 
-export function BrowseBy() {
-  const t = useTranslations("landing.browse")
-
-  // Type labels are translated; format names are product names and are not.
-  const types = BROWSE_BY_TYPE.map((item) => ({ ...item, label: t(item.key) }))
+/**
+ * Metal and stone are the two axes a jeweler narrows by, so they replaced the
+ * old "by type / by format" lists (animated, rigged, Unreal) that meant nothing
+ * here. Counts are live: the previous ones were invented and a catalog this
+ * size can never back up "890K".
+ */
+export async function BrowseBy() {
+  const t = await getTranslations("landing.browse")
+  const facet = await getTranslations("facet")
+  const counts = await getFacetCounts()
 
   return (
     <section className="shell">
       <div className="grid gap-10 rounded-2xl border bg-card p-6 sm:p-8 lg:grid-cols-3">
         <BrowseList
-          heading={t("typeHeading")}
-          blurb={t("typeBlurb")}
-          items={types}
+          heading={t("metalHeading")}
+          blurb={t("metalBlurb")}
+          items={BROWSE_BY_METAL.map((m) => ({
+            href: m.href,
+            label: facet(`metal.${m.key}`),
+            count: counts.metals[m.key] ?? 0,
+          }))}
         />
         <BrowseList
-          heading={t("formatHeading")}
-          blurb={t("formatBlurb")}
-          items={BROWSE_BY_FORMAT}
+          heading={t("stoneHeading")}
+          blurb={t("stoneBlurb")}
+          items={BROWSE_BY_STONE.map((s) => ({
+            href: s.href,
+            label: facet(`stone.${s.key}`),
+            count: counts.stones[s.key] ?? 0,
+          }))}
         />
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
           <FreeCard
-            icon={Gift}
+            icon={Gem}
             title={t("saleTitle")}
             body={t("saleBody")}
-            href="/3d-models?sale=1"
+            href="/3d-models?sort=newest"
             cta={t("saleCta")}
           />
           <FreeCard

@@ -17,7 +17,7 @@ function HeroBackdrop() {
         className="absolute inset-0"
         style={{
           backgroundImage:
-            "radial-gradient(at 15% 0%, oklch(0.42 0.09 205) 0px, transparent 55%), radial-gradient(at 85% 10%, oklch(0.35 0.07 255) 0px, transparent 50%), linear-gradient(180deg, oklch(0.24 0.03 240), oklch(0.16 0.02 235))",
+            "radial-gradient(at 15% 0%, oklch(0.34 0.042 252) 0px, transparent 55%), radial-gradient(at 85% 10%, oklch(0.3 0.038 264) 0px, transparent 50%), linear-gradient(180deg, oklch(0.23 0.026 250), oklch(0.16 0.018 245))",
         }}
       />
       <div
@@ -35,17 +35,17 @@ function HeroBackdrop() {
       >
         <path
           d="M0 300 L180 180 L320 260 L470 130 L620 250 L780 160 L940 270 L1100 190 L1260 280 L1440 210 L1440 420 L0 420Z"
-          fill="oklch(0.3 0.04 220)"
+          fill="oklch(0.29 0.028 248)"
           opacity="0.55"
         />
         <path
           d="M0 350 L150 265 L300 330 L460 230 L610 320 L770 250 L930 340 L1090 265 L1250 345 L1440 285 L1440 420 L0 420Z"
-          fill="oklch(0.22 0.03 225)"
+          fill="oklch(0.21 0.022 248)"
           opacity="0.8"
         />
         <path
           d="M0 395 L200 340 L400 385 L600 325 L820 390 L1040 335 L1240 392 L1440 350 L1440 420 L0 420Z"
-          fill="oklch(0.16 0.02 235)"
+          fill="oklch(0.16 0.018 245)"
         />
       </svg>
     </div>

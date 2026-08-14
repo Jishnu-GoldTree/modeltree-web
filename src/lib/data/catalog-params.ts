@@ -1,8 +1,14 @@
 import {
+  METALS,
+  PRODUCTION,
   SORTS,
+  STONES,
   type CatalogQuery,
   type License,
+  type Metal,
+  type Production,
   type SortValue,
+  type Stone,
 } from "@/lib/data/catalog"
 
 /**
@@ -25,9 +31,9 @@ export function toParams(raw: RawParams): Record<string, string | undefined> {
     "format",
     "price",
     "license",
-    "rigged",
-    "animated",
-    "pbr",
+    "metal",
+    "stone",
+    "production",
     "sort",
     "page",
     "q",
@@ -56,9 +62,11 @@ export function toQuery(params: Record<string, string | undefined>): CatalogQuer
     license: LICENSES.includes(params.license as License)
       ? (params.license as License)
       : undefined,
-    rigged: params.rigged === "1",
-    animated: params.animated === "1",
-    pbr: params.pbr === "1",
+    metal: METALS.includes(params.metal as Metal) ? (params.metal as Metal) : undefined,
+    stone: STONES.includes(params.stone as Stone) ? (params.stone as Stone) : undefined,
+    production: PRODUCTION.includes(params.production as Production)
+      ? (params.production as Production)
+      : undefined,
     q: params.q,
     sort,
     page: Number.isFinite(page) && page > 0 ? page : 1,

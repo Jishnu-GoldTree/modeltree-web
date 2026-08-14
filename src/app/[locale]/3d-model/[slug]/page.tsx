@@ -1,4 +1,7 @@
-import { getTranslations } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
+
+import { formatPrice } from "@/lib/money"
+import type { Locale } from "@/i18n/routing"
 import { initials } from "@/lib/utils"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -69,21 +72,32 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
   const cat = await getTranslations("landing")
   const lic = await getTranslations("license")
   const common = await getTranslations("common")
+  const facet = await getTranslations("facet")
   const category = ASSET_CATEGORIES.find((c) => c.slug === model.category)
   const related = await getRelated(model)
-  const price = model.price === "free" ? "Free" : `$${model.price}`
+  const locale = await getLocale()
+  const price = formatPrice(model.priceAgorot, locale as Locale, {
+    freeLabel: t("free"),
+  })
   const reviews = await getReviews(model)
   const files = await getFiles(model)
   const licenses = await getLicenseOptions(model)
 
   const specs = [
-    { label: t("polygons"), value: number(model.polygons) },
-    { label: t("vertices"), value: number(model.vertices) },
     { label: t("formats"), value: model.formats.join(", ") },
     { label: t("license"), value: lic(model.license) },
-    { label: t("rigged"), value: model.rigged ? t("yes") : t("no") },
-    { label: t("animated"), value: model.animated ? t("yes") : t("no") },
-    { label: t("pbr"), value: model.pbr ? t("yes") : t("no") },
+    { label: t("metal"), value: facet(`metal.${model.metal}`) },
+    { label: t("stone"), value: facet(`stone.${model.stone}`) },
+    { label: t("production"), value: facet(`production.${model.production}`) },
+    // Physical dimensions are what a jeweler checks before casting; polygon
+    // counts describe the mesh and stay, but below the things that matter.
+    ...(model.weightGrams
+      ? [{ label: t("weight"), value: t("grams", { value: model.weightGrams }) }]
+      : []),
+    ...(model.sizeMm
+      ? [{ label: t("size"), value: t("mm", { value: model.sizeMm }) }]
+      : []),
+    { label: t("polygons"), value: number(model.polygons) },
     { label: t("downloads"), value: number(model.downloads) },
   ]
 
@@ -260,8 +274,13 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                       model.price === "free" ? "text-brand-accent" : ""
                     }`}
                   >
-                    {price}
+                    {price.primary}
                   </span>
+                  {price.secondary && (
+                    <span className="text-sm text-muted-foreground">
+                      ≈{price.secondary}
+                    </span>
+                  )}
                   {model.badge && <Badge variant="secondary">{model.badge}</Badge>}
                 </div>
 
@@ -294,7 +313,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                             <span className="flex items-baseline justify-between gap-2">
                               <span className="text-sm font-medium">{lic(option.id)}</span>
                               <span className="text-sm font-semibold tabular-nums">
-                                {option.price === 0 ? "Free" : `$${option.price}`}
+                                {formatPrice(option.price * 100, locale as Locale, { freeLabel: t("free") }).primary}
                               </span>
                             </span>
                             <span className="text-xs text-muted-foreground">

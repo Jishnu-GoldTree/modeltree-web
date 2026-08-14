@@ -25,6 +25,7 @@ import { CatalogView } from "@/components/marketplace/catalog-view"
 
 async function resolve(segment: string) {
   const t = await getTranslations("segment")
+  const cat = await getTranslations("landing")
   // Categories come from the database, not the hardcoded ASSET_CATEGORIES list:
   // that list held only asset categories, so /3d-models/jewelry 404'd even
   // though the category exists — and jewellery is the client's core inventory.
@@ -36,8 +37,13 @@ async function resolve(segment: string) {
 
   if (category) {
     return {
-      title: t("title", { category: category.label }),
-      description: t("description", { category: category.label.toLowerCase() }),
+      // Category labels live in the message catalog, keyed by slug: the DB
+      // column holds English only, which used to render "מודלים: Engagement
+      // rings" on the Hebrew site.
+      title: t("title", { category: cat(`categories.${category.slug}`) }),
+      description: t("description", {
+        category: cat(`categories.${category.slug}`),
+      }),
       patch: { category: category.slug } satisfies Partial<CatalogQuery>,
       lockedCategory: category.slug,
     }
@@ -45,7 +51,12 @@ async function resolve(segment: string) {
 
   const collection = COLLECTION_SEGMENTS[segment]
   if (collection) {
-    return { ...collection, lockedCategory: undefined }
+    return {
+      title: t(segment),
+      description: t(`${segment}Description`),
+      patch: collection.patch,
+      lockedCategory: undefined,
+    }
   }
 
   return null

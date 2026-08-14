@@ -7,6 +7,8 @@ import { ASSET_CATEGORIES } from "@/lib/data/landing"
 import {
   FORMATS,
   LICENSE_LABELS,
+  METALS,
+  STONES,
   type CatalogResult,
 } from "@/lib/data/catalog"
 
@@ -95,6 +97,7 @@ export async function CatalogFilters({
   const t = await getTranslations("catalog")
   const cat = await getTranslations("landing")
   const lic = await getTranslations("license")
+  const facet = await getTranslations("facet")
   const toggle = (key: string, value: string) =>
     href(base, params, { [key]: params[key] === value ? undefined : value })
 
@@ -176,18 +179,44 @@ export async function CatalogFilters({
         </div>
       </Group>
 
-      <Group title={t("features")}>
+      <Group title={t("metal")}>
         <div className="flex flex-col gap-0.5">
-          {[
-            { key: "rigged", label: t("rigged") },
-            { key: "animated", label: t("animated") },
-            { key: "pbr", label: t("pbr") },
-          ].map((feature) => (
+          {METALS.filter((m) => m !== "unspecified").map((metal) => (
             <Option
-              key={feature.key}
-              href={toggle(feature.key, "1")}
-              active={params[feature.key] === "1"}
-              label={feature.label}
+              key={metal}
+              href={toggle("metal", metal)}
+              active={params.metal === metal}
+              label={facet(`metal.${metal}`)}
+              count={facets.metals[metal] ?? 0}
+            />
+          ))}
+        </div>
+      </Group>
+
+      <Group title={t("stone")}>
+        <div className="flex flex-col gap-0.5">
+          {STONES.filter((s) => s !== "none").map((stone) => (
+            <Option
+              key={stone}
+              href={toggle("stone", stone)}
+              active={params.stone === stone}
+              label={facet(`stone.${stone}`)}
+              count={facets.stones[stone] ?? 0}
+            />
+          ))}
+        </div>
+      </Group>
+
+      {/* No counts here: "both" satisfies either filter, so a per-value tally
+          would not sum to the total and reads as a bug. */}
+      <Group title={t("production")}>
+        <div className="flex flex-col gap-0.5">
+          {(["cast", "print"] as const).map((value) => (
+            <Option
+              key={value}
+              href={toggle("production", value)}
+              active={params.production === value}
+              label={facet(`production.${value}`)}
             />
           ))}
         </div>

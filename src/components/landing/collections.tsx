@@ -28,7 +28,7 @@ export function Collections() {
                 </p>
               </div>
               <Button variant="outline" size="sm" asChild className="shrink-0">
-                <Link href={`/collections/${collection.slug}`}>
+                <Link href={`/3d-models/${collection.slug}`}>
                   {t("viewAll")}
                   <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden />
                 </Link>
@@ -36,7 +36,7 @@ export function Collections() {
             </header>
 
             <Link
-              href={`/collections/${collection.slug}`}
+              href={`/3d-models/${collection.slug}`}
               className="group mt-5 flex flex-1 flex-col overflow-hidden rounded-xl border outline-none focus-visible:ring-3 focus-visible:ring-brand/50"
             >
               <Thumb

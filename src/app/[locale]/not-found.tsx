@@ -82,9 +82,6 @@ export default async function NotFound() {
                     <span className="text-sm font-medium text-white drop-shadow">
                       {cat(`categories.${category.key}`)}
                     </span>
-                    <span className="rounded-full bg-black/40 px-2 py-0.5 text-[11px] text-white/85 backdrop-blur">
-                      {category.count}
-                    </span>
                   </div>
                 </Thumb>
               </Link>
