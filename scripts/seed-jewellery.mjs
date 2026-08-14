@@ -27,8 +27,9 @@ const DESIGNERS = [
   { handle: "r.shapira", name: "Rivka Shapira" },
 ]
 
-const CAD = ["STL", "Rhino"]
-const CAD_PLUS = ["STL", "Rhino", "Matrix"]
+// Deliverables, not native CAD project files.
+const CAD = ["STL", "OBJ"]
+const CAD_PLUS = ["STL", "OBJ", "3MF"]
 const PRINT = ["STL", "3MF"]
 
 // title, category, metal, stone, production, ₪, grams, mm, formats
@@ -156,7 +157,6 @@ const rows = PIECES.map(
     production,
     weight_grams: grams,
     size_mm: mm,
-    polygons: Math.round(grams * 9000 + 12000),
     vertices: Math.round(grams * 5000 + 7000),
     download_count: Math.round(80 + ((i * 37) % 400)),
     rating: Math.round((4.1 + ((i % 5) * 0.18)) * 10) / 10,
@@ -187,7 +187,7 @@ const files = rows.flatMap((r) =>
     model_id: idBySlug.get(r.slug),
     format,
     storage_key: `models/${r.slug}/${format.toLowerCase().replace(/\s+/g, "-")}.zip`,
-    size_bytes: Math.round(r.polygons / 900) * 1024,
+    size_bytes: Math.round(r.weight_grams * 10 + 60) * 1024,
   })),
 )
 await db.from("model_files").upsert(files, { onConflict: "storage_key" })

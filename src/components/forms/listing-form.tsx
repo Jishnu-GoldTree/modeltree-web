@@ -558,11 +558,6 @@ export function ListingForm({
       </fieldset>
 
       <div className="grid gap-6 sm:grid-cols-2">
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="polygons">{t("polygons")}</Label>
-          <Input id="polygons" name="polygons" type="number" min={0} placeholder="24000" className="h-10" />
-          <FieldError message={state.fieldErrors?.polygons} />
-        </div>
 
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="weightGrams">{t("weight")}</Label>
