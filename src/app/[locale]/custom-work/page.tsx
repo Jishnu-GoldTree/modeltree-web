@@ -39,13 +39,13 @@ export default async function CustomWorkPage() {
     {
       key: "adjust",
       Icon: Ruler,
-      href: "/profile",
+      href: "/requests/new?kind=adjustment",
       examples: ["adjustE1", "adjustE2", "adjustE3", "adjustE4"],
     },
     {
       key: "new",
       Icon: PencilRuler,
-      href: "/3d-models",
+      href: "/requests/new?kind=commission",
       examples: ["newE1", "newE2", "newE3", "newE4"],
     },
   ] as const
@@ -74,7 +74,7 @@ export default async function CustomWorkPage() {
                 asChild
                 className="h-11 bg-brand px-6 text-brand-foreground hover:bg-brand/85"
               >
-                <Link href="/3d-models">{t("primaryCta")}</Link>
+                <Link href="/requests/new">{t("primaryCta")}</Link>
               </Button>
               <Button
                 asChild
@@ -171,12 +171,11 @@ export default async function CustomWorkPage() {
             </Button>
           </section>
 
-          {/* Stated, not hidden: the chat is the next thing to build. */}
           <p className="mt-8 flex items-start gap-2.5 rounded-xl border bg-muted/40 p-4 text-sm text-muted-foreground">
             <Info className="mt-0.5 size-4 shrink-0" aria-hidden />
             <span>
-              <strong className="font-medium text-foreground">{t("soonTitle")}</strong>{" "}
-              {t("soonBody")}
+              <strong className="font-medium text-foreground">{t("howItWorksTitle")}</strong>{" "}
+              {t("howItWorksBody")}
             </span>
           </p>
         </div>
