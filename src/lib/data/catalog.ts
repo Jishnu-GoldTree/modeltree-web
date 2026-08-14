@@ -55,9 +55,9 @@ export type CatalogModel = ModelCard & {
 }
 
 /**
- * Deliverable formats, named by extension rather than by the software that
- * writes them. Matrix and 3Design came off the list; 3DM is here because a
- * jeweler asks for the file, not for "Rhino".
+ * Deliverable formats, named by extension throughout — never by the
+ * application that writes them. 3DM rather than "Rhino", MAX rather than
+ * "3ds Max": a jeweler asks a supplier for a file, not for a licence.
  */
 export const FORMATS = [
   { value: "stl", label: "STL" },
@@ -66,7 +66,7 @@ export const FORMATS = [
   { value: "3dm", label: "3DM" },
   { value: "3mf", label: "3MF" },
   { value: "step", label: "STEP" },
-  { value: "max", label: "3ds Max" },
+  { value: "max", label: "MAX" },
 ] as const
 
 export const SORTS = [
