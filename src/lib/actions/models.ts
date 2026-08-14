@@ -51,7 +51,6 @@ const listingSchema = z.object({
   // conversion in one place rather than scattered through the UI.
   price: z.coerce.number().min(0, "Price cannot be negative").max(10_000),
   formats: z.array(z.enum(FORMAT_VALUES)).min(1, "Select at least one file format"),
-  polygons: z.coerce.number().int().min(0).max(100_000_000).optional(),
   metal: z.enum(METALS),
   stone: z.enum(STONES),
   production: z.enum(PRODUCTION),
@@ -111,7 +110,6 @@ export async function createListing(
     licenseCode: formData.get("licenseCode"),
     price: formData.get("price") || 0,
     formats: formData.getAll("formats").map(String),
-    polygons: formData.get("polygons") || undefined,
     metal: formData.get("metal"),
     stone: formData.get("stone"),
     production: formData.get("production"),
@@ -195,7 +193,6 @@ export async function createListing(
       stone: v.stone,
       production: v.production,
       weight_grams: v.weightGrams ?? null,
-      polygons: v.polygons ?? null,
     })
     .select("id, slug")
     .single()

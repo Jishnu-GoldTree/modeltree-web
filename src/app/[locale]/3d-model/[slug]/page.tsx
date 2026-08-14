@@ -100,7 +100,6 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
     ...(model.sizeMm
       ? [{ label: t("size"), value: t("mm", { value: model.sizeMm }) }]
       : []),
-    { label: t("polygons"), value: number(model.polygons) },
     { label: t("downloads"), value: number(model.downloads) },
   ]
 

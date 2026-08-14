@@ -55,14 +55,12 @@ export type CatalogModel = ModelCard & {
 }
 
 /**
- * Formats a jewellery CAD pipeline actually produces. The previous list was
- * game-engine exports (Unreal, Unity, glTF) that no jeweler asks for.
+ * Deliverable formats. Native CAD project files (Rhino, Matrix, 3Design) were
+ * on this list and came off at the client's request — what changes hands is an
+ * interchange or print file, not the modeler's working document.
  */
 export const FORMATS = [
   { value: "stl", label: "STL" },
-  { value: "3dm", label: "Rhino" },
-  { value: "3ml", label: "3Design" },
-  { value: "mtx", label: "Matrix" },
   { value: "obj", label: "OBJ" },
   { value: "3mf", label: "3MF" },
   { value: "step", label: "STEP" },
