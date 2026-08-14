@@ -461,6 +461,18 @@
       "cTitle": "Curated Quality Standard",
       "cBody": "No more guesswork. The Quality Standard highlights the key technical characteristics of every file, including PBR textures, making it easier and faster to find the right models."
     },
+    "craft": {
+      "badge": "Built for production",
+      "title": "High-quality, unique jewellery models",
+      "body": "Every model on {name} is real geometry, not a decorative mesh. Modelled in-house for casting and print, checked before it goes live, and described in the measurements a bench actually works to.",
+      "watertightTitle": "Watertight geometry",
+      "watertightBody": "Closed, manifold meshes that slice cleanly and hold their detail — no gaps around a shank, no facets that vanish on the build plate.",
+      "dimensionsTitle": "Real dimensions, stated up front",
+      "dimensionsBody": "Ring size, stone seat and metal weight in millimetres and grams, so you know the casting cost before you download.",
+      "productionTitle": "Cast-ready or print-ready",
+      "productionBody": "Filter by how you produce, and get the formats that suit it — STL, Rhino, Matrix, 3Design and more, in one download.",
+      "cta": "Browse the library"
+    },
     "custom": {
       "badge": "Custom 3D solutions",
       "title": "Need something unique? Let's create it",

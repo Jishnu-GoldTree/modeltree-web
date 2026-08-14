@@ -174,6 +174,20 @@ export const CUSTOM_SOLUTIONS = [
   { key: "projects", steps: [1, 2, 3], benefits: [1, 2, 3] },
 ] as const;
 
+/**
+ * The three checks a jeweler actually runs on a model before buying it.
+ *
+ * Order matters and is not arbitrary: a mesh that is not closed cannot be
+ * sliced at all, dimensions decide whether it is the right piece, and the
+ * production method decides whether these files are usable. Each stage is
+ * pointless if the one before it fails.
+ */
+export const CRAFT_POINTS = [
+  { key: "watertight", icon: "scan" },
+  { key: "dimensions", icon: "ruler" },
+  { key: "production", icon: "gem" },
+] as const;
+
 export const BUSINESS_PERKS = [
   { key: "a", icon: "users" },
   { key: "b", icon: "credit-card" },

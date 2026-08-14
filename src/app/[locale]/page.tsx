@@ -12,6 +12,7 @@ import { FeaturedDesigner } from "@/components/landing/featured-designer";
 import { BrowseBy } from "@/components/landing/browse-by";
 import { TrendingModels } from "@/components/landing/trending-models";
 import { ValueProps } from "@/components/landing/value-props";
+import { CraftStandard } from "@/components/landing/craft-standard";
 import { CustomSolutions } from "@/components/landing/custom-solutions";
 import { BusinessAccount } from "@/components/landing/business-account";
 
@@ -40,6 +41,10 @@ export default async function HomePage() {
         <Collections />
         <FeaturedDesigner />
         <BrowseBy />
+        {/* The page's third full-bleed ink band, sat midway between the other
+            two — Jewellery library above, Custom solutions below — so the dark
+            bands space out rather than clump. */}
+        <CraftStandard />
         <TrendingModels />
         <ValueProps />
         <CustomSolutions />
