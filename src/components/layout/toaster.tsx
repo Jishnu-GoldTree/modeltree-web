@@ -20,6 +20,11 @@ export function Toaster() {
     <Sonner
       dir={dir}
       position={dir === "rtl" ? "bottom-left" : "bottom-right"}
+      // Clears the seller FAB, which occupies the same corner. Applied for
+      // everyone: a toast sitting slightly higher costs nothing, and gating
+      // the offset on account type would mean the Toaster had to know who is
+      // signed in.
+      offset={{ bottom: "5.5rem" }}
       // Inherit the app's tokens rather than sonner's own palette, so toasts
       // match in both themes without a second colour system.
       toastOptions={{

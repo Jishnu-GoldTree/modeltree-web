@@ -11,6 +11,7 @@ import { LOCALE_DIR, routing, type Locale } from "@/i18n/routing";
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/layout/toaster";
 import { FlashToast } from "@/components/layout/flash-toast";
+import { NewListingFab } from "@/components/layout/new-listing-fab";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -126,6 +127,7 @@ export default async function LocaleLayout({
             {children}
             <Toaster />
             <FlashToast />
+            <NewListingFab />
           </Providers>
         </NextIntlClientProvider>
       </body>
