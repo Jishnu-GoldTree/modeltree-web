@@ -1,8 +1,9 @@
 "use client"
 
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { initials } from "@/lib/utils"
-import { Link } from "@/i18n/navigation"
+import { Link, getPathname } from "@/i18n/navigation"
+import type { Locale } from "@/i18n/routing"
 import { useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 import type { User as SupabaseUser } from "@supabase/supabase-js"
@@ -67,6 +68,8 @@ function SignOutForm({
   label: string
   onLeaving: () => void
 }) {
+  const locale = useLocale() as Locale
+
   return (
     <form
       action={signOutAction}
@@ -75,8 +78,11 @@ function SignOutForm({
         onLeaving()
         void (async () => {
           await createClient().auth.signOut()
-          // replace, not push: Back must not return to an account page.
-          window.location.replace("/")
+          // getPathname, not "/": the default locale is unprefixed but English
+          // lives at /en, so a hardcoded root dropped English users into the
+          // Hebrew site. replace, not assign — Back must not return to an
+          // account page.
+          window.location.replace(getPathname({ href: "/", locale }))
         })()
       }}
     >
