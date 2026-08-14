@@ -1,5 +1,6 @@
-import Link from "next/link"
-import { SearchX, SlidersHorizontal } from "lucide-react"
+import { Fragment } from "react"
+import { Link } from "@/i18n/navigation"
+import { ArrowRight, Gem, SearchX, SlidersHorizontal } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { SORTS, type CatalogResult } from "@/lib/data/catalog"
@@ -42,6 +43,7 @@ export async function CatalogView({
   const { items, total, page, pageCount, facets } = result
   const t = await getTranslations("catalog")
   const s = await getTranslations("sort")
+  const member = await getTranslations("membership")
   const filters = (
     <CatalogFilters
       base={base}
@@ -115,10 +117,37 @@ export async function CatalogView({
           </div>
         ) : (
           <ul className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
-            {items.map((model) => (
-              <li key={model.slug}>
-                <ModelCard model={model} favorited={favorites.has(model.slug)} />
-              </li>
+            {items.map((model, index) => (
+              <Fragment key={model.slug}>
+                <li>
+                  <ModelCard model={model} favorited={favorites.has(model.slug)} />
+                </li>
+                {/* Placed after the first full row rather than above the grid:
+                    it reaches someone already comparing pieces, which is when
+                    "two of these a month" means something. Once per page. */}
+                {index === 3 && (
+                  <li className="col-span-2 md:col-span-3 xl:col-span-4">
+                    <Link
+                      href="/pricing"
+                      className="flex flex-col gap-3 rounded-xl border border-brand bg-brand-muted p-5 outline-none transition-colors hover:bg-brand-muted/70 focus-visible:ring-3 focus-visible:ring-brand/50 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <span className="flex items-start gap-3">
+                        <Gem className="mt-0.5 size-5 shrink-0 text-brand-accent" aria-hidden />
+                        <span>
+                          <span className="block font-medium">{member("stripTitle")}</span>
+                          <span className="mt-0.5 block text-sm text-muted-foreground">
+                            {member("stripBody")}
+                          </span>
+                        </span>
+                      </span>
+                      <span className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-brand-accent">
+                        {member("stripCta")}
+                        <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden />
+                      </span>
+                    </Link>
+                  </li>
+                )}
+              </Fragment>
             ))}
           </ul>
         )}

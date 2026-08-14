@@ -1,7 +1,9 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
+import { getLocale } from "next-intl/server"
+
+import { redirect } from "@/i18n/navigation"
 
 import { withFlash } from "@/lib/flash"
 
@@ -27,6 +29,7 @@ function safeReturnTo(value: FormDataEntryValue | null) {
 }
 
 export async function toggleFavorite(formData: FormData) {
+  const locale = await getLocale()
   const slug = formData.get("slug")
   // Untrusted input: ignore anything that isn't a real model.
   if (typeof slug !== "string" || !(await getModel(slug))) return
@@ -42,7 +45,10 @@ export async function toggleFavorite(formData: FormData) {
   // otherwise navigate, and the header count lives in a client cache that only
   // refreshes on navigation — without this the badge stays stale until the
   // visitor happens to move elsewhere. Same reason the cart actions redirect.
-  redirect(withFlash(safeReturnTo(formData.get("returnTo")), wasSaved ? "unsaved" : "saved"))
+  redirect({
+    href: withFlash(safeReturnTo(formData.get("returnTo")), wasSaved ? "unsaved" : "saved"),
+    locale,
+  })
 }
 
 /**
@@ -69,7 +75,8 @@ export async function removeFavorite(formData: FormData) {
 }
 
 export async function clearFavorites() {
+  const locale = await getLocale()
   await writeFavorites([])
   refresh()
-  redirect(withFlash("/favorites", "savedCleared"))
+  redirect({ href: withFlash("/favorites", "savedCleared"), locale })
 }

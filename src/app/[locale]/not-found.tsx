@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 
 import { ASSET_CATEGORIES } from "@/lib/data/landing"
 import { SiteHeader } from "@/components/layout/site-header"

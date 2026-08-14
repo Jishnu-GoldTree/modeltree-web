@@ -1,7 +1,9 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
+import { getLocale } from "next-intl/server"
+
+import { redirect } from "@/i18n/navigation"
 
 import { withFlash } from "@/lib/flash"
 
@@ -28,6 +30,7 @@ async function validate(slug: unknown, license: unknown) {
 }
 
 export async function addToCart(formData: FormData) {
+  const locale = await getLocale()
   const entry = await validate(formData.get("slug"), formData.get("license"))
   if (!entry) return
 
@@ -38,20 +41,22 @@ export async function addToCart(formData: FormData) {
   await writeCart(next)
 
   revalidatePath("/cart")
-  redirect(withFlash("/cart", "addedToCart"))
+  redirect({ href: withFlash("/cart", "addedToCart"), locale })
 }
 
 export async function removeFromCart(formData: FormData) {
+  const locale = await getLocale()
   const slug = formData.get("slug")
   if (typeof slug !== "string") return
 
   const cart = await readCart()
   await writeCart(cart.filter((item) => item.slug !== slug))
   revalidatePath("/cart")
-  redirect(withFlash("/cart", "removedFromCart"))
+  redirect({ href: withFlash("/cart", "removedFromCart"), locale })
 }
 
 export async function setLineLicense(formData: FormData) {
+  const locale = await getLocale()
   const entry = await validate(formData.get("slug"), formData.get("license"))
   if (!entry) return
 
@@ -60,11 +65,12 @@ export async function setLineLicense(formData: FormData) {
     cart.map((item) => (item.slug === entry.slug ? entry : item)),
   )
   revalidatePath("/cart")
-  redirect(withFlash("/cart", "licenseUpdated"))
+  redirect({ href: withFlash("/cart", "licenseUpdated"), locale })
 }
 
 export async function clearCart() {
+  const locale = await getLocale()
   await writeCart([])
   revalidatePath("/cart")
-  redirect(withFlash("/cart", "cartCleared"))
+  redirect({ href: withFlash("/cart", "cartCleared"), locale })
 }

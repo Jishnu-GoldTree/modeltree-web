@@ -1,7 +1,9 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
+import { getLocale } from "next-intl/server"
+
+import { redirect } from "@/i18n/navigation"
 
 import { withFlash } from "@/lib/flash"
 import { z } from "zod"
@@ -55,8 +57,13 @@ export async function createListing(
   _prev: ListingState,
   formData: FormData,
 ): Promise<ListingState> {
+  const locale = await getLocale()
   const user = await getCurrentUser()
-  if (!user) redirect("/login?next=/dashboard/upload")
+  // redirect() throws; the return keeps the action's declared type honest.
+  if (!user) {
+    redirect({ href: "/login?next=/dashboard/upload", locale })
+    return {}
+  }
 
   const parsed = listingSchema.safeParse({
     title: formData.get("title"),
@@ -143,7 +150,11 @@ export async function createListing(
 
   revalidatePath("/dashboard")
   revalidatePath("/3d-models")
-  redirect(withFlash("/dashboard", v.publish ? "listingPublished" : "listingCreated"))
+  redirect({ href: withFlash("/dashboard", v.publish ? "listingPublished" : "listingCreated"), locale })
+  // Unreachable: redirect() throws. Present so the action satisfies its
+  // declared ListingState return type, which next-intl's redirect no longer
+  // narrows away the way next/navigation's `never` return did.
+  return {}
 }
 
 export async function deleteListing(formData: FormData) {

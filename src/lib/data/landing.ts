@@ -207,6 +207,8 @@ export const FOOTER_COLUMNS = [
   {
     key: "marketplace",
     links: [
+      { key: "membership", href: "/pricing" },
+      { key: "customWork", href: "/custom-work" },
       { key: "models", href: "/3d-models" },
       { key: "engagement", href: "/3d-models/engagement-rings" },
       { key: "bands", href: "/3d-models/wedding-bands" },

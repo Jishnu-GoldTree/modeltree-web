@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl"
 import { useState, useTransition } from "react"
 import { toast } from "sonner"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { Eye, EyeOff, Info, Loader2 } from "lucide-react"
 
 import { loginSchema, type LoginValues } from "@/lib/validations/forms"
@@ -19,7 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { SocialAuthButtons } from "@/components/forms/social-auth-buttons"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@/i18n/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"

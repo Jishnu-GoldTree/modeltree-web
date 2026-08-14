@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { Building2, CreditCard, FileCheck, Users } from "lucide-react"
 
 import { useTranslations } from "next-intl"

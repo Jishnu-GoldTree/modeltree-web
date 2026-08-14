@@ -1,6 +1,6 @@
 import { formatStat, getMarketplaceStats } from "@/lib/data/stats"
 import { getTranslations } from "next-intl/server"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { Check, Coins, Globe, Upload } from "lucide-react"
 
 import { getCurrentUser } from "@/lib/supabase/server"

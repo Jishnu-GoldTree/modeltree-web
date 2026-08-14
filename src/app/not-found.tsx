@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 
 /**
  * Root 404 for URLs that never matched a locale segment. The rich, branded 404

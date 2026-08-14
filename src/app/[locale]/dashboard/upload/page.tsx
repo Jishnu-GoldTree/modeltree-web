@@ -1,4 +1,6 @@
-import { redirect } from "next/navigation"
+import { getLocale } from "next-intl/server"
+
+import { redirect } from "@/i18n/navigation"
 
 import { getCurrentUser } from "@/lib/supabase/server"
 import { getCategoryOptions, getLicenseOptionsForForm } from "@/lib/data/designer"
@@ -17,8 +19,9 @@ export async function generateMetadata({
 
 export default async function UploadPage() {
   const t = await getTranslations("listing")
+  const locale = await getLocale()
   const user = await getCurrentUser()
-  if (!user) redirect("/login?next=/dashboard/upload")
+  if (!user) return redirect({ href: "/login?next=/dashboard/upload", locale })
 
   const [categories, licenses] = await Promise.all([
     getCategoryOptions(),

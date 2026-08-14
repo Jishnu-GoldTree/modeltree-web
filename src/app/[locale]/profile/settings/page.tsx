@@ -1,5 +1,7 @@
-import Link from "next/link"
-import { redirect } from "next/navigation"
+import { Link } from "@/i18n/navigation"
+import { getLocale } from "next-intl/server"
+
+import { redirect } from "@/i18n/navigation"
 import { ArrowLeft } from "lucide-react"
 
 import { getCurrentUser } from "@/lib/supabase/server"
@@ -19,13 +21,14 @@ export async function generateMetadata({
 
 export default async function ProfileSettingsPage() {
   const t = await getTranslations("profile")
+  const locale = await getLocale()
   const user = await getCurrentUser()
-  if (!user) redirect("/login?next=/profile/settings")
+  if (!user) return redirect({ href: "/login?next=/profile/settings", locale })
 
   const profile = await getProfile(user.id)
   // The signup trigger creates this row, so a missing profile means something
   // is genuinely wrong rather than a first-visit case.
-  if (!profile) redirect("/profile")
+  if (!profile) return redirect({ href: "/profile", locale })
 
   return (
     <>
