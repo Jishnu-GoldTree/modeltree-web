@@ -144,8 +144,23 @@ export function AccountMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           {/* A form, not an onClick: signing out is a state change, so it goes
-              through a POST that works even if the JS handler never runs. */}
-          <form action={signOutAction}>
+              through a POST that works even if the JS handler never runs.
+
+              The onSubmit is what makes the header update without a refresh.
+              signOutAction runs on the server and clears the httpOnly cookies
+              there, which the browser's Supabase client has no way to observe
+              — it never emits SIGNED_OUT, so this component's `user` state and
+              the cached viewer query both kept believing someone was signed
+              in. Clearing local state here fires that event; scope "local"
+              skips the network revoke because the server action is already
+              doing it. Fired without awaiting so the POST still goes through
+              on the same click. */}
+          <form
+            action={signOutAction}
+            onSubmit={() => {
+              void createClient().auth.signOut({ scope: "local" })
+            }}
+          >
             <button type="submit" className="flex w-full items-center gap-2">
               <LogOut className="size-4" aria-hidden />
               {t("logOut")}
