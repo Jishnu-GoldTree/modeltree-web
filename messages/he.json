@@ -20,7 +20,8 @@
     "menu": "תפריט",
     "production": "ייצור",
     "requests": "בקשות",
-    "skipToContent": "דילוג לתוכן העיקרי"
+    "skipToContent": "דילוג לתוכן העיקרי",
+    "signingOut": "מתנתקים…"
   },
   "locale": {
     "label": "שפה",
