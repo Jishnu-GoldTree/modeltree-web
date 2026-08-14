@@ -20,7 +20,8 @@
     "menu": "Menu",
     "production": "Production",
     "requests": "Requests",
-    "skipToContent": "Skip to main content"
+    "skipToContent": "Skip to main content",
+    "signingOut": "Signing out…"
   },
   "locale": {
     "label": "Language",

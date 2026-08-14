@@ -4,12 +4,14 @@ import { useTranslations } from "next-intl"
 import { initials } from "@/lib/utils"
 import { Link } from "@/i18n/navigation"
 import { useEffect, useState } from "react"
+import { createPortal } from "react-dom"
 import type { User as SupabaseUser } from "@supabase/supabase-js"
 
 import { createClient } from "@/lib/supabase/client"
 import { useViewer } from "@/lib/queries/viewer"
 import {
   Heart,
+  Loader2,
   LogOut,
   MessagesSquare,
   Package,
@@ -45,6 +47,48 @@ const LINKS = [
 ] as const
 
 /**
+ * Signing out.
+ *
+ * Still a form posting to the server action, so it works with JavaScript off.
+ * With JS the action is not what runs: the browser client signs out, which
+ * revokes the token and clears the auth cookies itself, then we navigate.
+ *
+ * The overlay is the point. Measured, the dashboard stayed on screen for about
+ * a second after clicking — not because sign-out was slow, but because a soft
+ * navigation keeps the current page painted until the destination is ready,
+ * and home has stats, trending and facet queries to run first. Nothing that
+ * happens off-screen can fix that; the only way to stop showing account data
+ * immediately is to stop showing it immediately.
+ */
+function SignOutForm({
+  label,
+  onLeaving,
+}: {
+  label: string
+  onLeaving: () => void
+}) {
+  return (
+    <form
+      action={signOutAction}
+      onSubmit={(event) => {
+        event.preventDefault()
+        onLeaving()
+        void (async () => {
+          await createClient().auth.signOut()
+          // replace, not push: Back must not return to an account page.
+          window.location.replace("/")
+        })()
+      }}
+    >
+      <button type="submit" className="flex w-full items-center gap-2">
+        <LogOut className="size-4" aria-hidden />
+        {label}
+      </button>
+    </form>
+  )
+}
+
+/**
  * Signed-out: the login/signup pair. Signed-in: an avatar menu.
  *
  * The session is fetched on mount rather than rendered on the server, which
@@ -56,6 +100,7 @@ export function AccountMenu() {
   const t = useTranslations("nav")
   const { data: viewer } = useViewer()
   const [user, setUser] = useState<SupabaseUser | null>(null)
+  const [leaving, setLeaving] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -102,6 +147,27 @@ export function AccountMenu() {
     (user.user_metadata?.full_name as string | undefined) ?? user.email ?? "Account"
 
   return (
+    <>
+      {/* Portalled to <body> deliberately. The header sets backdrop-blur, and a
+          backdrop-filter creates a containing block for fixed descendants — so
+          rendered in place, `fixed inset-0` resolved to the header's 64px box
+          and covered nothing. */}
+      {/* `loading` is false only after the auth effect has run, which means we
+          are past hydration and document.body is safe to portal into. */}
+      {leaving &&
+        !loading &&
+        createPortal(
+          <div
+            role="status"
+            aria-live="polite"
+            className="fixed inset-0 z-[60] flex items-center justify-center gap-3 bg-background text-sm text-muted-foreground"
+          >
+            <Loader2 className="size-4 animate-spin" aria-hidden />
+            {t("signingOut")}
+          </div>,
+          document.body,
+        )}
+
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
@@ -143,31 +209,10 @@ export function AccountMenu() {
         ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          {/* A form, not an onClick: signing out is a state change, so it goes
-              through a POST that works even if the JS handler never runs.
-
-              The onSubmit is what makes the header update without a refresh.
-              signOutAction runs on the server and clears the httpOnly cookies
-              there, which the browser's Supabase client has no way to observe
-              — it never emits SIGNED_OUT, so this component's `user` state and
-              the cached viewer query both kept believing someone was signed
-              in. Clearing local state here fires that event; scope "local"
-              skips the network revoke because the server action is already
-              doing it. Fired without awaiting so the POST still goes through
-              on the same click. */}
-          <form
-            action={signOutAction}
-            onSubmit={() => {
-              void createClient().auth.signOut({ scope: "local" })
-            }}
-          >
-            <button type="submit" className="flex w-full items-center gap-2">
-              <LogOut className="size-4" aria-hidden />
-              {t("logOut")}
-            </button>
-          </form>
+          <SignOutForm label={t("logOut")} onLeaving={() => setLeaving(true)} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+    </>
   )
 }
