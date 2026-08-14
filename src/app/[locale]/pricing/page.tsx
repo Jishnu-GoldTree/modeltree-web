@@ -71,7 +71,7 @@ export default async function PricingPage() {
     <>
       <SiteHeader solid />
 
-      <main className="flex-1 pt-16">
+      <main id="main-content" className="flex-1 pt-16">
         <section className="border-b bg-ink text-ink-foreground">
           <div className="shell py-16 text-center md:py-20">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/15 px-3 py-1 text-xs font-medium text-brand">

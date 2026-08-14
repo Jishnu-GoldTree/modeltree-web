@@ -59,7 +59,7 @@ export default async function DashboardPage() {
     <>
       <SiteHeader solid />
 
-      <main className="flex-1 pt-16">
+      <main id="main-content" className="flex-1 pt-16">
         <div className="border-b bg-ink">
           <div className="shell flex flex-wrap items-center justify-between gap-4 py-10">
             <div>

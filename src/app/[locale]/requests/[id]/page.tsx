@@ -50,7 +50,7 @@ export default async function RequestPage({ params }: PageProps<"/[locale]/reque
       <FlashToast />
       <SiteHeader solid />
 
-      <main className="flex-1 pt-16">
+      <main id="main-content" className="flex-1 pt-16">
         <div className="shell max-w-5xl py-10">
           <Link
             href="/requests"

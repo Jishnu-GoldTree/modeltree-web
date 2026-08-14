@@ -31,7 +31,7 @@ export default async function NewRequestPage({
     <>
       <SiteHeader solid />
 
-      <main className="flex-1 pt-16">
+      <main id="main-content" className="flex-1 pt-16">
         <div className="shell max-w-2xl py-10">
           <Link
             href="/requests"

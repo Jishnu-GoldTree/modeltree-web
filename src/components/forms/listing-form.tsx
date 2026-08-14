@@ -389,7 +389,7 @@ export function ListingForm({
                         {slot.status === "uploading" && <Loader2 className="size-3 animate-spin" aria-hidden />}
                         {slot.status === "uploaded" && <CheckCircle2 className="size-3" aria-hidden />}
                         {slot.status === "error" && <XCircle className="size-3" aria-hidden />}
-                        <span className="truncate">
+                        <span className="truncate" title={slot.file.name}>
                           {slot.file.name} · {humanBytes(slot.file.size)}
                           {slot.status === "uploading" && ` · ${u("uploading")}`}
                           {slot.status === "uploaded" && ` · ${u("uploaded")}`}

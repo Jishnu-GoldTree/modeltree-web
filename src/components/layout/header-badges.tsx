@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { Link } from "@/i18n/navigation"
 import { Heart, ShoppingCart } from "lucide-react"
 
@@ -25,21 +27,28 @@ function Badge({ value }: { value: number }) {
 }
 
 export function HeaderBadges() {
+  const t = useTranslations("nav")
   const counts = useCounts()
+
+  const savedLabel = counts.favorites
+    ? `${t("saved")}, ${counts.favorites}`
+    : t("saved")
+  const cartLabel = counts.cart
+    ? `${t("cart")}, ${counts.cart}`
+    : t("cart")
 
   return (
     <>
       <Button
         variant="ghost"
         size="icon"
-        aria-label={
-          counts.favorites ? `Saved models, ${counts.favorites}` : "Saved models"
-        }
+        aria-label={savedLabel}
+        title={savedLabel}
         className="relative hidden text-white/85 hover:bg-white/10 hover:text-white sm:inline-flex"
         asChild
       >
         <Link href="/favorites">
-          <Heart className="size-5" />
+          <Heart className="size-5" aria-hidden />
           <Badge value={counts.favorites} />
         </Link>
       </Button>
@@ -47,12 +56,13 @@ export function HeaderBadges() {
       <Button
         variant="ghost"
         size="icon"
-        aria-label={counts.cart ? `Cart, ${counts.cart} items` : "Cart"}
+        aria-label={cartLabel}
+        title={cartLabel}
         className="relative hidden text-white/85 hover:bg-white/10 hover:text-white sm:inline-flex"
         asChild
       >
         <Link href="/cart">
-          <ShoppingCart className="size-5" />
+          <ShoppingCart className="size-5" aria-hidden />
           <Badge value={counts.cart} />
         </Link>
       </Button>
