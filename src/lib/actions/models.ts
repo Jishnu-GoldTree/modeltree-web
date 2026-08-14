@@ -7,7 +7,7 @@ import { withFlash } from "@/lib/flash"
 import { z } from "zod"
 
 import { createClient, getCurrentUser } from "@/lib/supabase/server"
-import { METALS, PRODUCTION, STONES } from "@/lib/data/catalog"
+import { FORMATS, METALS, PRODUCTION, STONES } from "@/lib/data/catalog"
 
 /**
  * Designer-side writes.
@@ -16,6 +16,23 @@ import { METALS, PRODUCTION, STONES } from "@/lib/data/catalog"
  * enforces ownership — these checks are for good error messages, not security.
  * A designer_id spoofed in the form is rejected by the database regardless.
  */
+
+const FORMAT_VALUES = FORMATS.map((f) => f.value) as [string, ...string[]]
+
+/** Client-uploaded file metadata. The bytes already live in R2; this row just
+ *  records where. Sizes are what R2 recorded, so a fake size in a hidden field
+ *  would be caught the moment we go to serve the file. */
+const uploadedFileSchema = z.object({
+  format: z.enum(FORMAT_VALUES),
+  storageKey: z.string().min(1),
+  size: z.number().int().min(0).max(500 * 1024 * 1024),
+})
+
+const uploadedImageSchema = z.object({
+  storageKey: z.string().min(1),
+  position: z.number().int().min(0).max(19),
+  size: z.number().int().min(0).max(10 * 1024 * 1024),
+})
 
 const listingSchema = z.object({
   title: z.string().trim().min(4, "Give the model a title of at least 4 characters").max(120),
@@ -31,16 +48,38 @@ const listingSchema = z.object({
   // Dollars in the form, cents in the database. Parsing here keeps the
   // conversion in one place rather than scattered through the UI.
   price: z.coerce.number().min(0, "Price cannot be negative").max(10_000),
-  formats: z.array(z.string()).min(1, "Select at least one file format"),
+  formats: z.array(z.enum(FORMAT_VALUES)).min(1, "Select at least one file format"),
   polygons: z.coerce.number().int().min(0).max(100_000_000).optional(),
   metal: z.enum(METALS),
   stone: z.enum(STONES),
   production: z.enum(PRODUCTION),
   weightGrams: z.coerce.number().min(0).max(9999).optional(),
   publish: z.boolean(),
+  // Filled by the client after the browser PUTs each file to R2. Empty arrays
+  // are allowed for a draft — a designer might save mid-flight — but a publish
+  // without files is rejected further down.
+  uploadedFiles: z.array(uploadedFileSchema).max(20).default([]),
+  uploadedImages: z.array(uploadedImageSchema).max(20).default([]),
 })
 
 export type ListingState = { error?: string; fieldErrors?: Record<string, string> }
+
+/** Client-echoed storage keys are trusted only after this: R2 only accepts
+ *  keys under the caller's userId thanks to the presign endpoint, but we
+ *  double-check here so a forged FormData field can't graft an unrelated key
+ *  onto the listing. */
+function ownsKey(storageKey: string, userId: string, prefix: "models" | "images") {
+  return storageKey.startsWith(`${prefix}/${userId}/`)
+}
+
+function parseJsonField(raw: FormDataEntryValue | null): unknown {
+  if (typeof raw !== "string" || raw.length === 0) return []
+  try {
+    return JSON.parse(raw)
+  } catch {
+    return []
+  }
+}
 
 /** Slugs are public URLs, so they must be stable, lowercase and collision-free. */
 function slugify(title: string) {
@@ -71,6 +110,8 @@ export async function createListing(
     production: formData.get("production"),
     weightGrams: formData.get("weightGrams") || undefined,
     publish: formData.get("publish") === "1",
+    uploadedFiles: parseJsonField(formData.get("uploadedFiles")),
+    uploadedImages: parseJsonField(formData.get("uploadedImages")),
   })
 
   if (!parsed.success) {
@@ -83,6 +124,36 @@ export async function createListing(
   }
 
   const v = parsed.data
+
+  // A publish must ship something buyers can download. Drafts are allowed to
+  // sit empty — a designer may want to save the descriptive fields and come
+  // back to attach files.
+  if (v.publish && v.uploadedFiles.length === 0) {
+    return { fieldErrors: { uploadedFiles: "Upload at least one model file before publishing" } }
+  }
+
+  // Every checked format must have exactly one uploaded file. Mismatch means
+  // the client got out of sync (e.g. checkbox toggled after upload) and would
+  // otherwise create rows with missing bytes.
+  const uploadedFormats = new Set(v.uploadedFiles.map((f) => f.format))
+  const missingFormats = v.formats.filter((f) => !uploadedFormats.has(f))
+  if (v.publish && missingFormats.length > 0) {
+    return { fieldErrors: { uploadedFiles: `Missing file for: ${missingFormats.join(", ")}` } }
+  }
+
+  // Reject any storage key the presign endpoint would not have issued for
+  // this user — the browser is trusted with the URL, not with the key path.
+  for (const f of v.uploadedFiles) {
+    if (!ownsKey(f.storageKey, user.id, "models")) {
+      return { error: "Upload could not be verified. Please retry." }
+    }
+  }
+  for (const img of v.uploadedImages) {
+    if (!ownsKey(img.storageKey, user.id, "images")) {
+      return { error: "Upload could not be verified. Please retry." }
+    }
+  }
+
   const supabase = await createClient()
 
   // Collisions are likely — two designers both publish "Rally Car". Walk a
@@ -126,15 +197,28 @@ export async function createListing(
     return { error: error?.message ?? "Could not save the listing. Try again." }
   }
 
-  // Placeholder file rows so the listing carries its formats. The trigger
-  // mirrors them onto models.formats, which is what the catalog reads.
-  const files = v.formats.map((format) => ({
-    model_id: model.id,
-    format,
-    storage_key: `models/${model.slug}/${format.toLowerCase().replace(/\s+/g, "-")}.zip`,
-    size_bytes: 0,
-  }))
-  await supabase.from("model_files").insert(files)
+  // Real file rows — bytes already live in R2 under storage_key. The trigger
+  // mirrors formats onto models.formats, which is what the catalog reads.
+  if (v.uploadedFiles.length > 0) {
+    const files = v.uploadedFiles.map((f) => ({
+      model_id: model.id,
+      format: f.format,
+      storage_key: f.storageKey,
+      size_bytes: f.size,
+    }))
+    const { error: fileError } = await supabase.from("model_files").insert(files)
+    if (fileError) return { error: fileError.message }
+  }
+
+  if (v.uploadedImages.length > 0) {
+    const images = v.uploadedImages.map((img) => ({
+      model_id: model.id,
+      storage_key: img.storageKey,
+      position: img.position,
+    }))
+    const { error: imageError } = await supabase.from("model_images").insert(images)
+    if (imageError) return { error: imageError.message }
+  }
 
   // No enqueue here: a database trigger fires on the transition into
   // `processing`, so the job commits with the row. Doing it from the client
