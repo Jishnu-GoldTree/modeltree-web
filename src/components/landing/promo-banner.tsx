@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { MessagesSquare, Sparkles } from "lucide-react"
 import { getTranslations } from "next-intl/server"
 

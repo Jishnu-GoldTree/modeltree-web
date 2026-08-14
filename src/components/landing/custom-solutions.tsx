@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { Check, Wand2 } from "lucide-react"
 
 import { useTranslations } from "next-intl"
@@ -44,7 +44,7 @@ export function CustomSolutions() {
                   asChild
                   className="bg-brand text-brand-foreground hover:bg-brand/85"
                 >
-                  <Link href={`/custom-work/${solution.key}`}>
+                  <Link href="/custom-work">
                     {t(`${solution.key}Cta`)}
                   </Link>
                 </Button>

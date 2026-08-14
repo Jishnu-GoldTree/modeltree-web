@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl"
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/form";
 import { SocialAuthButtons } from "@/components/forms/social-auth-buttons"
 import { createClient } from "@/lib/supabase/client"
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 
 const ACCOUNT_OPTIONS = [
   { value: "buyer", labelKey: "buying", hintKey: "buyingHint", Icon: ShoppingBag },

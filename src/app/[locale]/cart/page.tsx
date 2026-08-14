@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { Lock, ShieldCheck, ShoppingCart, Trash2 } from "lucide-react"
 
 import { getCart } from "@/lib/cart"
@@ -86,7 +86,6 @@ export default async function CartPage() {
                       >
                         <Thumb
                           seed={line.model.seed}
-                          grid={false}
                           sizes="160px"
                           className="aspect-4/3 w-36 rounded-lg"
                         />

@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { Star } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -11,7 +11,6 @@ import { formatPrice } from "@/lib/money"
 import type { Locale } from "@/i18n/routing"
 
 import { Thumb } from "@/components/marketplace/thumb"
-import { tempPreview } from "@/lib/temp-previews"
 import { Badge } from "@/components/ui/badge"
 
 
@@ -45,7 +44,7 @@ export function ModelCard({
     >
       <Thumb
         seed={model.seed}
-        src={model.cover ?? tempPreview(model.slug)}
+        src={model.cover}
         sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
         className="aspect-4/3 shrink-0 transition-transform duration-300 group-hover:scale-[1.04]"
       >

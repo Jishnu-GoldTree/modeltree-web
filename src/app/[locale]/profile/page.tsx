@@ -3,8 +3,8 @@ import { getLocale, getTranslations } from "next-intl/server"
 import { formatPrice } from "@/lib/money"
 import type { Locale } from "@/i18n/routing"
 import { initials } from "@/lib/utils"
-import Link from "next/link"
-import { redirect } from "next/navigation"
+import { Link } from "@/i18n/navigation"
+import { redirect } from "@/i18n/navigation"
 import { Download, MapPin, Package, Receipt, Star } from "lucide-react"
 
 import { getCurrentUser } from "@/lib/supabase/server"
@@ -39,7 +39,7 @@ export default async function ProfilePage() {
   const user_ = await getCurrentUser()
   // Anonymous visitors get bounced to login with a return path, rather than an
   // empty profile that looks broken.
-  if (!user_) redirect("/login?next=/profile")
+  if (!user_) return redirect({ href: "/login?next=/profile", locale })
 
   // Everything here now comes from the profiles/orders tables; the demo
   // fixtures only survive as a fallback for the display name.
@@ -186,7 +186,6 @@ export default async function ProfilePage() {
                     >
                       <Thumb
                         seed={order.model.slug}
-                        grid={false}
                         sizes="120px"
                         className="aspect-4/3 w-28 rounded-lg"
                       />

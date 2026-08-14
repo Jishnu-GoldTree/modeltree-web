@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl"
 import { initials } from "@/lib/utils"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { useEffect, useState } from "react"
 import type { User as SupabaseUser } from "@supabase/supabase-js"
 

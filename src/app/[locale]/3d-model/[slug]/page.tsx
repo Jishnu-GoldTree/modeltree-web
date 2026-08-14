@@ -3,13 +3,14 @@ import { getLocale, getTranslations } from "next-intl/server"
 import { formatPrice } from "@/lib/money"
 import type { Locale } from "@/i18n/routing"
 import { initials } from "@/lib/utils"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { notFound } from "next/navigation"
 import {
   Check,
   ChevronRight,
   Download,
   FileBox,
+  Gem,
   Heart,
   ShieldCheck,
   Star,
@@ -73,6 +74,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
   const lic = await getTranslations("license")
   const common = await getTranslations("common")
   const facet = await getTranslations("facet")
+  const member = await getTranslations("membership")
   const category = ASSET_CATEGORIES.find((c) => c.slug === model.category)
   const related = await getRelated(model)
   const locale = await getLocale()
@@ -287,6 +289,24 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                 <p className="mt-1.5 text-xs text-muted-foreground">
                   {t("commercial", { license: lic(model.license) })}
                 </p>
+
+                {/* Priced next to the price, which is the only place the
+                    comparison lands: a buyer deciding on this model is exactly
+                    who the membership is for. */}
+                <Link
+                  href="/pricing"
+                  className="mt-4 flex items-start gap-2.5 rounded-lg border border-brand bg-brand-muted p-3 outline-none transition-colors hover:bg-brand-muted/70 focus-visible:ring-3 focus-visible:ring-brand/50"
+                >
+                  <Gem className="mt-0.5 size-4 shrink-0 text-brand-accent" aria-hidden />
+                  <span className="text-xs">
+                    <span className="block font-medium text-brand-accent">
+                      {member("included")}
+                    </span>
+                    <span className="mt-0.5 block text-muted-foreground">
+                      {member("includedBody")}
+                    </span>
+                  </span>
+                </Link>
 
                 {/* The licence picker and the add button are one form, so
                     the chosen tier posts with it. Radios + submit means it

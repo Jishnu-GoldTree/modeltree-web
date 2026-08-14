@@ -1,6 +1,6 @@
 "use client"
 
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { Heart, ShoppingCart } from "lucide-react"
 
 import { useCounts } from "@/lib/queries/counts"

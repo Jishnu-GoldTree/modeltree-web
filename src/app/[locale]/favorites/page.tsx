@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { Heart, ShoppingCart } from "lucide-react"
 
 import { getFavoriteModels } from "@/lib/favorites"

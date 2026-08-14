@@ -2,8 +2,8 @@
 
 import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
-import Link from "next/link"
-import { Menu, Upload } from "lucide-react"
+import { Link } from "@/i18n/navigation"
+import { Gem, Menu, Upload } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { PRIMARY_NAV } from "@/lib/data/landing"
@@ -56,6 +56,7 @@ const NAV_KEYS: Record<string, "models" | "production" | "custom" | "designers">
 export function SiteHeader({ solid = false }: { solid?: boolean }) {
   const t = useTranslations("nav")
   const nav = useTranslations("landing.navChildren")
+  const member = useTranslations("membership")
   const [scrolled, setScrolled] = useState(false)
   const stuck = solid || scrolled
 
@@ -138,6 +139,21 @@ export function SiteHeader({ solid = false }: { solid?: boolean }) {
             Below md that search is display:none, so this must keep its own or
             the actions collapse against the logo. */}
         <div className={cn("flex items-center gap-1 ms-auto", stuck && "md:ms-0")}>
+          {/* The membership is the thing the client most wants seen, so it sits
+              in the header on every page rather than only on the landing page.
+              Hidden below sm, where the row is already tight. */}
+          <Button
+            asChild
+            size="sm"
+            variant="ghost"
+            className="hidden text-white/85 hover:bg-white/10 hover:text-white sm:inline-flex"
+          >
+            <Link href="/pricing">
+              <Gem className="size-4" aria-hidden />
+              {member("headerCta")}
+            </Link>
+          </Button>
+
           <HeaderBadges />
           <LocaleSwitcher />
 

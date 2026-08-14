@@ -1,6 +1,9 @@
 "use server"
 
-import { redirect } from "next/navigation"
+import { redirect as externalRedirect } from "next/navigation"
+import { getLocale } from "next-intl/server"
+
+import { redirect } from "@/i18n/navigation"
 import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
 
@@ -32,12 +35,13 @@ export async function signInWithProvider(provider: string, redirectTo = "/") {
   }
 
   // Supabase returns the provider's authorize URL rather than redirecting.
-  redirect(data.url)
+  externalRedirect(data.url)
 }
 
 export async function signOutAction() {
+  const locale = await getLocale()
   const supabase = await createClient()
   await supabase.auth.signOut()
   revalidatePath("/", "layout")
-  redirect(withFlash("/", "signedOut"))
+  redirect({ href: withFlash("/", "signedOut"), locale })
 }

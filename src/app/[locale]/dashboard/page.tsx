@@ -2,8 +2,8 @@ import { getLocale, getTranslations } from "next-intl/server"
 
 import { formatPrice } from "@/lib/money"
 import type { Locale } from "@/i18n/routing"
-import Link from "next/link"
-import { redirect } from "next/navigation"
+import { Link } from "@/i18n/navigation"
+import { redirect } from "@/i18n/navigation"
 import { Download, Plus, Star, Trash2, Wallet } from "lucide-react"
 
 import { getCurrentUser } from "@/lib/supabase/server"
@@ -42,7 +42,7 @@ export default async function DashboardPage() {
   const money = (agorot: number) =>
     formatPrice(agorot, locale as Locale, { freeLabel: free("free") }).primary
   const user = await getCurrentUser()
-  if (!user) redirect("/login?next=/dashboard")
+  if (!user) return redirect({ href: "/login?next=/dashboard", locale })
 
   const t = await getTranslations("dashboard")
   const [models, earnings] = await Promise.all([getMyModels(), getDesignerEarnings()])
@@ -113,7 +113,6 @@ export default async function DashboardPage() {
                   <li key={model.id} className="flex flex-wrap items-center gap-4 rounded-xl border p-3">
                     <Thumb
                       seed={model.slug}
-                      grid={false}
                       sizes="120px"
                       className="aspect-4/3 w-28 shrink-0 rounded-lg"
                     />
