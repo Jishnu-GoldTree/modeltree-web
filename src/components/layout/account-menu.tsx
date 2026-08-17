@@ -4,9 +4,8 @@ import { useLocale, useTranslations } from "next-intl"
 import { initials } from "@/lib/utils"
 import { Link, getPathname } from "@/i18n/navigation"
 import type { Locale } from "@/i18n/routing"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { createPortal } from "react-dom"
-import type { User as SupabaseUser } from "@supabase/supabase-js"
 
 import { createClient } from "@/lib/supabase/client"
 import { useViewer } from "@/lib/queries/viewer"
@@ -97,39 +96,27 @@ function SignOutForm({
 /**
  * Signed-out: the login/signup pair. Signed-in: an avatar menu.
  *
- * The session is fetched on mount rather than rendered on the server, which
- * keeps every page static — so there's a brief unknown state. It renders as a
- * skeleton the same size as the buttons, otherwise the header reflows once the
- * session lands.
+ * The session is fetched rather than rendered on the server, which keeps every
+ * page static — so there's a brief unknown state on first load. It has to come
+ * from the shared query cache and not component state: SiteHeader is rendered
+ * per page rather than in the layout, so this remounts on every navigation, and
+ * local state re-entered the loading branch each time. A skeleton that then
+ * resolved to a differently sized avatar resized the whole actions block on
+ * every route change, which dragged the compact search sideways with it.
+ *
+ * The skeleton is avatar-shaped for the same reason: it is the size the
+ * signed-in state settles at, so nothing moves when the session lands.
  */
 export function AccountMenu() {
   const t = useTranslations("nav")
-  const { data: viewer } = useViewer()
-  const [user, setUser] = useState<SupabaseUser | null>(null)
+  const { data: viewer, isPending } = useViewer()
   const [leaving, setLeaving] = useState(false)
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const supabase = createClient()
-
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user)
-      setLoading(false)
-    })
-
-    // Keeps the header in step with sign-in/out that happens in another tab or
-    // on a page this component didn't navigate through.
-    const { data: subscription } = supabase.auth.onAuthStateChange(
-      (_event, session) => setUser(session?.user ?? null),
-    )
-    return () => subscription.subscription.unsubscribe()
-  }, [])
-
-  if (loading) {
-    return <Skeleton className="h-8 w-28 rounded-md bg-white/10" />
+  if (isPending) {
+    return <Skeleton className="size-8 rounded-full bg-white/10" />
   }
 
-  if (!user) {
+  if (!viewer) {
     return (
       <>
         <Button
@@ -149,8 +136,7 @@ export function AccountMenu() {
     )
   }
 
-  const name =
-    (user.user_metadata?.full_name as string | undefined) ?? user.email ?? "Account"
+  const name = viewer.name ?? viewer.email ?? t("account")
 
   return (
     <>
@@ -158,10 +144,9 @@ export function AccountMenu() {
           backdrop-filter creates a containing block for fixed descendants — so
           rendered in place, `fixed inset-0` resolved to the header's 64px box
           and covered nothing. */}
-      {/* `loading` is false only after the auth effect has run, which means we
-          are past hydration and document.body is safe to portal into. */}
+      {/* Reaching this branch means the viewer query resolved on the client, so
+          we are past hydration and document.body is safe to portal into. */}
       {leaving &&
-        !loading &&
         createPortal(
           <div
             role="status"
@@ -194,17 +179,15 @@ export function AccountMenu() {
         <DropdownMenuLabel className="flex flex-col gap-0.5">
           <span className="text-sm font-medium">{name}</span>
           <span
-            title={user.email}
+            title={viewer.email ?? undefined}
             className="truncate text-xs font-normal text-muted-foreground"
           >
-            {user.email}
+            {viewer.email}
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {LINKS.filter(
-          // Undefined while the account type is still loading, so the item
-          // stays hidden rather than flashing in and out for a buyer.
-          (link) => !("designerOnly" in link) || viewer?.accountType === "designer",
+          (link) => !("designerOnly" in link) || viewer.accountType === "designer",
         ).map(({ href, key, Icon }) => (
           <DropdownMenuItem key={href} asChild>
             <Link href={href}>

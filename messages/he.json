@@ -237,7 +237,7 @@
     "nothingYet": "עדיין לא פרסמתם דבר",
     "nothingYetBody": "העלו את המודל הראשון שלכם כדי להתחיל למכור. אפשר לשמור כטיוטה ולהמשיך אחר כך.",
     "uploadFirst": "העלאת מודל",
-    "created": "הפרסום נשמר. הוא יופיע בקטלוג בסיום העיבוד.",
+    "created": "הפרסום נשמר. הוא יופיע בקטלוג ברגע שתפרסמו אותו.",
     "earnedAcross": "{amount} הכנסות מ־{count, plural, one {מכירה אחת} other {# מכירות}}",
     "noFiles": "עדיין אין קבצים"
   },
@@ -283,7 +283,7 @@
     "unsaved": "הוסר מהשמורים",
     "savedCleared": "המודלים השמורים נוקו",
     "listingCreated": "הפרסום נשמר",
-    "listingPublished": "הפרסום נשלח לעיבוד",
+    "listingPublished": "הפרסום עלה לאוויר ומופיע בקטלוג",
     "listingFailed": "לא ניתן היה לשמור את הפרסום",
     "licenseUpdated": "הרישיון עודכן",
     "accountCreated": "החשבון נוצר. פותחים את הפרופיל",
@@ -590,7 +590,8 @@
     "failed": "העלאה נכשלה",
     "uploadFailed": "לא ניתן להעלות את {name}",
     "removeImage": "הסרת תמונה",
-    "publishNote": "פרסום מכניס את הפריט לתור עיבוד לאחר שהעלאת הקבצים תושלם."
+    "removeFile": "הסרת קובץ",
+    "publishNote": "הפרסום נכנס לקטלוג מיד. אפשר לשמור כטיוטה ולהשלים בהמשך."
   },
   "profileForm": {
     "name": "שם",
@@ -620,6 +621,10 @@
     "by": "מאת",
     "outOf5From": "מתוך 5 מתוך",
     "viewImage": "הצגת תמונה {n} מתוך {total}",
+    "prevImage": "התמונה הקודמת",
+    "nextImage": "התמונה הבאה",
+    "openFullscreen": "פתיחת תצוגת מסך מלא",
+    "closeFullscreen": "סגירת תצוגת מסך מלא",
     "badgeTopRated": "המדורגים ביותר",
     "badgeAssets": "{count} נכסים",
     "badgeFree": "חינם",

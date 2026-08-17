@@ -10,7 +10,7 @@ import { z } from "zod"
 
 import { createClient, getCurrentUser } from "@/lib/supabase/server"
 import { FORMATS, METALS, PRODUCTION, STONES } from "@/lib/data/catalog"
-import { keyPrefix } from "@/lib/r2/presign"
+import { headObject, keyPrefix, type StoredObject } from "@/lib/r2/presign"
 
 /**
  * Designer-side writes.
@@ -22,19 +22,18 @@ import { keyPrefix } from "@/lib/r2/presign"
 
 const FORMAT_VALUES = FORMATS.map((f) => f.value) as [string, ...string[]]
 
-/** Client-uploaded file metadata. The bytes already live in R2; this row just
- *  records where. Sizes are what R2 recorded, so a fake size in a hidden field
- *  would be caught the moment we go to serve the file. */
+/** Client-uploaded file metadata. The bytes are supposed to already live in R2;
+ *  this says where to look. Nothing here is trusted — the key is re-derived
+ *  against the caller's namespace below, and the size and digest are read back
+ *  off R2 rather than accepted from the form. */
 const uploadedFileSchema = z.object({
   format: z.enum(FORMAT_VALUES),
   storageKey: z.string().min(1),
-  size: z.number().int().min(0).max(500 * 1024 * 1024),
 })
 
 const uploadedImageSchema = z.object({
   storageKey: z.string().min(1),
   position: z.number().int().min(0).max(19),
-  size: z.number().int().min(0).max(10 * 1024 * 1024),
 })
 
 const listingSchema = z.object({
@@ -160,6 +159,60 @@ export async function createListing(
     }
   }
 
+  // Ask R2 what it actually holds. A presigned URL is permission to upload, not
+  // evidence of one — a PUT that failed, stalled or was abandoned leaves the key
+  // empty while the form still reports success. Checking here turns that into an
+  // error the designer can act on immediately, instead of a live listing that
+  // 404s the first time somebody downloads it.
+  let storedFiles: (StoredObject | null)[]
+  let storedImages: (StoredObject | null)[]
+  try {
+    ;[storedFiles, storedImages] = await Promise.all([
+      Promise.all(v.uploadedFiles.map((f) => headObject(f.storageKey))),
+      Promise.all(v.uploadedImages.map((img) => headObject(img.storageKey))),
+    ])
+  } catch {
+    // R2 itself is unreachable or misconfigured. Distinct from a missing key:
+    // the designer did nothing wrong and retrying is the right advice.
+    return { error: "Could not reach file storage. Please try again in a moment." }
+  }
+
+  const fileRows: {
+    format: string
+    storageKey: string
+    size: number
+    checksum: string | null
+  }[] = []
+  for (const [i, f] of v.uploadedFiles.entries()) {
+    const stored = storedFiles[i]
+    if (!stored || stored.size === 0) {
+      return {
+        fieldErrors: {
+          uploadedFiles: `The ${f.format.toUpperCase()} file did not finish uploading. Attach it again and retry.`,
+        },
+      }
+    }
+    fileRows.push({
+      format: f.format,
+      storageKey: f.storageKey,
+      size: stored.size,
+      checksum: stored.checksum,
+    })
+  }
+
+  // Images carry no checksum column — they're public, replaceable and not what
+  // a buyer pays for. Existence is the only thing worth confirming.
+  for (let i = 0; i < v.uploadedImages.length; i++) {
+    const stored = storedImages[i]
+    if (!stored || stored.size === 0) {
+      return {
+        fieldErrors: {
+          uploadedImages: "A preview image did not finish uploading. Attach it again and retry.",
+        },
+      }
+    }
+  }
+
   const supabase = await createClient()
 
   // Collisions are likely — two designers both publish "Rally Car". Walk a
@@ -184,10 +237,13 @@ export async function createListing(
       slug,
       title: v.title,
       description: v.description,
-      // Files are not uploaded yet, so a "published" listing would have nothing
-      // to download. Publishing puts it in `processing` until the pipeline
-      // exists; saving keeps it a draft.
-      status: v.publish ? "processing" : "draft",
+      // Live immediately: every file backing this listing has just been
+      // confirmed present in R2, which is the only thing `processing` was ever
+      // waiting on.
+      status: v.publish ? "published" : "draft",
+      // The catalog's browse index orders by this, so a published row without
+      // it sorts as null and effectively disappears.
+      published_at: v.publish ? new Date().toISOString() : null,
       price_cents: Math.round(v.price * 100),
       license_code: v.licenseCode,
       metal: v.metal,
@@ -202,14 +258,16 @@ export async function createListing(
     return { error: error?.message ?? "Could not save the listing. Try again." }
   }
 
-  // Real file rows — bytes already live in R2 under storage_key. The trigger
-  // mirrors formats onto models.formats, which is what the catalog reads.
-  if (v.uploadedFiles.length > 0) {
-    const files = v.uploadedFiles.map((f) => ({
+  // Real file rows — bytes confirmed in R2 under storage_key, sized and
+  // digested from what R2 reported. The trigger mirrors formats onto
+  // models.formats, which is what the catalog reads.
+  if (fileRows.length > 0) {
+    const files = fileRows.map((f) => ({
       model_id: model.id,
       format: f.format,
       storage_key: f.storageKey,
       size_bytes: f.size,
+      checksum: f.checksum,
     }))
     const { error: fileError } = await supabase.from("model_files").insert(files)
     if (fileError) return { error: fileError.message }
@@ -224,11 +282,6 @@ export async function createListing(
     const { error: imageError } = await supabase.from("model_images").insert(images)
     if (imageError) return { error: imageError.message }
   }
-
-  // No enqueue here: a database trigger fires on the transition into
-  // `processing`, so the job commits with the row. Doing it from the client
-  // needed permissions on a service-role-only table and would have been a
-  // separate transaction besides.
 
   revalidatePath("/dashboard")
   revalidatePath("/3d-models")

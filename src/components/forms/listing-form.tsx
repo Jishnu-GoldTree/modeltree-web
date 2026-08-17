@@ -4,7 +4,7 @@ import { useActionState, useCallback, useEffect, useMemo, useState } from "react
 import { useFormStatus } from "react-dom"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
-import { CheckCircle2, ImagePlus, Info, Loader2, UploadCloud, X, XCircle } from "lucide-react"
+import { CheckCircle2, ImagePlus, Info, Loader2, Trash2, UploadCloud, XCircle } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { createListing, type ListingState } from "@/lib/actions/models"
@@ -293,6 +293,20 @@ export function ListingForm({
     })
   }
 
+  /** Drops an uploaded deliverable without unchecking its format — the
+   *  designer can pick a replacement without also losing their format
+   *  selection. Also clears the file input so re-picking the same file name
+   *  still fires `onChange`. */
+  function removeFile(format: FormatValue) {
+    setFileSlots((prev) => {
+      const next = { ...prev }
+      delete next[format]
+      return next
+    })
+    const input = document.getElementById(`file-${format}`)
+    if (input instanceof HTMLInputElement) input.value = ""
+  }
+
   const uploadedFilesPayload = useMemo(
     () =>
       Object.entries(fileSlots)
@@ -378,7 +392,7 @@ export function ListingForm({
                       }}
                     />
                     {slot && (
-                      <p
+                      <div
                         className={cn(
                           "flex items-center gap-1.5 text-xs",
                           slot.status === "error" && "text-destructive",
@@ -389,13 +403,27 @@ export function ListingForm({
                         {slot.status === "uploading" && <Loader2 className="size-3 animate-spin" aria-hidden />}
                         {slot.status === "uploaded" && <CheckCircle2 className="size-3" aria-hidden />}
                         {slot.status === "error" && <XCircle className="size-3" aria-hidden />}
-                        <span className="truncate" title={slot.file.name}>
+                        <span className="min-w-0 flex-1 truncate" title={slot.file.name}>
                           {slot.file.name} · {humanBytes(slot.file.size)}
                           {slot.status === "uploading" && ` · ${u("uploading")}`}
                           {slot.status === "uploaded" && ` · ${u("uploaded")}`}
                           {slot.status === "error" && ` · ${slot.error ?? u("failed")}`}
                         </span>
-                      </p>
+                        {/* Removing a file leaves the format checked so the
+                            designer can pick a replacement without having to
+                            re-select the format checkbox. */}
+                        {slot.status !== "uploading" && (
+                          <button
+                            type="button"
+                            onClick={() => removeFile(f.value)}
+                            className="rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive focus-visible:ring-2 focus-visible:ring-destructive/40 focus-visible:outline-none"
+                            aria-label={u("removeFile")}
+                            title={u("removeFile")}
+                          >
+                            <Trash2 className="size-3.5" aria-hidden />
+                          </button>
+                        )}
+                      </div>
                     )}
                   </div>
                 )}
@@ -438,25 +466,30 @@ export function ListingForm({
               <li key={img.id} className="group relative overflow-hidden rounded-lg border">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={img.previewUrl} alt="" className="aspect-square w-full object-cover" />
-                <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-1 bg-black/60 px-2 py-1 text-[10px] text-white">
-                  <span className="flex items-center gap-1 truncate">
-                    {img.status === "uploading" && <Loader2 className="size-3 animate-spin" aria-hidden />}
-                    {img.status === "uploaded" && <CheckCircle2 className="size-3" aria-hidden />}
-                    {img.status === "error" && <XCircle className="size-3" aria-hidden />}
-                    <span className="truncate">
-                      {img.status === "uploading" && u("uploading")}
-                      {img.status === "uploaded" && humanBytes(img.file.size)}
-                      {img.status === "error" && (img.error ?? u("failed"))}
-                    </span>
-                  </span>
+                {/* Floating trash — top-end so it reads regardless of the
+                    tile's height, and end-side rather than right so it flips
+                    to the correct side in RTL. Solid backing + destructive
+                    accent on hover so the affordance is unambiguous. */}
+                {img.status !== "uploading" && (
                   <button
                     type="button"
                     onClick={() => removeImage(img.id)}
-                    className="rounded p-0.5 hover:bg-white/20"
+                    className="absolute end-1.5 top-1.5 rounded-md bg-white/90 p-1.5 text-muted-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-destructive hover:text-white focus-visible:ring-2 focus-visible:ring-destructive/50 focus-visible:outline-none dark:bg-black/70 dark:text-white/80"
                     aria-label={u("removeImage")}
+                    title={u("removeImage")}
                   >
-                    <X className="size-3" aria-hidden />
+                    <Trash2 className="size-3.5" aria-hidden />
                   </button>
+                )}
+                <div className="absolute inset-x-0 bottom-0 flex items-center gap-1 bg-black/60 px-2 py-1 text-[10px] text-white">
+                  {img.status === "uploading" && <Loader2 className="size-3 animate-spin" aria-hidden />}
+                  {img.status === "uploaded" && <CheckCircle2 className="size-3" aria-hidden />}
+                  {img.status === "error" && <XCircle className="size-3" aria-hidden />}
+                  <span className="truncate">
+                    {img.status === "uploading" && u("uploading")}
+                    {img.status === "uploaded" && humanBytes(img.file.size)}
+                    {img.status === "error" && (img.error ?? u("failed"))}
+                  </span>
                 </div>
               </li>
             ))}

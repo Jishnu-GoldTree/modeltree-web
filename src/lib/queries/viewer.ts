@@ -8,6 +8,8 @@ import { createClient } from "@/lib/supabase/client"
 export type Viewer = {
   id: string
   accountType: "buyer" | "designer"
+  name: string | null
+  email: string | null
 } | null
 
 export const viewerKey = ["viewer"] as const
@@ -57,6 +59,8 @@ export function useViewer() {
       return {
         id: data.user.id,
         accountType: (profile?.account_type as "buyer" | "designer") ?? "buyer",
+        name: (data.user.user_metadata?.full_name as string | undefined) ?? null,
+        email: data.user.email ?? null,
       }
     },
     staleTime: 60_000,

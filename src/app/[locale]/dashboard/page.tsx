@@ -60,8 +60,22 @@ export default async function DashboardPage() {
       <SiteHeader solid />
 
       <main id="main-content" className="flex-1 pt-16">
-        <div className="border-b bg-ink">
-          <div className="shell flex flex-wrap items-center justify-between gap-4 py-10">
+        <div className="relative overflow-hidden border-b bg-ink">
+          {/* Same grid as the landing hero, at the same 64px pitch, so the two
+              dark bands read as one surface. Faded out before the bottom border
+              rather than run into it: at full strength the last horizontal line
+              lands near the border and reads as a misaligned second rule. */}
+          <div
+            aria-hidden
+            className="absolute inset-0 opacity-[0.07]"
+            style={{
+              backgroundImage:
+                "linear-gradient(oklch(1 0 0 / 0.6) 1px, transparent 1px), linear-gradient(90deg, oklch(1 0 0 / 0.6) 1px, transparent 1px)",
+              backgroundSize: "64px 64px",
+              maskImage: "linear-gradient(180deg, #000 25%, transparent 95%)",
+            }}
+          />
+          <div className="shell relative flex flex-wrap items-center justify-between gap-4 py-10">
             <div>
               <h1 className="text-2xl font-semibold tracking-tight text-white">
                 {t("title")}

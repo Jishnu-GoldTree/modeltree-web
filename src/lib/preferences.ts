@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react"
 
 import { routing, type Locale } from "@/i18n/routing"
+import { COUNTRY_COOKIE, ISRAEL } from "@/lib/geo"
 
 /**
  * Visitor preferences that live in the browser.
@@ -51,6 +52,15 @@ export function writeLocalePreference(locale: Locale) {
   // see the same answer.
   write("NEXT_LOCALE", locale)
   emit()
+}
+
+/**
+ * Written by the proxy from Vercel's edge, never by us — so it is a fact about
+ * the visitor, not an answer they gave. Kept separate from the locale cookie
+ * for that reason: LOCALE_COOKIE means somebody chose.
+ */
+export function isIsraeliVisitor() {
+  return read(COUNTRY_COOKIE) === ISRAEL
 }
 
 export function hasSeenCookieNotice() {
