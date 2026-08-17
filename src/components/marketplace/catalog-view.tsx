@@ -55,7 +55,16 @@ export async function CatalogView({
 
   return (
     <div className="shell flex gap-8 py-8">
-      <aside className="hidden w-60 shrink-0 lg:block">{filters}</aside>
+      {/* `self-start` so the flex container doesn't stretch the aside to
+          match the grid's full height — without it there's no room for the
+          sticky offset to travel and the pane just sits at the top of a
+          tall column. Sticky top matches the fixed 4rem header height plus
+          the shell's py-8, so filters pin flush under the header.
+          `max-h` + `overflow-y-auto` keeps very long filter lists from
+          overflowing the viewport when pinned. */}
+      <aside className="hidden w-60 shrink-0 self-start lg:sticky lg:top-20 lg:block lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto">
+        {filters}
+      </aside>
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center justify-between gap-3 pb-5">

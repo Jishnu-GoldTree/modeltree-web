@@ -33,8 +33,14 @@ export function LanguagePrompt({ asking }: { asking: boolean }) {
   const [, startTransition] = useTransition()
 
   useEffect(() => {
+    // Only redirect FROM the default-locale root — that is the one case where
+    // routing dropped the visitor into a language they may not read. If they
+    // are already on an explicit /en URL (typically because they just used the
+    // navbar switcher) respect that, even when the stored choice disagrees;
+    // otherwise this effect fights every navbar switch back to the popup
+    // answer.
+    if (locale !== routing.defaultLocale) return
     const stored = readLocalePreference()
-    // Chosen previously and we are on the other locale — honour the choice.
     if (stored && stored !== locale) {
       startTransition(() => {
         // @ts-expect-error — see LocaleSwitcher: params are typed per route.

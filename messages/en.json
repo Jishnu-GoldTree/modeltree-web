@@ -237,7 +237,7 @@
     "nothingYet": "Nothing published yet",
     "nothingYetBody": "Upload your first model to start selling. You can save it as a draft and finish later.",
     "uploadFirst": "Upload a model",
-    "created": "Listing saved. It appears in the catalog once processing finishes.",
+    "created": "Listing saved. It appears in the catalog as soon as you publish it.",
     "earnedAcross": "{amount} earned across {count, plural, one {# sale} other {# sales}}",
     "noFiles": "No files yet"
   },
@@ -283,7 +283,7 @@
     "unsaved": "Removed from saved",
     "savedCleared": "Saved models cleared",
     "listingCreated": "Listing saved",
-    "listingPublished": "Listing queued for processing",
+    "listingPublished": "Listing published. It is live in the catalog",
     "listingFailed": "Could not save the listing",
     "licenseUpdated": "License updated",
     "accountCreated": "Account created. Opening your profile",
@@ -590,7 +590,8 @@
     "failed": "Upload failed",
     "uploadFailed": "Could not upload {name}",
     "removeImage": "Remove image",
-    "publishNote": "Publishing queues the listing for processing once file uploads complete."
+    "removeFile": "Remove file",
+    "publishNote": "Publishing puts the listing in the catalog straight away. Save it as a draft to finish later."
   },
   "profileForm": {
     "name": "Name",
@@ -620,6 +621,10 @@
     "by": "by",
     "outOf5From": "out of 5 from",
     "viewImage": "View image {n} of {total}",
+    "prevImage": "Previous image",
+    "nextImage": "Next image",
+    "openFullscreen": "Open fullscreen view",
+    "closeFullscreen": "Close fullscreen view",
     "badgeTopRated": "Top rated",
     "badgeAssets": "{count} assets",
     "badgeFree": "Free",

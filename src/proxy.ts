@@ -3,12 +3,14 @@ import { createServerClient } from "@supabase/ssr"
 import createIntlProxy from "next-intl/middleware"
 
 import { routing } from "@/i18n/routing"
+import { COUNTRY_COOKIE, COUNTRY_HEADER } from "@/lib/geo"
 
 /**
- * Two jobs on every request:
+ * Three jobs on every request:
  *
  *   1. next-intl resolves the locale and may redirect or rewrite the URL.
  *   2. Supabase refreshes the session cookie.
+ *   3. The visitor's country is mirrored from Vercel's edge into a cookie.
  *
  * They share one response object. next-intl decides the final URL, so it runs
  * first and its response is handed to Supabase to write cookies onto. Running
@@ -50,11 +52,30 @@ export async function proxy(request: NextRequest) {
   const skipIntl = isNonLocalisedRoute(request.nextUrl.pathname)
   const start = () => (skipIntl ? NextResponse.next({ request }) : intlProxy(request))
 
+  /**
+   * Geo reaches the browser as a cookie rather than through `headers()` in the
+   * layout: that call would opt the whole tree into dynamic rendering and cost
+   * the catalog its static generation, for a popup. Session-scoped and rewritten
+   * whenever the edge disagrees with it, so a move or a VPN corrects itself on
+   * the next request.
+   *
+   * The header only exists on Vercel. Anywhere else the cookie is never written
+   * and the visitor reads as "not Israel", which shows the language prompt —
+   * the safe way to be wrong.
+   */
+  const country = request.headers.get(COUNTRY_HEADER)
+  const withCountry = (res: NextResponse) => {
+    if (country && request.cookies.get(COUNTRY_COOKIE)?.value !== country) {
+      res.cookies.set(COUNTRY_COOKIE, country, { path: "/", sameSite: "lax" })
+    }
+    return res
+  }
+
   let response = start()
 
   // A redirect from next-intl (adding the /he prefix, say) is terminal — the
   // browser comes back and the refresh happens on that request.
-  if (!skipIntl && response.headers.get("location")) return response
+  if (!skipIntl && response.headers.get("location")) return withCountry(response)
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -84,7 +105,8 @@ export async function proxy(request: NextRequest) {
   // createServerClient and getUser risks the session silently expiring.
   await supabase.auth.getUser()
 
-  return response
+  // Last, because `setAll` above rebuilds `response` from scratch.
+  return withCountry(response)
 }
 
 export const config = {

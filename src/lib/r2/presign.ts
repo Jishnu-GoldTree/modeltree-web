@@ -1,6 +1,6 @@
 import "server-only"
 
-import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3"
+import { GetObjectCommand, HeadObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 
 import { r2, r2Bucket } from "@/lib/r2/client"
@@ -52,6 +52,44 @@ export async function presignGet(storageKey: string, expiresIn: number = ONE_DAY
     new GetObjectCommand({ Bucket: r2Bucket(), Key: storageKey }),
     { expiresIn },
   )
+}
+
+export type StoredObject = { size: number; checksum: string | null }
+
+/**
+ * What R2 actually holds at a key, or null if it holds nothing.
+ *
+ * A presigned URL is permission to upload, not proof of one: if the browser's
+ * PUT fails, is cancelled, or the tab closes mid-flight, the key stays empty
+ * while the client still reports success. Everything the client says about an
+ * upload — that it happened, how big it was — is therefore unverified until
+ * this call, which is why publishing goes through it.
+ *
+ * The ETag is R2's own digest of the bytes. Stored as `checksum` so a later
+ * download path can detect a truncated or swapped object.
+ */
+export async function headObject(storageKey: string): Promise<StoredObject | null> {
+  try {
+    const head = await r2().send(
+      new HeadObjectCommand({ Bucket: r2Bucket(), Key: storageKey }),
+    )
+    return {
+      size: head.ContentLength ?? 0,
+      checksum: head.ETag?.replaceAll('"', "") ?? null,
+    }
+  } catch (error) {
+    // A genuinely absent key is the expected answer here, so it maps to null.
+    // Anything else — credentials, network, a bucket that doesn't exist — is a
+    // fault the caller must not read as "the designer forgot to upload".
+    if (isNotFound(error)) return null
+    throw error
+  }
+}
+
+function isNotFound(error: unknown) {
+  if (typeof error !== "object" || error === null) return false
+  const { name, $metadata } = error as { name?: string; $metadata?: { httpStatusCode?: number } }
+  return name === "NotFound" || name === "NoSuchKey" || $metadata?.httpStatusCode === 404
 }
 
 /**
