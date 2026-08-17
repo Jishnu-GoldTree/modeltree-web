@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-/** Initials for avatar fallbacks: "Omri GoldTree" -> "OG". */
+/** Initials for avatar fallbacks: "Dana Levi" -> "DL". */
 export function initials(name: string) {
   return name
     .split(" ")

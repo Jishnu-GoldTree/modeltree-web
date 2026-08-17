@@ -33,6 +33,8 @@
     "count": "{count, plural, =0 {No models} one {# model} other {# models}}",
     "filters": "Filters",
     "clearAll": "Clear all",
+    "searchedFor": "Search: “{query}”",
+    "clearSearch": "Clear search",
     "emptyTitle": "No models match those filters",
     "emptyBody": "Try removing a filter. Combining a narrow category with a rare file format usually comes up empty.",
     "price": "Price",
@@ -609,12 +611,6 @@
     "bioHint": "Shown on your public storefront. Up to 500 characters.",
     "save": "Save changes",
     "handlePrefix": "modeltree.com/designers/"
-  },
-  "searchPage": {
-    "title": "Search 3D models",
-    "results": "Results for “{query}”",
-    "stubTitle": "Catalog search isn't wired up yet",
-    "stubBody": "This route is a stub so search has a destination. Results land here once the catalog search API exists."
   },
   "common": {
     "loading": "Loading",

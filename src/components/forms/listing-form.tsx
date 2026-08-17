@@ -100,7 +100,7 @@ function SubmitButtons({
   const { pending } = useFormStatus()
   const disabled = pending || uploading
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap justify-end gap-2">
       <Button
         type="submit"
         name="publish"
@@ -357,7 +357,7 @@ export function ListingForm({
       <fieldset className="flex flex-col gap-3">
         <legend className="text-sm font-medium">{u("filesLegend")}</legend>
         <p className="text-xs text-muted-foreground">{u("filesHint")}</p>
-        <div className="grid gap-2 sm:grid-cols-2">
+        <div className="flex flex-col gap-2">
           {FORMATS.map((f) => {
             const checked = selectedFormats.has(f.value)
             const slot = fileSlots[f.value]
@@ -365,11 +365,11 @@ export function ListingForm({
               <div
                 key={f.value}
                 className={cn(
-                  "flex flex-col gap-2 rounded-lg border p-3 transition-colors",
+                  "flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border p-3 transition-colors",
                   checked ? "border-brand bg-brand-muted/40" : "hover:bg-accent",
                 )}
               >
-                <label className="flex cursor-pointer items-center gap-2 text-sm font-medium">
+                <label className="flex w-20 shrink-0 cursor-pointer items-center gap-2 text-sm font-medium">
                   <input
                     type="checkbox"
                     name="formats"
@@ -381,11 +381,11 @@ export function ListingForm({
                   {f.label}
                 </label>
                 {checked && (
-                  <div className="flex flex-col gap-1.5">
+                  <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1.5">
                     <input
                       id={`file-${f.value}`}
                       type="file"
-                      className="text-xs file:mr-3 file:rounded file:border-0 file:bg-muted file:px-3 file:py-1.5 file:text-xs file:font-medium hover:file:bg-accent"
+                      className="min-w-0 flex-1 text-xs file:mr-3 file:rounded file:border-0 file:bg-muted file:px-3 file:py-1.5 file:text-xs file:font-medium hover:file:bg-accent"
                       onChange={(e) => {
                         const file = e.target.files?.[0]
                         if (file) onFilePicked(f.value, file)
@@ -394,7 +394,9 @@ export function ListingForm({
                     {slot && (
                       <div
                         className={cn(
-                          "flex items-center gap-1.5 text-xs",
+                          // Full width so a long filename never squeezes the
+                          // file picker sharing this row.
+                          "flex w-full min-w-0 items-center gap-1.5 text-xs",
                           slot.status === "error" && "text-destructive",
                           slot.status === "uploaded" && "text-brand-accent",
                           slot.status === "uploading" && "text-muted-foreground",
@@ -531,18 +533,12 @@ export function ListingForm({
             className="h-10 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             <option value="" disabled>
-              Choose a category
+              {t("choose")}
             </option>
-            {["asset", "print"].map((kind) => (
-              <optgroup key={kind} label={kind === "asset" ? "3D models" : "3D printing"}>
-                {categories
-                  .filter((c) => c.kind === kind)
-                  .map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.label}
-                    </option>
-                  ))}
-              </optgroup>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.label}
+              </option>
             ))}
           </select>
           <FieldError message={state.fieldErrors?.categoryId} />

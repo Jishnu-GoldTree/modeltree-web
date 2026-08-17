@@ -195,7 +195,7 @@ export function SignupForm({
                   <Input
                     {...field}
                     autoComplete="name"
-                    placeholder="Omri GoldTree"
+                    placeholder="Dana Levi"
                     className="h-10"
                   />
                 </FormControl>

@@ -1,6 +1,6 @@
 import { Fragment } from "react"
 import { Link } from "@/i18n/navigation"
-import { ArrowRight, Gem, SearchX, SlidersHorizontal } from "lucide-react"
+import { ArrowRight, Gem, SearchX, SlidersHorizontal, X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { SORTS, type CatalogResult } from "@/lib/data/catalog"
@@ -68,9 +68,25 @@ export async function CatalogView({
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center justify-between gap-3 pb-5">
-          {/* One interpolated message, not a number glued to a noun: word
-              order differs per language and concatenation breaks in RTL. */}
-          <p className="text-sm text-muted-foreground">{t("count", { count: total })}</p>
+          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
+            {/* One interpolated message, not a number glued to a noun: word
+                order differs per language and concatenation breaks in RTL. */}
+            <p className="text-sm text-muted-foreground">{t("count", { count: total })}</p>
+
+            {/* The term arrives from the header search, so without this the
+                results have no visible cause. Clearing it keeps the filters,
+                mirroring how "clear all" keeps the term. */}
+            {params.q && (
+              <Link
+                href={catalogHref(base, params, { q: undefined })}
+                className="inline-flex min-w-0 items-center gap-1.5 rounded-full border border-brand bg-brand-muted py-1 ps-3 pe-2 text-xs font-medium text-brand-accent outline-none hover:bg-brand-muted/70 focus-visible:ring-3 focus-visible:ring-brand/50"
+              >
+                <span className="truncate">{t("searchedFor", { query: params.q })}</span>
+                <X className="size-3.5 shrink-0" aria-hidden />
+                <span className="sr-only">{t("clearSearch")}</span>
+              </Link>
+            )}
+          </div>
 
           <div className="flex items-center gap-2">
             <Sheet>

@@ -1,7 +1,10 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { getLocale } from "next-intl/server"
 
+import { redirect } from "@/i18n/navigation"
+import { withFlash } from "@/lib/flash"
 import { profileSchema } from "@/lib/validations/forms"
 import { createClient, getCurrentUser } from "@/lib/supabase/server"
 
@@ -14,7 +17,6 @@ import { createClient, getCurrentUser } from "@/lib/supabase/server"
  */
 
 export type ProfileState = {
-  ok?: boolean
   error?: string
   fieldErrors?: Record<string, string>
 }
@@ -72,5 +74,10 @@ export async function updateProfile(
   revalidatePath("/profile/settings")
   revalidatePath(`/designers/${v.handle}`)
 
-  return { ok: true }
+  // Back to the profile itself, so the change is visible rather than reported.
+  // The toast rides along in `?flash=` because the form unmounts on navigation.
+  redirect({ href: withFlash("/profile", "profileSaved"), locale: await getLocale() })
+  // Unreachable: redirect() throws. Present so the action still satisfies its
+  // declared return type.
+  return {}
 }
