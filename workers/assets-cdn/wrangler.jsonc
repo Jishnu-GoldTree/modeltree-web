@@ -1,0 +1,26 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "modeltree-assets-cdn",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-01",
+
+  // Bucket is shared across environments; prefix in the URL selects the env
+  // partition inside the bucket. Native R2 binding: no S3 creds needed.
+  // `remote: true` lets `wrangler dev` on this Worker hit the real bucket
+  // instead of a local Miniflare simulation — useful because uploads happen
+  // via the app, not via wrangler.
+  "r2_buckets": [
+    { "binding": "ASSETS", "bucket_name": "modeltree-assets", "remote": true }
+  ],
+
+  // Comma-separated origins the Worker echoes back on Access-Control-Allow-Origin
+  // when a matching Origin header comes in. `<img>` src reads don't preflight,
+  // but a fetch(...) from JS would — this covers both.
+  "vars": {
+    "ALLOWED_ORIGINS": "http://localhost:3000,http://localhost:3001,https://modeltree.vercel.app,https://modeltree.com"
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}
