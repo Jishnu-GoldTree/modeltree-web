@@ -1,6 +1,7 @@
 import "server-only"
 
 import { createClient } from "@/lib/supabase/server"
+import { presignGet } from "@/lib/r2/presign"
 
 /**
  * Designer-side reads.
@@ -23,6 +24,8 @@ export type DesignerModel = {
   formats: string[]
   updatedAt: string
   categorySlug: string | null
+  /** Signed URL to the lowest-position preview image, if any. */
+  cover?: string
 }
 
 export async function getMyModels(): Promise<DesignerModel[]> {
@@ -30,31 +33,39 @@ export async function getMyModels(): Promise<DesignerModel[]> {
   const { data } = await supabase
     .from("models")
     .select(
-      "id, slug, title, status, price_cents, download_count, review_count, rating, formats, updated_at, categories ( slug )",
+      "id, slug, title, status, price_cents, download_count, review_count, rating, formats, updated_at, categories ( slug ), model_images ( storage_key, position )",
     )
     .order("updated_at", { ascending: false })
 
-  return (data ?? []).map((m) => {
-    const row = m as unknown as {
-      id: string; slug: string; title: string; status: DesignerModel["status"]
-      price_cents: number; download_count: number; review_count: number
-      rating: number | null; formats: string[]; updated_at: string
-      categories: { slug: string } | null
-    }
-    return {
-      id: row.id,
-      slug: row.slug,
-      title: row.title,
-      status: row.status,
-      priceCents: row.price_cents,
-      downloads: row.download_count,
-      reviewCount: row.review_count,
-      rating: row.rating,
-      formats: row.formats ?? [],
-      updatedAt: row.updated_at,
-      categorySlug: row.categories?.slug ?? null,
-    }
-  })
+  return Promise.all(
+    (data ?? []).map(async (m) => {
+      const row = m as unknown as {
+        id: string; slug: string; title: string; status: DesignerModel["status"]
+        price_cents: number; download_count: number; review_count: number
+        rating: number | null; formats: string[]; updated_at: string
+        categories: { slug: string } | null
+        model_images: { storage_key: string; position: number }[]
+      }
+      const coverImage = [...(row.model_images ?? [])].sort(
+        (a, b) => a.position - b.position,
+      )[0]
+      const cover = coverImage ? await presignGet(coverImage.storage_key) : undefined
+      return {
+        id: row.id,
+        slug: row.slug,
+        title: row.title,
+        status: row.status,
+        priceCents: row.price_cents,
+        downloads: row.download_count,
+        reviewCount: row.review_count,
+        rating: row.rating,
+        formats: row.formats ?? [],
+        updatedAt: row.updated_at,
+        categorySlug: row.categories?.slug ?? null,
+        cover,
+      }
+    }),
+  )
 }
 
 /**

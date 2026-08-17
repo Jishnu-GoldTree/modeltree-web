@@ -1,0 +1,23 @@
+{
+  "rules": [
+    {
+      "id": "expire-dev-uploads-7d",
+      "enabled": true,
+      "conditions": { "prefix": "dev/" },
+      "deleteObjectsTransition": {
+        "condition": { "maxAge": 604800, "type": "Age" }
+      },
+      "abortMultipartUploadsTransition": {
+        "condition": { "maxAge": 86400, "type": "Age" }
+      }
+    },
+    {
+      "id": "abort-stale-multipart-prod",
+      "enabled": true,
+      "conditions": { "prefix": "prod/" },
+      "abortMultipartUploadsTransition": {
+        "condition": { "maxAge": 604800, "type": "Age" }
+      }
+    }
+  ]
+}

@@ -10,6 +10,7 @@ import { z } from "zod"
 
 import { createClient, getCurrentUser } from "@/lib/supabase/server"
 import { FORMATS, METALS, PRODUCTION, STONES } from "@/lib/data/catalog"
+import { keyPrefix } from "@/lib/r2/presign"
 
 /**
  * Designer-side writes.
@@ -70,7 +71,7 @@ export type ListingState = { error?: string; fieldErrors?: Record<string, string
  *  double-check here so a forged FormData field can't graft an unrelated key
  *  onto the listing. */
 function ownsKey(storageKey: string, userId: string, prefix: "models" | "images") {
-  return storageKey.startsWith(`${prefix}/${userId}/`)
+  return storageKey.startsWith(`${keyPrefix()}${prefix}/${userId}/`)
 }
 
 function parseJsonField(raw: FormDataEntryValue | null): unknown {

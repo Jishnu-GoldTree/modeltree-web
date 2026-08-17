@@ -1,6 +1,6 @@
 import "server-only"
 
-import { PutObjectCommand } from "@aws-sdk/client-s3"
+import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 
 import { r2, r2Bucket } from "@/lib/r2/client"
@@ -37,7 +37,35 @@ export async function presignPut({ storageKey, contentType, contentLength }: Pre
   return getSignedUrl(r2(), command, { expiresIn: FIVE_MINUTES })
 }
 
-/** `models/<userId>/<uploadId>/<format>.<ext>` — designer-scoped, collision-free. */
+const ONE_DAY = 60 * 60 * 24
+
+/**
+ * Signed download URL. Used for preview images embedded on catalog pages —
+ * one day is the sweet spot: comfortably longer than any Next revalidation
+ * window we set today, short enough that a URL scraped out of HTML goes
+ * stale within a day. Model source files get a much tighter TTL at the
+ * point of purchase; this helper is for public-facing previews only.
+ */
+export async function presignGet(storageKey: string, expiresIn: number = ONE_DAY) {
+  return getSignedUrl(
+    r2(),
+    new GetObjectCommand({ Bucket: r2Bucket(), Key: storageKey }),
+    { expiresIn },
+  )
+}
+
+/**
+ * `prod/` on Vercel production, `dev/` everywhere else (preview deploys,
+ * `next dev`, `next start` locally). Sourced from the runtime, not a
+ * hand-set env var, so nobody can accidentally point a dev deploy at prod
+ * keys. R2 API tokens are bucket-scoped — this prefix is the only thing
+ * keeping dev writes out of prod's namespace.
+ */
+export function keyPrefix() {
+  return process.env.VERCEL_ENV === "production" ? "prod/" : "dev/"
+}
+
+/** `<env>/models/<userId>/<uploadId>/<format>.<ext>` — designer-scoped, collision-free. */
 export function modelFileKey(args: {
   userId: string
   uploadId: string
@@ -46,10 +74,10 @@ export function modelFileKey(args: {
 }) {
   const format = safeSegment(args.format)
   const ext = safeSegment(args.extension || format)
-  return `models/${args.userId}/${args.uploadId}/${format}.${ext}`
+  return `${keyPrefix()}models/${args.userId}/${args.uploadId}/${format}.${ext}`
 }
 
-/** `images/<userId>/<uploadId>/<position>-<slug>.<ext>` — preview images. */
+/** `<env>/images/<userId>/<uploadId>/<position>.<ext>` — preview images. */
 export function modelImageKey(args: {
   userId: string
   uploadId: string
@@ -58,7 +86,7 @@ export function modelImageKey(args: {
 }) {
   const ext = safeSegment(args.extension || "jpg")
   const position = String(args.position).padStart(2, "0")
-  return `images/${args.userId}/${args.uploadId}/${position}.${ext}`
+  return `${keyPrefix()}images/${args.userId}/${args.uploadId}/${position}.${ext}`
 }
 
 function safeSegment(value: string) {

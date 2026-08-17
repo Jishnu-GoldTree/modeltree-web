@@ -1,5 +1,6 @@
 import type { ModelCard } from "@/lib/data/landing"
 import { supabasePublic } from "@/lib/supabase/public"
+import { presignGet } from "@/lib/r2/presign"
 
 /**
  * Catalog reads, backed by Postgres.
@@ -155,6 +156,9 @@ type ModelRow = {
   file_summary: { format: string; size_bytes: number }[]
   categories: { slug: string } | null
   profiles: { handle: string } | null
+  /** Every preview image on this model. The cover is whichever has the lowest
+   *  `position`, resolved in `toModel`. */
+  model_images: { storage_key: string; position: number }[]
 }
 
 const SELECT = `
@@ -163,10 +167,22 @@ const SELECT = `
   download_count, rating, review_count, published_at,
   formats, file_summary,
   categories ( slug ),
-  profiles!models_designer_id_fkey ( handle )
+  profiles!models_designer_id_fkey ( handle ),
+  model_images ( storage_key, position )
 `
 
-function toModel(row: ModelRow): CatalogModel {
+/** Picks the cover key (lowest `position`) out of the images embed. */
+function coverKey(images: ModelRow["model_images"]): string | undefined {
+  if (!images?.length) return undefined
+  return [...images].sort((a, b) => a.position - b.position)[0]?.storage_key
+}
+
+async function toModel(row: ModelRow): Promise<CatalogModel> {
+  const key = coverKey(row.model_images)
+  // Sign the cover on demand. `<Thumb>` falls back to a deterministic
+  // placeholder if `cover` stays undefined, so a model with no images is
+  // still renderable — we don't block on that.
+  const cover = key ? await presignGet(key) : undefined
   return {
     id: row.id,
     slug: row.slug,
@@ -180,6 +196,7 @@ function toModel(row: ModelRow): CatalogModel {
     // The generated artwork is keyed off a stable string; the slug serves that
     // role now that seeds are no longer part of the data.
     seed: row.slug,
+    cover,
     category: row.categories?.slug ?? "",
     license: row.license_code,
     priceAgorot: row.price_cents,
@@ -263,7 +280,8 @@ function joinedSelect(q: CatalogQuery) {
     download_count, rating, review_count, published_at,
     formats, file_summary,
     ${category},
-    profiles!models_designer_id_fkey ( handle )
+    profiles!models_designer_id_fkey ( handle ),
+    model_images ( storage_key, position )
   `
 }
 
@@ -299,7 +317,7 @@ export async function queryModels(query: CatalogQuery): Promise<CatalogResult> {
   const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE))
 
   return {
-    items: (data ?? []).map(toModel),
+    items: await Promise.all((data ?? []).map(toModel)),
     total,
     page: Math.min(page, pageCount),
     pageCount,
@@ -377,7 +395,7 @@ export async function getModel(slug: string): Promise<CatalogModel | undefined> 
     .eq("status", "published")
     .eq("slug", slug)
     .maybeSingle()
-  return data ? toModel(data as unknown as ModelRow) : undefined
+  return data ? await toModel(data as unknown as ModelRow) : undefined
 }
 
 export async function getRelated(model: CatalogModel, limit = 4): Promise<CatalogModel[]> {
@@ -389,7 +407,7 @@ export async function getRelated(model: CatalogModel, limit = 4): Promise<Catalo
     .eq("category_id", await categoryIdFor(model.category))
     .order("download_count", { ascending: false })
     .limit(limit)
-  return ((data ?? []) as unknown as ModelRow[]).map(toModel)
+  return Promise.all(((data ?? []) as unknown as ModelRow[]).map(toModel))
 }
 
 async function categoryIdFor(slug: string) {
@@ -399,6 +417,21 @@ async function categoryIdFor(slug: string) {
     .eq("slug", slug)
     .maybeSingle()
   return data?.id ?? null
+}
+
+/**
+ * Signed URLs for every preview image on this model, in gallery order.
+ * The product page falls back to placeholder art when this returns [].
+ */
+export async function getModelImages(modelId: string): Promise<string[]> {
+  const { data } = await supabasePublic
+    .from("model_images")
+    .select("storage_key, position")
+    .eq("model_id", modelId)
+    .order("position", { ascending: true })
+
+  const rows = (data ?? []) as { storage_key: string; position: number }[]
+  return Promise.all(rows.map((r) => presignGet(r.storage_key)))
 }
 
 export async function allModelSlugs(): Promise<string[]> {
