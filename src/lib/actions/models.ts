@@ -34,6 +34,11 @@ const uploadedFileSchema = z.object({
 const uploadedImageSchema = z.object({
   storageKey: z.string().min(1),
   position: z.number().int().min(0).max(19),
+  // Measured in the browser, since the bytes never reach this server. Only
+  // used to reserve layout space, so a wrong value costs a reflow and nothing
+  // more — which is why it isn't verified against the stored object.
+  width: z.number().int().positive().max(20000).optional(),
+  height: z.number().int().positive().max(20000).optional(),
 })
 
 const listingSchema = z.object({
@@ -278,6 +283,8 @@ export async function createListing(
       model_id: model.id,
       storage_key: img.storageKey,
       position: img.position,
+      width: img.width ?? null,
+      height: img.height ?? null,
     }))
     const { error: imageError } = await supabase.from("model_images").insert(images)
     if (imageError) return { error: imageError.message }

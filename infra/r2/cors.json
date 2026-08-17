@@ -5,8 +5,11 @@
         "origins": [
           "http://localhost:3000",
           "http://localhost:3001",
+          "http://192.168.0.156:3000",
           "https://modeltree.vercel.app",
-          "https://modeltree.com"
+          "https://modeltree-web-jishnu-s-team.vercel.app",
+          "https://modeltree-web-git-main-jishnu-s-team.vercel.app",
+          "https://modeltree-web-git-dev-jishnu-s-team.vercel.app"
         ],
         "methods": ["PUT"],
         "headers": ["Content-Type"]
