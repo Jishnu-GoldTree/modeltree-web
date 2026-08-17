@@ -32,6 +32,35 @@ Both commands overwrite the whole config — treat these JSON files as the
 source of truth. Editing rules in the dashboard drifts silently from the
 repo; re-run the commands after any change.
 
+## Public read Worker (`../../workers/assets-cdn`)
+
+Preview images are served publicly via a Worker at
+`https://modeltree-assets-cdn.<subdomain>.workers.dev` (subdomain not
+registered yet — see below). The Worker fronts the bucket via a native R2
+binding: no S3 credentials are used or exposed, and only `<env>/images/*`
+is served — `<env>/models/*` returns 403 regardless of the key. Keys use
+UUIDs so responses cache forever (`Cache-Control: public, max-age=31536000, immutable`).
+
+Deploy: `wrangler deploy --config workers/assets-cdn/wrangler.jsonc`.
+
+### One-time dashboard step
+
+Cloudflare requires each account to pick a workers.dev subdomain the first
+time before workers.dev URLs resolve. Visit
+`https://dash.cloudflare.com/c91f1311bbd0950bb02be4d54bb84fe9/workers/subdomain`
+and pick a name (e.g. `goldtree` or `modeltree`). After that,
+`modeltree-assets-cdn.<subdomain>.workers.dev` starts responding.
+
+### Wiring the app to it (not done yet)
+
+When the subdomain (or a custom domain) is ready, set
+`R2_PUBLIC_BASE_URL=https://modeltree-assets-cdn.<subdomain>.workers.dev`
+in `.env.local` and on Vercel, then replace the `presignGet` calls in
+`src/lib/data/catalog.ts` and `src/lib/data/designer.ts` with
+`${R2_PUBLIC_BASE_URL}/${storage_key}` — signed URLs re-fetch on every
+render because the signature changes; the Worker URL is stable so the
+image optimizer can actually cache it.
+
 ## API token
 
 Wrangler cannot mint R2 API tokens; do it once in the dashboard:
