@@ -43,13 +43,16 @@ export function SearchForm({
   })
 
   // No toast for search — the results page is the confirmation. What it does
-  // need is a busy state, since /search reads the database and cannot be
+  // need is a busy state, since the catalog reads the database and cannot be
   // prefetched, so the click otherwise looks like it did nothing.
   const [isSearching, startSearch] = useTransition()
 
+  // Straight to the catalog: `q` is one of its filters, so a search lands on a
+  // page where the term can be narrowed by metal, stone or format rather than
+  // on a dead end that only knows how to match a title.
   function onSubmit(values: SearchValues) {
     startSearch(() => {
-      router.push(`/search?q=${encodeURIComponent(values.q)}`)
+      router.push(`/3d-models?q=${encodeURIComponent(values.q)}`)
     })
   }
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState, useEffect, useRef } from "react"
+import { useActionState, useEffect } from "react"
 import { useFormStatus } from "react-dom"
 import { Loader2 } from "lucide-react"
 import { useTranslations } from "next-intl"
@@ -46,16 +46,9 @@ export function ProfileForm({ profile }: { profile: Profile }) {
   const f = useTranslations("profileForm")
   const [state, formAction] = useActionState<ProfileState, FormData>(updateProfile, {})
 
-  // useActionState keeps the same object identity across renders, so key the
-  // toast off a counter rather than the value — otherwise saving twice with the
-  // same result shows nothing the second time.
-  const lastShown = useRef(0)
+  // Only failures are reported here. A successful save redirects to /profile and
+  // its toast travels in `?flash=`, since this form unmounts on the way.
   useEffect(() => {
-    if (state.ok && lastShown.current === 0) {
-      lastShown.current = 1
-      toast.success(t("profileSaved"))
-    }
-    if (!state.ok) lastShown.current = 0
     if (state.error) toast.error(t("profileFailed"))
   }, [state, t])
 

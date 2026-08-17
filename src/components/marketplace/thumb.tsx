@@ -34,6 +34,13 @@ type ThumbProps = {
   alt?: string
   /** Rendered width across breakpoints, so Next picks a sane srcset entry. */
   sizes?: string
+  /**
+   * Applied to the image rather than the frame. A hover zoom belongs here: put
+   * it on the frame and the frame itself grows, and since the transform is
+   * visual only, the extra 4% spills over whatever sits below the cover instead
+   * of being clipped.
+   */
+  imageClassName?: string
   children?: React.ReactNode
 }
 
@@ -43,6 +50,7 @@ export function Thumb({
   src,
   alt = "",
   sizes = "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw",
+  imageClassName,
   children,
 }: ThumbProps) {
   return (
@@ -52,7 +60,7 @@ export function Thumb({
         alt={alt}
         fill
         sizes={sizes}
-        className="object-cover"
+        className={cn("object-cover", imageClassName)}
       />
       {children}
     </div>

@@ -1,5 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server"
 
+import { cn } from "@/lib/utils"
 import { formatPrice } from "@/lib/money"
 import type { Locale } from "@/i18n/routing"
 import { Link } from "@/i18n/navigation"
@@ -124,7 +125,15 @@ export default async function DashboardPage() {
             ) : (
               <ul className="mt-4 flex flex-col gap-3">
                 {models.map((model) => (
-                  <li key={model.id} className="flex flex-wrap items-center gap-4 rounded-xl border p-3">
+                  <li
+                    key={model.id}
+                    className={cn(
+                      "relative flex flex-wrap items-center gap-4 rounded-xl border p-3 transition-colors",
+                      // Only published listings have somewhere to go: getModel()
+                      // filters on status, so a draft's page 404s for its owner too.
+                      model.status === "published" && "hover:bg-accent/40",
+                    )}
+                  >
                     <Thumb
                       seed={model.slug}
                       src={model.cover}
@@ -135,28 +144,48 @@ export default async function DashboardPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         {model.status === "published" ? (
-                          <Link href={`/3d-model/${model.slug}`} className="font-medium hover:underline">
+                          // The ::after overlay stretches this one link across the
+                          // whole card, so the card is clickable without nesting a
+                          // second interactive element inside an anchor.
+                          <Link
+                            href={`/3d-model/${model.slug}`}
+                            className="font-medium hover:underline after:absolute after:inset-0 after:rounded-xl"
+                          >
                             <UserText>{model.title}</UserText>
                           </Link>
                         ) : (
                           <UserText className="font-medium">{model.title}</UserText>
                         )}
-                        <Badge className={`border-0 ${STATUS_STYLE[model.status] ?? ""}`}>
+                        <Badge className={cn("border-0 capitalize", STATUS_STYLE[model.status])}>
                           {model.status}
                         </Badge>
                       </div>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {model.formats.length > 0 ? model.formats.join(", ") : t("noFiles")}
-                        {" · "}
-                        {model.downloads} downloads
-                      </p>
+                      <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                        {model.formats.length > 0 ? (
+                          model.formats.map((format) => (
+                            <span
+                              key={format}
+                              className="rounded border border-brand/30 bg-brand-muted/50 px-1.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-brand-accent"
+                            >
+                              {format}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-xs text-muted-foreground">{t("noFiles")}</span>
+                        )}
+                        <span className="text-xs text-muted-foreground">
+                          · {model.downloads} downloads
+                        </span>
+                      </div>
                     </div>
 
                     <div className="flex items-center gap-3">
                       <span className="text-sm font-semibold tabular-nums">
                         {money(model.priceCents)}
                       </span>
-                      <form action={deleteListing}>
+                      {/* Above the stretched link, or the overlay would swallow
+                          the click and navigate instead of deleting. */}
+                      <form action={deleteListing} className="relative z-10">
                         <input type="hidden" name="id" value={model.id} />
                         <Button
                           type="submit"
