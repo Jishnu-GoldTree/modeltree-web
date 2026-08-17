@@ -1,0 +1,18 @@
+{
+  "rules": [
+    {
+      "allowed": {
+        "origins": [
+          "http://localhost:3000",
+          "http://localhost:3001",
+          "https://modeltree.vercel.app",
+          "https://modeltree.com"
+        ],
+        "methods": ["PUT"],
+        "headers": ["Content-Type"]
+      },
+      "exposeHeaders": ["ETag"],
+      "maxAgeSeconds": 3600
+    }
+  ]
+}

@@ -23,6 +23,7 @@ import {
   getFiles,
   getLicenseOptions,
   getModel,
+  getModelImages,
   getRelated,
   getReviews,
 } from "@/lib/data/catalog"
@@ -85,6 +86,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
   const reviews = await getReviews(model)
   const files = await getFiles(model)
   const licenses = await getLicenseOptions(model)
+  const images = await getModelImages(model.id)
 
   const specs = [
     { label: t("formats"), value: model.formats.join(", ") },
@@ -138,9 +140,12 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
 
           <div className="mt-5 grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
             <div className="min-w-0">
-              {/* A real viewer comes with the asset pipeline; until then these
-                  are the stand-in renders from public/images/temp-prod. */}
-              <ProductGallery images={tempGallery(model.slug)} title={model.title} />
+              {/* Uploaded previews when the designer supplied any; falls back
+                  to the placeholder set for legacy models with no images. */}
+              <ProductGallery
+                images={images.length > 0 ? images : tempGallery(model.slug)}
+                title={model.title}
+              />
 
               <UserText
                 as="h1"

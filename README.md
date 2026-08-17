@@ -79,31 +79,30 @@ Required env vars (see `.env.local`):
 | `R2_BUCKET`            | Bucket name. Keep model files private.                     |
 | `R2_PUBLIC_BASE_URL`   | Public base for preview images (custom domain or Worker).  |
 
-**Bucket CORS** must allow PUT from the dev and production origins, e.g.:
-
-```json
-[
-  {
-    "AllowedOrigins": ["http://localhost:3001", "https://modeltree.com"],
-    "AllowedMethods": ["PUT"],
-    "AllowedHeaders": ["Content-Type"],
-    "ExposeHeaders": ["ETag"],
-    "MaxAgeSeconds": 3600
-  }
-]
-```
+**Provisioning** is version-controlled under `infra/r2/` (bucket
+`modeltree-assets`, EEUR region hint). CORS and lifecycle live there as
+JSON and are reapplied with `wrangler r2 bucket cors/lifecycle set`. See
+`infra/r2/README.md` for the two commands and the one-time dashboard
+step to mint an R2 API token.
 
 **Storage layout:**
 
 ```
-models/<userId>/<uploadId>/<format>.<ext>   private — signed download only
-images/<userId>/<uploadId>/<position>.<ext> public via R2_PUBLIC_BASE_URL
+<env>/models/<userId>/<uploadId>/<format>.<ext>   private — signed download only
+<env>/images/<userId>/<uploadId>/<position>.<ext> public via R2_PUBLIC_BASE_URL
 ```
+
+`<env>` is `prod/` on Vercel production and `dev/` everywhere else,
+derived at runtime from `VERCEL_ENV` in `lib/r2/presign.ts`. One bucket
+serves every environment; R2 API tokens are bucket-scoped, so isolation
+between dev and prod keys is enforced at the application layer only —
+the prefix is never sourced from a hand-set env var.
 
 `<userId>` is enforced by the presign endpoint (`src/app/api/uploads/presign/route.ts`)
 so a signed-in designer cannot target another designer's namespace. The
 `<uploadId>` is a UUID minted by the listing form, so a whole draft cleans up
-as a single prefix delete.
+as a single prefix delete. Stale `dev/` objects auto-expire after 7 days
+via the lifecycle rule so local iteration doesn't accrete storage.
 
 ## Next up
 

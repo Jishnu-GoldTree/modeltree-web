@@ -113,6 +113,7 @@ export default async function DashboardPage() {
                   <li key={model.id} className="flex flex-wrap items-center gap-4 rounded-xl border p-3">
                     <Thumb
                       seed={model.slug}
+                      src={model.cover}
                       sizes="120px"
                       className="aspect-4/3 w-28 shrink-0 rounded-lg"
                     />
