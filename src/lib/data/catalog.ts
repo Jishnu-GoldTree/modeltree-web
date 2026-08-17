@@ -20,22 +20,20 @@ import { presignGet } from "@/lib/r2/presign"
 
 export type License = "royalty-free" | "editorial" | "extended"
 
-/**
- * Jewellery facets. These replaced rigged/animated/pbr, which are game-asset
- * properties: jewellery is dense static geometry, so those filtered nothing.
- * What a jeweler narrows by is metal, stone and how the piece is produced.
- */
-export const METALS = [
-  "yellow-gold", "white-gold", "rose-gold", "platinum", "silver", "unspecified",
-] as const
-export const STONES = [
-  "round", "princess", "oval", "emerald", "pear", "marquise", "cushion", "none",
-] as const
-export const PRODUCTION = ["cast", "print", "both"] as const
-
-export type Metal = (typeof METALS)[number]
-export type Stone = (typeof STONES)[number]
-export type Production = (typeof PRODUCTION)[number]
+// Constants and enums live in `./catalog-facets` so client components can
+// import them without pulling this file's server-only module graph
+// (Supabase + R2 presign). Re-exported here so existing callers keep working.
+import {
+  FORMATS,
+  METALS,
+  PRODUCTION,
+  STONES,
+  type Metal,
+  type Production,
+  type Stone,
+} from "./catalog-facets"
+export { FORMATS, METALS, PRODUCTION, STONES }
+export type { Metal, Production, Stone }
 
 export type CatalogModel = ModelCard & {
   id: string
@@ -54,21 +52,6 @@ export type CatalogModel = ModelCard & {
   description: string
   publishedAt: string
 }
-
-/**
- * Deliverable formats, named by extension throughout — never by the
- * application that writes them. 3DM rather than "Rhino", MAX rather than
- * "3ds Max": a jeweler asks a supplier for a file, not for a licence.
- */
-export const FORMATS = [
-  { value: "stl", label: "STL" },
-  { value: "obj", label: "OBJ" },
-  { value: "fbx", label: "FBX" },
-  { value: "3dm", label: "3DM" },
-  { value: "3mf", label: "3MF" },
-  { value: "step", label: "STEP" },
-  { value: "max", label: "MAX" },
-] as const
 
 export const SORTS = [
   { value: "trending", label: "Trending" },

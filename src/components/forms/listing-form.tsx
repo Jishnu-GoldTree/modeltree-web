@@ -8,7 +8,7 @@ import { CheckCircle2, ImagePlus, Info, Loader2, UploadCloud, X, XCircle } from 
 
 import { cn } from "@/lib/utils"
 import { createListing, type ListingState } from "@/lib/actions/models"
-import { FORMATS, METALS, PRODUCTION, STONES } from "@/lib/data/catalog"
+import { FORMATS, METALS, PRODUCTION, STONES } from "@/lib/data/catalog-facets"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
