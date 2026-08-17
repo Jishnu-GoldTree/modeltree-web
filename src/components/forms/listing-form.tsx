@@ -44,7 +44,29 @@ type ImageSlot = {
   status: "uploading" | "uploaded" | "error"
   storageKey?: string
   size?: number
+  width?: number
+  height?: number
   error?: string
+}
+
+/**
+ * Natural pixel size of a picked image.
+ *
+ * Read here rather than server-side: the bytes go straight to R2, so the only
+ * place that ever holds the image is this browser. Recorded so the catalog can
+ * reserve the right box before a preview loads instead of shifting layout.
+ * Null when the browser cannot decode the file — the columns are nullable and
+ * a missing size is not worth failing an upload over.
+ */
+async function readImageSize(file: File) {
+  try {
+    const bitmap = await createImageBitmap(file)
+    const size = { width: bitmap.width, height: bitmap.height }
+    bitmap.close()
+    return size
+  } catch {
+    return null
+  }
 }
 
 const MAX_IMAGES = 12
@@ -270,9 +292,18 @@ export function ListingForm({
     await Promise.all(
       newSlots.map(async (slot, i) => {
         try {
-          const { storageKey, size } = await uploadImage(slot.file, startIndex + i)
+          // Decoding runs alongside the PUT rather than before it, so reading
+          // the dimensions costs no extra wall time.
+          const [dimensions, { storageKey, size }] = await Promise.all([
+            readImageSize(slot.file),
+            uploadImage(slot.file, startIndex + i),
+          ])
           setImageSlots((prev) =>
-            prev.map((s) => (s.id === slot.id ? { ...s, status: "uploaded", storageKey, size } : s)),
+            prev.map((s) =>
+              s.id === slot.id
+                ? { ...s, status: "uploaded", storageKey, size, ...dimensions }
+                : s,
+            ),
           )
         } catch (err) {
           const message = err instanceof Error ? err.message : "Upload failed"
@@ -327,6 +358,8 @@ export function ListingForm({
           storageKey: s.storageKey!,
           size: s.size ?? 0,
           position,
+          width: s.width,
+          height: s.height,
         })),
     [imageSlots],
   )

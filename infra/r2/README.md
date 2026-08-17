@@ -15,9 +15,18 @@ from a hand-set env var. If that ever becomes insufficient, split into
 
 ## Files
 
-- `cors.json` — allows `PUT` from local dev and prod origins so the browser
-  can upload directly to R2 via presigned URLs. `Content-Type` is the only
-  header the SDK sends on those PUTs; add more here only if that changes.
+- `cors.json` — allows `PUT` from local dev and deployed origins so the
+  browser can upload directly to R2 via presigned URLs. `Content-Type` is the
+  only header the SDK sends on those PUTs; add more here only if that changes.
+
+  Origins must be exact — R2 takes a literal `Origin` header value
+  (`scheme://host[:port]`), so there is no `https://*.vercel.app` to fall back
+  on. That means only Vercel's **stable aliases** can upload: production and
+  the per-branch `…-git-<branch>-…` URLs, which are listed here. The unique
+  per-deployment URL (`modeltree-<hash>-…`) changes every push and cannot be
+  enumerated, so test uploads on the branch alias, not on a specific
+  deployment. Registering a custom domain means adding it here and re-running
+  the command below — nothing picks it up automatically.
 - `lifecycle.json` — expires `dev/` objects after 7 days and aborts stale
   multipart uploads under both prefixes.
 
