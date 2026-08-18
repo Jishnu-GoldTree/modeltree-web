@@ -159,8 +159,9 @@ const rows = PIECES.map(
     size_mm: mm,
     vertices: Math.round(grams * 5000 + 7000),
     download_count: Math.round(80 + ((i * 37) % 400)),
-    rating: Math.round((4.1 + ((i % 5) * 0.18)) * 10) / 10,
-    review_count: 4 + ((i * 7) % 40),
+    // rating and review_count are deliberately absent: a trigger derives them
+    // from the reviews table, and seeding numbers here invented an average with
+    // no reviews behind it — a listing claiming 23 reviews and showing none.
     published_at: new Date(Date.now() - i * 3 * 86_400_000).toISOString(),
     formats,
   }),

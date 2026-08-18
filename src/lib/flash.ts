@@ -17,8 +17,11 @@ export const FLASH_KEYS = [
   "savedCleared",
   "listingCreated",
   "listingPublished",
+  "listingUpdated",
   "licenseUpdated",
   "profileSaved",
+  "reviewSaved",
+  "reviewRemoved",
   "signedOut",
   "requestOpened",
 ] as const

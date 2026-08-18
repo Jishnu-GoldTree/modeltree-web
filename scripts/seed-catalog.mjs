@@ -77,8 +77,8 @@ const rows = models
     polygons: m.polygons,
     vertices: m.vertices,
     download_count: m.downloads,
-    rating: m.rating,
-    review_count: m.reviews,
+    // No rating or review_count: a trigger derives both from the reviews table,
+    // and the fixture's numbers described reviews that were never inserted.
     // ageDays is relative, so turn it into a real timestamp once, here.
     published_at: new Date(Date.now() - m.ageDays * 86_400_000).toISOString(),
   }))

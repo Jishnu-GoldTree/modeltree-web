@@ -20,6 +20,7 @@ import {
 import { ASSET_CATEGORIES } from "@/lib/data/landing"
 import {
   allModelSlugs,
+  getDownloadableFormats,
   getFiles,
   getLicenseOptions,
   getModel,
@@ -27,14 +28,17 @@ import {
   getRelated,
   getReviews,
 } from "@/lib/data/catalog"
+import { getViewerReview } from "@/lib/data/reviews"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { ModelCard } from "@/components/marketplace/model-card"
+import { ReviewForm } from "@/components/marketplace/review-form"
 import { ProductGallery } from "@/components/marketplace/product-gallery"
 import { tempGallery } from "@/lib/temp-previews"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { addToCart } from "@/lib/actions/cart"
+import { downloadModelFile } from "@/lib/actions/models"
 import { addFavorite } from "@/lib/actions/favorites"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
@@ -72,6 +76,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
   if (!model) notFound()
 
   const t = await getTranslations("product")
+  const rev = await getTranslations("review")
   const cat = await getTranslations("landing")
   const lic = await getTranslations("license")
   const common = await getTranslations("common")
@@ -85,8 +90,19 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
   })
   const reviews = await getReviews(model)
   const files = await getFiles(model)
+  // Which of those formats this viewer may actually pull down. Empty for
+  // anonymous or un-entitled visitors, so the "What you get" list stays a
+  // read-only manifest until they own the model.
+  const downloadable = await getDownloadableFormats(model.id)
   const licenses = await getLicenseOptions(model)
   const images = await getModelImages(model.id)
+  // Null when nobody is signed in, which renders no form rather than an empty one.
+  const viewer = await getViewerReview(model.id)
+
+  // "3 days ago" reads wrong for something posted this morning, and worse in
+  // Hebrew, where the plural rule makes a literal "0 days" ungrammatical.
+  const relativeDay = (days: number) =>
+    days === 0 ? rev("today") : days === 1 ? rev("yesterday") : t("daysAgo", { days })
 
   const specs = [
     { label: t("formats"), value: model.formats.join(", ") },
@@ -164,12 +180,14 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                     {model.author}
                   </Link>
                 </span>
-                <span className="flex items-center gap-1">
-                  <Star className="size-4 fill-amber-400 text-amber-400" aria-hidden />
-                  {model.rating}
-                  <span className="sr-only">{common("outOf5From")}</span>
-                  <span>{t("reviewsCount", { count: number(model.reviews) })}</span>
-                </span>
+                {model.reviews > 0 && (
+                  <span className="flex items-center gap-1">
+                    <Star className="size-4 fill-amber-400 text-amber-400" aria-hidden />
+                    {model.rating}
+                    <span className="sr-only">{common("outOf5From")}</span>
+                    <span>{t("reviewsCount", { count: number(model.reviews) })}</span>
+                  </span>
+                )}
                 <span className="flex items-center gap-1">
                   <Download className="size-4" aria-hidden />
                   {t("downloadsCount", { count: number(model.downloads) })}
@@ -213,8 +231,28 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                       <FileBox className="size-4 text-muted-foreground" aria-hidden />
                       <span className="font-medium">{file.format}</span>
                     </span>
-                    <span className="tabular-nums text-muted-foreground">
-                      {file.size}
+                    <span className="flex items-center gap-3">
+                      <span className="tabular-nums text-muted-foreground">
+                        {file.size}
+                      </span>
+                      {/* Only entitled viewers see the button. The action re-checks
+                          the same RLS boundary, so this is convenience, not the
+                          gate. */}
+                      {downloadable.has(file.format) && (
+                        <form action={downloadModelFile}>
+                          <input type="hidden" name="slug" value={model.slug} />
+                          <input type="hidden" name="format" value={file.format} />
+                          <Button
+                            type="submit"
+                            variant="outline"
+                            size="sm"
+                            className="h-8 gap-1.5"
+                          >
+                            <Download className="size-3.5" aria-hidden />
+                            {t("download")}
+                          </Button>
+                        </form>
+                      )}
                     </span>
                   </li>
                 ))}
@@ -224,12 +262,21 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
 
               <div className="mt-8 flex flex-wrap items-baseline justify-between gap-3">
                 <h2 className="text-lg font-semibold tracking-tight">{t("reviewsTitle")}</h2>
-                <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <Star className="size-4 fill-amber-400 text-amber-400" aria-hidden />
-                  <span className="font-medium text-foreground">{model.rating}</span>
-                  {t("ratingLine", { count: number(model.reviews) })}
-                </p>
+                {/* Ratings are derived from reviews now, so a model with none has
+                    no average — printing "0 out of 5" would read as a bad score
+                    rather than an absent one. */}
+                {model.reviews > 0 && (
+                  <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                    <Star className="size-4 fill-amber-400 text-amber-400" aria-hidden />
+                    <span className="font-medium text-foreground">{model.rating}</span>
+                    {t("ratingLine", { count: number(model.reviews) })}
+                  </p>
+                )}
               </div>
+
+              {reviews.length === 0 && (
+                <p className="mt-5 text-sm text-muted-foreground">{rev("empty")}</p>
+              )}
 
               <ul className="mt-5 flex flex-col gap-5">
                 {reviews.map((review) => (
@@ -259,7 +306,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                           ))}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          {review.daysAgo} days ago
+                          {relativeDay(review.daysAgo)}
                         </span>
                       </div>
                       <p className="mt-1.5 text-sm text-muted-foreground">
@@ -269,6 +316,16 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                   </li>
                 ))}
               </ul>
+
+              {/* Keyed so deleting a review remounts the form: the star state is
+                  seeded from props and would otherwise stay filled. */}
+              {viewer && (
+                <ReviewForm
+                  key={viewer.existing ? "edit" : "new"}
+                  slug={model.slug}
+                  viewer={viewer}
+                />
+              )}
             </div>
 
             {/* Buy box. Sticky on desktop so the price stays reachable while
@@ -413,8 +470,20 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                       {model.author}
                     </Link>
                     <p className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Star className="size-3 fill-amber-400 text-amber-400" aria-hidden />
-                      {t("ratingDownloads", { rating: model.rating, count: number(model.downloads) })}
+                      {model.reviews > 0 ? (
+                        <>
+                          <Star
+                            className="size-3 fill-amber-400 text-amber-400"
+                            aria-hidden
+                          />
+                          {t("ratingDownloads", {
+                            rating: model.rating,
+                            count: number(model.downloads),
+                          })}
+                        </>
+                      ) : (
+                        t("downloadsCount", { count: number(model.downloads) })
+                      )}
                     </p>
                   </div>
                 </div>

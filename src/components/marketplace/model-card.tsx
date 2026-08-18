@@ -104,11 +104,15 @@ export function ModelCard({
               </span>
             )}
           </span>
-          <span className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Star className="size-3.5 fill-amber-400 text-amber-400" aria-hidden />
-            {model.rating}
-            <span className="sr-only">{t("outOf5From")}</span>({model.reviews})
-          </span>
+          {/* No reviews means no average to show; "0" would read as a one-star
+              verdict rather than an empty one. */}
+          {model.reviews > 0 && (
+            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Star className="size-3.5 fill-amber-400 text-amber-400" aria-hidden />
+              {model.rating}
+              <span className="sr-only">{t("outOf5From")}</span>({model.reviews})
+            </span>
+          )}
         </div>
 
         <ul className="mt-2.5 flex flex-wrap gap-1">

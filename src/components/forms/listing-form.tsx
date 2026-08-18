@@ -7,7 +7,8 @@ import { toast } from "sonner"
 import { CheckCircle2, ImagePlus, Info, Loader2, Trash2, UploadCloud, XCircle } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { createListing, type ListingState } from "@/lib/actions/models"
+import { createListing, updateListing, type ListingState } from "@/lib/actions/models"
+import type { ListingEditData } from "@/lib/data/designer"
 import { FORMATS, METALS, PRODUCTION, STONES } from "@/lib/data/catalog-facets"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -30,7 +31,10 @@ import { Label } from "@/components/ui/label"
 type FormatValue = (typeof FORMATS)[number]["value"]
 
 type FileSlot = {
-  file: File
+  // Display name and byte count, carried directly so an already-stored file
+  // (edit mode, no File object in hand) renders the same as a freshly picked one.
+  name: string
+  bytes: number
   status: "uploading" | "uploaded" | "error"
   storageKey?: string
   size?: number
@@ -39,8 +43,11 @@ type FileSlot = {
 
 type ImageSlot = {
   id: string
-  file: File
+  // Absent for images loaded from an existing listing — those arrive already
+  // uploaded, with a signed preview URL rather than a local object URL.
+  file?: File
   previewUrl: string
+  bytes: number
   status: "uploading" | "uploaded" | "error"
   storageKey?: string
   size?: number
@@ -82,11 +89,13 @@ function Select({
   label,
   options,
   prefix,
+  defaultValue,
 }: {
   name: string
   label: string
   options: readonly string[]
   prefix: string
+  defaultValue?: string
 }) {
   const facet = useTranslations("facet")
   return (
@@ -95,7 +104,9 @@ function Select({
       <select
         id={name}
         name={name}
-        defaultValue={options[options.length - 1]}
+        // Falls back to the last option ("unspecified"/"none"/"both") when the
+        // form isn't seeded from an existing listing.
+        defaultValue={defaultValue ?? options[options.length - 1]}
         className="h-10 rounded-lg border bg-transparent px-3 text-sm outline-none focus-visible:ring-3 focus-visible:ring-brand/50"
       >
         {options.map((option) => (
@@ -112,30 +123,42 @@ function SubmitButtons({
   publish,
   draft,
   uploading,
+  canPublish,
+  previewHint,
 }: {
   publish: string
   draft: string
   uploading: boolean
+  /** A publish must ship a thumbnail, so it stays disabled until at least one
+   *  preview image has finished uploading. A draft has no such requirement. */
+  canPublish: boolean
+  previewHint: string
 }) {
   // Pending state has to come from a child of <form>, which is what
   // useFormStatus requires.
   const { pending } = useFormStatus()
   const disabled = pending || uploading
   return (
-    <div className="flex flex-wrap justify-end gap-2">
-      <Button
-        type="submit"
-        name="publish"
-        value="1"
-        disabled={disabled}
-        className="h-10 bg-brand text-brand-foreground hover:bg-brand/85"
-      >
-        {(pending || uploading) && <Loader2 className="size-4 animate-spin" aria-hidden />}
-        {publish}
-      </Button>
-      <Button type="submit" name="publish" value="0" variant="outline" disabled={pending} className="h-10">
-        {draft}
-      </Button>
+    <div className="flex flex-col items-end gap-2">
+      {!canPublish && (
+        <p className="text-xs text-muted-foreground">{previewHint}</p>
+      )}
+      <div className="flex flex-wrap justify-end gap-2">
+        <Button
+          type="submit"
+          name="publish"
+          value="1"
+          disabled={disabled || !canPublish}
+          title={canPublish ? undefined : previewHint}
+          className="h-10 bg-brand text-brand-foreground hover:bg-brand/85"
+        >
+          {(pending || uploading) && <Loader2 className="size-4 animate-spin" aria-hidden />}
+          {publish}
+        </Button>
+        <Button type="submit" name="publish" value="0" variant="outline" disabled={pending} className="h-10">
+          {draft}
+        </Button>
+      </div>
     </div>
   )
 }
@@ -150,14 +173,39 @@ function humanBytes(bytes: number) {
 export function ListingForm({
   categories,
   licenses,
+  initial,
 }: {
   categories: { id: string; slug: string; label: string; kind: string }[]
   licenses: { code: string; label: string; blurb: string }[]
+  /** Present in edit mode: pre-fills every field and seeds the already-stored
+   *  files and images so leaving them untouched preserves them on save. */
+  initial?: ListingEditData
 }) {
   const feedback = useTranslations("toast")
   const t = useTranslations("listing")
   const u = useTranslations("upload")
-  const [state, formAction] = useActionState<ListingState, FormData>(createListing, {})
+  const editing = initial !== undefined
+  const [state, formAction] = useActionState<ListingState, FormData>(
+    editing ? updateListing : createListing,
+    {},
+  )
+
+  // The server action is the single source of validation, so errors only arrive
+  // on submit. Mirroring them locally lets a field's error clear the instant
+  // that field changes, instead of a stale "too short" sitting under text the
+  // designer has already fixed. Re-synced on every new submit result.
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  useEffect(() => {
+    setErrors(state.fieldErrors ?? {})
+  }, [state])
+  const clearError = useCallback((...fields: string[]) => {
+    setErrors((prev) => {
+      if (!fields.some((f) => f in prev)) return prev
+      const next = { ...prev }
+      for (const f of fields) delete next[f]
+      return next
+    })
+  }, [])
 
   // One uploadId per form session groups everything under a single R2 prefix,
   // which makes cleanup (abandoned drafts) a directory delete later.
@@ -167,15 +215,44 @@ export function ListingForm({
       : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
   )
 
-  const [selectedFormats, setSelectedFormats] = useState<Set<FormatValue>>(new Set())
-  const [fileSlots, setFileSlots] = useState<Partial<Record<FormatValue, FileSlot>>>({})
-  const [imageSlots, setImageSlots] = useState<ImageSlot[]>([])
+  const [selectedFormats, setSelectedFormats] = useState<Set<FormatValue>>(
+    () => new Set((initial?.files ?? []).map((f) => f.format as FormatValue)),
+  )
+  const [fileSlots, setFileSlots] = useState<Partial<Record<FormatValue, FileSlot>>>(() =>
+    Object.fromEntries(
+      (initial?.files ?? []).map((f) => [
+        f.format,
+        {
+          name: `${f.format.toUpperCase()} file`,
+          bytes: f.sizeBytes,
+          status: "uploaded" as const,
+          storageKey: f.storageKey,
+          size: f.sizeBytes,
+        },
+      ]),
+    ),
+  )
+  const [imageSlots, setImageSlots] = useState<ImageSlot[]>(() =>
+    (initial?.images ?? []).map((img, i) => ({
+      id: `existing-${i}-${img.storageKey}`,
+      previewUrl: img.previewUrl,
+      bytes: 0,
+      status: "uploaded" as const,
+      storageKey: img.storageKey,
+      width: img.width ?? undefined,
+      height: img.height ?? undefined,
+    })),
+  )
 
   // Object URLs are handles into memory; leaking them means holding onto the
   // image bytes long after the row is gone.
   useEffect(() => {
     return () => {
-      for (const img of imageSlots) URL.revokeObjectURL(img.previewUrl)
+      // Only the locally-created object URLs need freeing; existing images
+      // carry a signed https URL that revokeObjectURL would ignore anyway.
+      for (const img of imageSlots) {
+        if (img.previewUrl.startsWith("blob:")) URL.revokeObjectURL(img.previewUrl)
+      }
     }
     // Intentionally empty: cleanup on unmount only. Per-image revoke happens
     // in the remove handler.
@@ -242,6 +319,7 @@ export function ListingForm({
   )
 
   function toggleFormat(format: FormatValue, checked: boolean) {
+    clearError("formats", "uploadedFiles")
     setSelectedFormats((prev) => {
       const next = new Set(prev)
       if (checked) next.add(format)
@@ -258,22 +336,25 @@ export function ListingForm({
   }
 
   async function onFilePicked(format: FormatValue, file: File) {
-    setFileSlots((prev) => ({ ...prev, [format]: { file, status: "uploading" } }))
+    clearError("formats", "uploadedFiles")
+    const meta = { name: file.name, bytes: file.size }
+    setFileSlots((prev) => ({ ...prev, [format]: { ...meta, status: "uploading" } }))
     try {
       const { storageKey, size } = await uploadFile("model", file, format)
       setFileSlots((prev) => ({
         ...prev,
-        [format]: { file, status: "uploaded", storageKey, size },
+        [format]: { ...meta, status: "uploaded", storageKey, size },
       }))
     } catch (err) {
       const message = err instanceof Error ? err.message : "Upload failed"
-      setFileSlots((prev) => ({ ...prev, [format]: { file, status: "error", error: message } }))
+      setFileSlots((prev) => ({ ...prev, [format]: { ...meta, status: "error", error: message } }))
       toast.error(u("uploadFailed", { name: file.name }))
     }
   }
 
   async function onImagesPicked(files: FileList | null) {
     if (!files || files.length === 0) return
+    clearError("uploadedImages")
     const room = MAX_IMAGES - imageSlots.length
     const picked = Array.from(files).slice(0, room)
     if (picked.length === 0) return
@@ -283,6 +364,7 @@ export function ListingForm({
       id: `${Date.now()}-${startIndex + i}-${file.name}`,
       file,
       previewUrl: URL.createObjectURL(file),
+      bytes: file.size,
       status: "uploading",
     }))
     setImageSlots((prev) => [...prev, ...newSlots])
@@ -291,12 +373,14 @@ export function ListingForm({
     // small enough that serialising them would only add wall time.
     await Promise.all(
       newSlots.map(async (slot, i) => {
+        // Always set here — these slots were just built from picked files.
+        const file = slot.file!
         try {
           // Decoding runs alongside the PUT rather than before it, so reading
           // the dimensions costs no extra wall time.
           const [dimensions, { storageKey, size }] = await Promise.all([
-            readImageSize(slot.file),
-            uploadImage(slot.file, startIndex + i),
+            readImageSize(file),
+            uploadImage(file, startIndex + i),
           ])
           setImageSlots((prev) =>
             prev.map((s) =>
@@ -310,7 +394,7 @@ export function ListingForm({
           setImageSlots((prev) =>
             prev.map((s) => (s.id === slot.id ? { ...s, status: "error", error: message } : s)),
           )
-          toast.error(u("uploadFailed", { name: slot.file.name }))
+          toast.error(u("uploadFailed", { name: file.name }))
         }
       }),
     )
@@ -319,7 +403,7 @@ export function ListingForm({
   function removeImage(id: string) {
     setImageSlots((prev) => {
       const target = prev.find((s) => s.id === id)
-      if (target) URL.revokeObjectURL(target.previewUrl)
+      if (target?.previewUrl.startsWith("blob:")) URL.revokeObjectURL(target.previewUrl)
       return prev.filter((s) => s.id !== id)
     })
   }
@@ -368,6 +452,11 @@ export function ListingForm({
     Object.values(fileSlots).some((s) => s?.status === "uploading") ||
     imageSlots.some((s) => s.status === "uploading")
 
+  // A listing with no preview has no thumbnail, so it renders blank in the
+  // catalog and reads as broken. Publishing is gated on at least one uploaded
+  // image; drafts may still be saved without one.
+  const hasUploadedImage = uploadedImagesPayload.length > 0
+
   // Only the failure path needs a toast here — a successful create redirects to
   // the dashboard and carries its own flash marker.
   useEffect(() => {
@@ -381,6 +470,8 @@ export function ListingForm({
           {state.error}
         </p>
       )}
+
+      {editing && <input type="hidden" name="modelId" value={initial.id} />}
 
       {/* Serialised R2 upload manifest — the server action parses these and
           inserts the model_files / model_images rows. */}
@@ -438,8 +529,8 @@ export function ListingForm({
                         {slot.status === "uploading" && <Loader2 className="size-3 animate-spin" aria-hidden />}
                         {slot.status === "uploaded" && <CheckCircle2 className="size-3" aria-hidden />}
                         {slot.status === "error" && <XCircle className="size-3" aria-hidden />}
-                        <span className="min-w-0 flex-1 truncate" title={slot.file.name}>
-                          {slot.file.name} · {humanBytes(slot.file.size)}
+                        <span className="min-w-0 flex-1 truncate" title={slot.name}>
+                          {slot.name} · {humanBytes(slot.bytes)}
                           {slot.status === "uploading" && ` · ${u("uploading")}`}
                           {slot.status === "uploaded" && ` · ${u("uploaded")}`}
                           {slot.status === "error" && ` · ${slot.error ?? u("failed")}`}
@@ -466,7 +557,7 @@ export function ListingForm({
             )
           })}
         </div>
-        <FieldError message={state.fieldErrors?.formats ?? state.fieldErrors?.uploadedFiles} />
+        <FieldError message={errors.formats ?? errors.uploadedFiles} />
       </fieldset>
 
       <fieldset className="flex flex-col gap-3">
@@ -522,7 +613,7 @@ export function ListingForm({
                   {img.status === "error" && <XCircle className="size-3" aria-hidden />}
                   <span className="truncate">
                     {img.status === "uploading" && u("uploading")}
-                    {img.status === "uploaded" && humanBytes(img.file.size)}
+                    {img.status === "uploaded" && (img.bytes > 0 ? humanBytes(img.bytes) : u("uploaded"))}
                     {img.status === "error" && (img.error ?? u("failed"))}
                   </span>
                 </div>
@@ -530,12 +621,21 @@ export function ListingForm({
             ))}
           </ul>
         )}
+        <FieldError message={errors.uploadedImages} />
       </fieldset>
 
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="title">{t("title")}</Label>
-        <Input id="title" name="title" placeholder={t("titlePlaceholder")} className="h-10" required />
-        <FieldError message={state.fieldErrors?.title} />
+        <Input
+          id="title"
+          name="title"
+          defaultValue={initial?.title ?? ""}
+          placeholder={t("titlePlaceholder")}
+          className="h-10"
+          required
+          onChange={() => clearError("title")}
+        />
+        <FieldError message={errors.title} />
       </div>
 
       <div className="flex flex-col gap-1.5">
@@ -544,15 +644,17 @@ export function ListingForm({
           id="description"
           name="description"
           rows={5}
+          defaultValue={initial?.description ?? ""}
           placeholder={t("descriptionPlaceholder")}
           className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           required
+          onChange={() => clearError("description")}
         />
         <p className="text-xs text-muted-foreground">
           Buyers decide from this. Mention topology, texture resolution and what
           is included.
         </p>
-        <FieldError message={state.fieldErrors?.description} />
+        <FieldError message={errors.description} />
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">
@@ -561,8 +663,9 @@ export function ListingForm({
           <select
             id="categoryId"
             name="categoryId"
-            defaultValue=""
+            defaultValue={initial?.categoryId ?? ""}
             required
+            onChange={() => clearError("categoryId")}
             className="h-10 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             <option value="" disabled>
@@ -574,7 +677,7 @@ export function ListingForm({
               </option>
             ))}
           </select>
-          <FieldError message={state.fieldErrors?.categoryId} />
+          <FieldError message={errors.categoryId} />
         </div>
 
         <div className="flex flex-col gap-1.5">
@@ -585,11 +688,12 @@ export function ListingForm({
             type="number"
             min={0}
             step={1}
-            defaultValue={0}
+            defaultValue={initial?.priceIls ?? 0}
             className="h-10"
+            onChange={() => clearError("price")}
           />
           <p className="text-xs text-muted-foreground">{t("priceHintIls")}</p>
-          <FieldError message={state.fieldErrors?.price} />
+          <FieldError message={errors.price} />
         </div>
       </div>
 
@@ -609,7 +713,7 @@ export function ListingForm({
                 type="radio"
                 name="licenseCode"
                 value={l.code}
-                defaultChecked={i === 0}
+                defaultChecked={initial ? initial.licenseCode === l.code : i === 0}
                 className="sr-only"
               />
               <span className="text-sm font-medium">{l.label}</span>
@@ -623,15 +727,25 @@ export function ListingForm({
 
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="weightGrams">{t("weight")}</Label>
-          <Input id="weightGrams" name="weightGrams" type="number" min={0} step="0.01" placeholder="3.4" className="h-10" />
-          <FieldError message={state.fieldErrors?.weightGrams} />
+          <Input
+            id="weightGrams"
+            name="weightGrams"
+            type="number"
+            min={0}
+            step="0.01"
+            defaultValue={initial?.weightGrams ?? undefined}
+            placeholder="3.4"
+            className="h-10"
+            onChange={() => clearError("weightGrams")}
+          />
+          <FieldError message={errors.weightGrams} />
         </div>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-3">
-        <Select name="metal" label={t("metal")} options={METALS} prefix="metal" />
-        <Select name="stone" label={t("stone")} options={STONES} prefix="stone" />
-        <Select name="production" label={t("production")} options={PRODUCTION} prefix="production" />
+        <Select name="metal" label={t("metal")} options={METALS} prefix="metal" defaultValue={initial?.metal} />
+        <Select name="stone" label={t("stone")} options={STONES} prefix="stone" defaultValue={initial?.stone} />
+        <Select name="production" label={t("production")} options={PRODUCTION} prefix="production" defaultValue={initial?.production} />
       </div>
 
       <p className="flex items-start gap-2 rounded-lg border bg-muted/40 p-3 text-xs text-muted-foreground">
@@ -642,7 +756,13 @@ export function ListingForm({
         </span>
       </p>
 
-      <SubmitButtons publish={t("publish")} draft={t("saveDraft")} uploading={anyUploading} />
+      <SubmitButtons
+        publish={editing ? t("update") : t("publish")}
+        draft={t("saveDraft")}
+        uploading={anyUploading}
+        canPublish={hasUploadedImage}
+        previewHint={u("previewRequired")}
+      />
     </form>
   )
 }

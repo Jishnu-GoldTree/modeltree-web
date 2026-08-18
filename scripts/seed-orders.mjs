@@ -16,12 +16,7 @@ const db = createClient(
 )
 
 const BUYER_EMAIL = "omri@goldtree.com"
-const SLUGS = [
-  "furniture-lounge-chair",
-  "car-sports-coupe",
-  "plant-fern-cluster",
-  "exterior-modern-villa",
-]
+const ORDER_COUNT = 4
 // Designers keep 80%; the split must reconcile or the check constraint rejects it.
 const DESIGNER_SHARE = 0.8
 
@@ -32,13 +27,20 @@ if (!buyer) {
   process.exit(1)
 }
 
+// Whatever is in the catalog, rather than a fixed slug list: the jewellery
+// pivot deleted every model the old list named, so this seeded nothing and the
+// demo buyer owned nothing — which also meant nobody could leave a review,
+// since reviews_insert_purchased requires a paid order. Ordered by slug so a
+// rerun buys the same four models instead of reshuffling the history.
 const { data: models } = await db
   .from("models")
   .select("id, slug, title, price_cents, license_code, designer_id")
-  .in("slug", SLUGS)
+  .eq("status", "published")
+  .order("slug")
+  .limit(ORDER_COUNT)
 
 if (!models?.length) {
-  console.error("No matching models; run seed-catalog.mjs first")
+  console.error("No published models; run seed-jewellery.mjs first")
   process.exit(1)
 }
 

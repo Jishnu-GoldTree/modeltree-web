@@ -7,6 +7,7 @@ import { Languages } from "lucide-react"
 
 import { usePathname, useRouter } from "@/i18n/navigation"
 import { LOCALE_LABELS, routing, type Locale } from "@/i18n/routing"
+import { writeLocalePreference } from "@/lib/preferences"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -34,6 +35,11 @@ export function LocaleSwitcher() {
 
   function select(next: Locale) {
     if (next === locale) return
+    // Persist the deliberate choice. Without this the switcher only moves the
+    // URL, leaving the stored preference stale — so switching to Hebrew from an
+    // /en page triggered LanguagePrompt's "honour the stored language" effect,
+    // which read the old "en" and bounced straight back to English.
+    writeLocalePreference(next)
     startTransition(() => {
       router.replace(
         // @ts-expect-error — pathname is a known route, but params are only

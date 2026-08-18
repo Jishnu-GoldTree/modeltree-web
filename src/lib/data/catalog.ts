@@ -1,5 +1,6 @@
 import type { ModelCard } from "@/lib/data/landing"
 import { supabasePublic } from "@/lib/supabase/public"
+import { createClient, getCurrentUser } from "@/lib/supabase/server"
 import { presignGet } from "@/lib/r2/presign"
 
 /**
@@ -481,6 +482,28 @@ export async function getFiles(model: CatalogModel) {
     format: f.format,
     size: `${(f.size_bytes / 1_048_576).toFixed(1)} MB`,
   }))
+}
+
+/**
+ * Which formats the signed-in viewer is actually allowed to download.
+ *
+ * Runs through the cookie-bound client, so RLS's `model_files_read` does the
+ * deciding: it returns rows only to the designer who owns the model or a buyer
+ * with a paid order. An empty set therefore means "not entitled" — anonymous
+ * visitors and browsers get nothing, and the product page shows no download
+ * buttons. The keys never leave the server; only the format labels do.
+ */
+export async function getDownloadableFormats(modelId: string): Promise<Set<string>> {
+  const user = await getCurrentUser()
+  if (!user) return new Set()
+
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from("model_files")
+    .select("format")
+    .eq("model_id", modelId)
+
+  return new Set((data ?? []).map((row) => (row as { format: string }).format))
 }
 
 /**
