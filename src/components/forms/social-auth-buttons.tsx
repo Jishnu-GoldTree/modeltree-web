@@ -70,6 +70,13 @@ export function SocialAuthButtons({
 }) {
   const [pending, startTransition] = useTransition()
 
+  // Nothing configured yet — the OAuth apps aren't set up, so a row of
+  // dead-ending buttons is worse than none. Once a provider is switched on in
+  // Supabase and listed in SUPABASE_OAUTH_PROVIDERS, the buttons return on
+  // their own; the divider goes with them so email sign-in isn't left under a
+  // stray "or continue with".
+  if (enabledProviders.length === 0) return null
+
   return (
     <div className="flex flex-col gap-6">
       <div className="grid gap-2 sm:grid-cols-2">

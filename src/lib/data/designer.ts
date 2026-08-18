@@ -1,6 +1,6 @@
 import "server-only"
 
-import { createClient } from "@/lib/supabase/server"
+import { createClient, getCurrentUser } from "@/lib/supabase/server"
 import { presignGet } from "@/lib/r2/presign"
 
 /**
@@ -29,12 +29,19 @@ export type DesignerModel = {
 }
 
 export async function getMyModels(): Promise<DesignerModel[]> {
+  const user = await getCurrentUser()
+  if (!user) return []
+
   const supabase = await createClient()
+  // Scope to the caller explicitly. RLS's models_read also grants every
+  // *published* row to everyone (the public catalog needs that), so relying on
+  // RLS alone here would surface the whole marketplace as "your listings".
   const { data } = await supabase
     .from("models")
     .select(
       "id, slug, title, status, price_cents, download_count, review_count, rating, formats, updated_at, categories ( slug ), model_images ( storage_key, position )",
     )
+    .eq("designer_id", user.id)
     .order("updated_at", { ascending: false })
 
   return Promise.all(
@@ -66,6 +73,101 @@ export async function getMyModels(): Promise<DesignerModel[]> {
       }
     }),
   )
+}
+
+/**
+ * Everything the edit form needs to pre-fill itself, or null when the caller
+ * does not own the listing.
+ *
+ * Ownership is enforced twice on purpose: the explicit `designer_id` filter
+ * gives a clean "not found" instead of leaking that a row exists, and RLS
+ * backstops it. Storage keys for the existing files and images come back too —
+ * the owner may see their own (model_files_read / model_images_read both admit
+ * the designer) and the form echoes them so an untouched upload is preserved on
+ * save rather than re-uploaded.
+ */
+export type ListingEditData = {
+  id: string
+  title: string
+  description: string
+  categoryId: string | null
+  licenseCode: string
+  /** Major units (shekels) — the price input works in whole ILS, not agorot. */
+  priceIls: number
+  metal: string
+  stone: string
+  production: string
+  weightGrams: number | null
+  files: { format: string; storageKey: string; sizeBytes: number }[]
+  images: {
+    storageKey: string
+    previewUrl: string
+    width: number | null
+    height: number | null
+  }[]
+}
+
+export async function getListingForEdit(id: string): Promise<ListingEditData | null> {
+  const user = await getCurrentUser()
+  if (!user) return null
+
+  const supabase = await createClient()
+  const { data: model } = await supabase
+    .from("models")
+    .select(
+      "id, title, description, category_id, license_code, price_cents, metal, stone, production, weight_grams",
+    )
+    .eq("id", id)
+    .eq("designer_id", user.id)
+    .maybeSingle()
+  if (!model) return null
+
+  const m = model as unknown as {
+    id: string; title: string; description: string | null
+    category_id: string | null; license_code: string; price_cents: number
+    metal: string; stone: string; production: string; weight_grams: number | null
+  }
+
+  const [{ data: fileRows }, { data: imageRows }] = await Promise.all([
+    supabase.from("model_files").select("format, storage_key, size_bytes").eq("model_id", id),
+    supabase
+      .from("model_images")
+      .select("storage_key, position, width, height")
+      .eq("model_id", id)
+      .order("position", { ascending: true }),
+  ])
+
+  const files = (
+    (fileRows ?? []) as { format: string; storage_key: string; size_bytes: number }[]
+  ).map((f) => ({ format: f.format, storageKey: f.storage_key, sizeBytes: Number(f.size_bytes) }))
+
+  const images = await Promise.all(
+    (
+      (imageRows ?? []) as {
+        storage_key: string; position: number; width: number | null; height: number | null
+      }[]
+    ).map(async (img) => ({
+      storageKey: img.storage_key,
+      previewUrl: await presignGet(img.storage_key),
+      width: img.width,
+      height: img.height,
+    })),
+  )
+
+  return {
+    id: m.id,
+    title: m.title,
+    description: m.description ?? "",
+    categoryId: m.category_id,
+    licenseCode: m.license_code,
+    priceIls: m.price_cents / 100,
+    metal: m.metal,
+    stone: m.stone,
+    production: m.production,
+    weightGrams: m.weight_grams,
+    files,
+    images,
+  }
 }
 
 /**

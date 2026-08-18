@@ -53,7 +53,9 @@ export function RequestForm({
   const t = useTranslations("requests")
   const [state, formAction] = useActionState<RequestState, FormData>(openRequest, {})
   // A deep link decides; otherwise start on whichever the buyer can actually
-  // use — adjustment is meaningless with nothing purchased.
+  // use — adjustment is meaningless with nothing purchased. This survives a
+  // failed submit on its own: the action re-renders the form rather than
+  // remounting it, so the toggle stays where the buyer left it.
   const [kind, setKind] = useState<"adjustment" | "commission">(
     preselectedKind ??
       (preselectedModelId || ownedModels.length > 0 ? "adjustment" : "commission"),
@@ -108,7 +110,7 @@ export function RequestForm({
               <select
                 id="modelId"
                 name="modelId"
-                defaultValue={preselectedModelId ?? ""}
+                defaultValue={state.values?.modelId || preselectedModelId || ""}
                 className="h-10 rounded-lg border bg-transparent px-3 text-sm outline-none focus-visible:ring-3 focus-visible:ring-brand/50"
               >
                 <option value="" disabled>
@@ -132,6 +134,7 @@ export function RequestForm({
         <Input
           id="title"
           name="title"
+          defaultValue={state.values?.title ?? ""}
           placeholder={t("titlePlaceholder")}
           className="h-10"
           required
@@ -145,6 +148,7 @@ export function RequestForm({
           id="brief"
           name="brief"
           rows={6}
+          defaultValue={state.values?.brief ?? ""}
           placeholder={t("briefPlaceholder")}
           className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           required

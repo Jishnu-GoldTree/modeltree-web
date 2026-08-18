@@ -5,7 +5,7 @@ import { formatPrice } from "@/lib/money"
 import type { Locale } from "@/i18n/routing"
 import { Link } from "@/i18n/navigation"
 import { redirect } from "@/i18n/navigation"
-import { Download, Plus, Star, Trash2, Wallet } from "lucide-react"
+import { Download, Pencil, Plus, Star, Trash2, Wallet } from "lucide-react"
 
 import { getCurrentUser } from "@/lib/supabase/server"
 import { getDesignerEarnings, getMyModels } from "@/lib/data/designer"
@@ -184,7 +184,17 @@ export default async function DashboardPage() {
                         {money(model.priceCents)}
                       </span>
                       {/* Above the stretched link, or the overlay would swallow
-                          the click and navigate instead of deleting. */}
+                          the click and navigate to the model instead. */}
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="lg"
+                        className="relative z-10 h-9 text-muted-foreground hover:text-foreground"
+                      >
+                        <Link href={`/dashboard/edit/${model.id}`} aria-label={t("editListing", { title: model.title })}>
+                          <Pencil className="size-4" aria-hidden />
+                        </Link>
+                      </Button>
                       <form action={deleteListing} className="relative z-10">
                         <input type="hidden" name="id" value={model.id} />
                         <Button

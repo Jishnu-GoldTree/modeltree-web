@@ -54,6 +54,33 @@ export async function presignGet(storageKey: string, expiresIn: number = ONE_DAY
   )
 }
 
+/**
+ * Signed URL that a browser follows to pull a purchased source file down.
+ *
+ * A tight five-minute TTL because this is the paid asset itself, not a public
+ * preview: the URL is handed out only after an entitlement check, and any copy
+ * of it goes stale before it can be shared. `ResponseContentDisposition` makes
+ * R2 send the bytes as an attachment named for the model, so the buyer gets
+ * "rally-car.stl" rather than the opaque storage key.
+ */
+export async function presignDownload(
+  storageKey: string,
+  filename: string,
+  expiresIn: number = FIVE_MINUTES,
+) {
+  // Quotes and control chars would break the header; keep it to a safe subset.
+  const safeName = filename.replace(/[^\w.\-]+/g, "_") || "model"
+  return getSignedUrl(
+    r2(),
+    new GetObjectCommand({
+      Bucket: r2Bucket(),
+      Key: storageKey,
+      ResponseContentDisposition: `attachment; filename="${safeName}"`,
+    }),
+    { expiresIn },
+  )
+}
+
 export type StoredObject = { size: number; checksum: string | null }
 
 /**

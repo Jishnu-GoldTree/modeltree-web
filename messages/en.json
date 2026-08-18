@@ -130,6 +130,7 @@
     "downloads": "downloads",
     "specifications": "Specifications",
     "whatYouGet": "What you get",
+    "download": "Download",
     "reviewsTitle": "Reviews",
     "outOf5": "out of 5",
     "moreIn": "More in {category}",
@@ -163,6 +164,21 @@
     "size": "Size",
     "grams": "{value} g",
     "mm": "{value} mm"
+  },
+  "review": {
+    "title": "Write a review",
+    "editTitle": "Edit your review",
+    "rating": "Your rating",
+    "starLabel": "{count, plural, one {# star} other {# stars}}",
+    "body": "Your review",
+    "bodyPlaceholder": "How did it cast or print? Was the geometry clean and correctly scaled?",
+    "submit": "Post review",
+    "update": "Update review",
+    "remove": "Remove review",
+    "needsPurchase": "You can review this model once you have bought it.",
+    "empty": "No reviews yet. Buyers can leave one after purchasing.",
+    "today": "Today",
+    "yesterday": "Yesterday"
   },
   "profile": {
     "editProfile": "Edit profile",
@@ -241,7 +257,8 @@
     "uploadFirst": "Upload a model",
     "created": "Listing saved. It appears in the catalog as soon as you publish it.",
     "earnedAcross": "{amount} earned across {count, plural, one {# sale} other {# sales}}",
-    "noFiles": "No files yet"
+    "noFiles": "No files yet",
+    "editListing": "Edit {title}"
   },
   "footer": {
     "tagline": "Royalty-free 3D models for games, film and product design. Buy, sell and commission production-ready assets.",
@@ -286,8 +303,11 @@
     "savedCleared": "Saved models cleared",
     "listingCreated": "Listing saved",
     "listingPublished": "Listing published. It is live in the catalog",
+    "listingUpdated": "Changes saved",
     "listingFailed": "Could not save the listing",
     "licenseUpdated": "License updated",
+    "reviewSaved": "Thanks. Your review is live",
+    "reviewRemoved": "Your review was removed",
     "accountCreated": "Account created. Opening your profile",
     "confirmEmail": "Almost there. Confirm your email address",
     "emailTaken": "That email already has an account",
@@ -569,8 +589,11 @@
     "features": "Features",
     "publish": "Publish",
     "saveDraft": "Save as draft",
+    "update": "Save changes",
     "newTitle": "New listing",
     "newBody": "Describe the model and set a price. You can save a draft and come back. Nothing is visible to buyers until you publish.",
+    "editTitle": "Edit listing",
+    "editBody": "Update the details, files and preview images. Existing uploads stay unless you remove them.",
     "metal": "Metal",
     "stone": "Stone shape",
     "production": "Production",
@@ -593,7 +616,9 @@
     "uploadFailed": "Could not upload {name}",
     "removeImage": "Remove image",
     "removeFile": "Remove file",
-    "publishNote": "Publishing puts the listing in the catalog straight away. Save it as a draft to finish later."
+    "publishNote": "Publishing puts the listing in the catalog straight away. Save it as a draft to finish later.",
+    "previewRequired": "Add at least one preview image before publishing — it is the thumbnail buyers see in the catalog.",
+    "previewMissing": "Add a preview image before publishing."
   },
   "profileForm": {
     "name": "Name",

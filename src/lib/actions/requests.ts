@@ -17,7 +17,17 @@ import { withFlash } from "@/lib/flash"
  * and the status from disagreeing.
  */
 
-export type RequestState = { error?: string; fieldErrors?: Record<string, string> }
+/** Echoed back on every failure. React 19 resets an uncontrolled <form> after
+ *  its action runs, so without replaying the submitted values the buyer's title
+ *  and brief vanish the moment validation rejects them — the one time they most
+ *  want to keep what they typed. */
+export type RequestFields = { kind: string; modelId: string; title: string; brief: string }
+
+export type RequestState = {
+  error?: string
+  fieldErrors?: Record<string, string>
+  values?: RequestFields
+}
 
 const openSchema = z.object({
   kind: z.enum(["adjustment", "commission"]),
@@ -43,6 +53,15 @@ export async function openRequest(
     return {}
   }
 
+  // Captured up front so every failure below can hand the buyer's own words
+  // back to the form untouched.
+  const values: RequestFields = {
+    kind: String(formData.get("kind") ?? ""),
+    modelId: String(formData.get("modelId") ?? ""),
+    title: String(formData.get("title") ?? ""),
+    brief: String(formData.get("brief") ?? ""),
+  }
+
   const parsed = openSchema.safeParse({
     kind: formData.get("kind"),
     modelId: formData.get("modelId") || undefined,
@@ -56,12 +75,12 @@ export async function openRequest(
       const key = String(issue.path[0])
       fieldErrors[key] ??= issue.message
     }
-    return { fieldErrors }
+    return { fieldErrors, values }
   }
 
   const v = parsed.data
   if (v.kind === "adjustment" && !v.modelId) {
-    return { fieldErrors: { modelId: "Pick the model you want adjusted" } }
+    return { fieldErrors: { modelId: "Pick the model you want adjusted" }, values }
   }
 
   const supabase = await createClient()
@@ -80,7 +99,7 @@ export async function openRequest(
     .single()
 
   if (error || !data) {
-    return { error: "Could not open the request. Try again." }
+    return { error: "Could not open the request. Try again.", values }
   }
 
   revalidatePath("/requests")
