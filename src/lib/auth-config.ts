@@ -16,6 +16,3 @@ export const ENABLED_OAUTH_PROVIDERS = (
   .split(",")
   .map((provider) => provider.trim().toLowerCase())
   .filter(Boolean)
-
-/** Whether to print the demo credentials on the login page. */
-export const SHOW_DEMO_HINT = process.env.SHOW_DEMO_HINT !== "0"

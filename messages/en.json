@@ -52,7 +52,9 @@
     "home": "Home",
     "browseByType": "Browse by type",
     "scrollLeft": "Scroll categories left",
-    "scrollRight": "Scroll categories right"
+    "scrollRight": "Scroll categories right",
+    "loadMore": "Load more",
+    "loadError": "Couldn’t load more models."
   },
   "cart": {
     "title": "Your cart",
@@ -120,10 +122,6 @@
     "badCredentials": "That email and password don't match an account.",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
-    "demoTitle": "Demo accounts",
-    "demoBuyer": "Buyer",
-    "demoDesigner": "Designer",
-    "demoPassword": "Password",
     "ruleLength": "At least 8 characters",
     "ruleLetter": "One letter",
     "ruleNumber": "One number",
@@ -276,9 +274,9 @@
     "term1": "Keep publishing elsewhere; nothing here is exclusive",
     "term2": "Set your own price, or give a model away to build an audience",
     "term3": "Withdraw once your balance clears the payout minimum",
-    "term0": "No listing fees and no subscription: you pay a commission only when a model sells",
+    "term0": "No listing fees to join — you earn a commission only when a member licenses your model",
     "metaTitle": "Sell your 3D models",
-    "metaDescription": "Publish your 3D models on ModelTree. No listing fees and no subscription: you pay a commission only when a model sells."
+    "metaDescription": "Publish your 3D models on ModelTree. No listing fees to join — earn a commission every time a member licenses your work."
   },
   "dashboard": {
     "title": "Designer dashboard",
@@ -288,7 +286,7 @@
     "downloads": "Downloads",
     "earned30": "Earned (30 days)",
     "yourListings": "Your listings",
-    "nothingYet": "Nothing published yet",
+    "nothingYet": "Upload your first model",
     "nothingYetBody": "Upload your first model to start selling. You can save it as a draft and finish later.",
     "uploadFirst": "Upload a model",
     "created": "Listing saved. It appears in the catalog as soon as you publish it.",
@@ -508,7 +506,11 @@
       "metalHeading": "Browse by metal",
       "metalBlurb": "Narrow the catalog to the metal you cast in.",
       "stoneHeading": "Browse by stone",
-      "stoneBlurb": "Find pieces cut for the shape you set."
+      "stoneBlurb": "Find pieces cut for the shape you set.",
+      "typeHeading": "Browse by type",
+      "typeBlurb": "Jump straight to the kind of piece you're making.",
+      "formatHeading": "Browse by format",
+      "formatBlurb": "Filter to the file your CAD or printer takes."
     },
     "trending": {
       "title": "Trending 3D models",
@@ -568,7 +570,6 @@
       "projectsBenefit3": "Best-fit creative projects: ideal for custom or one-off work"
     },
     "business": {
-      "badge": "Solution for enterprise",
       "title": "{name} Business Account",
       "body": "Production-ready assets from verified designers, licensed for your whole team. Review the models you need instantly and move a project from concept to completion without procurement overhead.",
       "cta": "Apply for a Business Account",
@@ -735,7 +736,7 @@
     "signup2": "Reach studios, architects and product teams browsing the catalog",
     "signup3": "Licensing, invoicing and payouts handled for you",
     "asideTitle": "Turn your 3D work into revenue",
-    "freeToJoin": "Free to join. No listing fees and no subscription: you only pay a commission when a model sells."
+    "freeToJoin": "Free to join. Earn a commission on every sale, and reach members who take two models a month and request custom size adjustments."
   },
   "facet": {
     "metal": {
@@ -869,7 +870,11 @@
     "chatNewTab": "opens in a new tab",
     "chatHours": "The team answers Sunday to Thursday, Israeli business hours.",
     "chatGreeting": "Hi, I would like to talk to the modelling team about a custom piece.",
-    "chatUnavailable": "The chat is not connected yet. Open a request instead and the modelling team will pick it up from there."
+    "chatUnavailable": "The chat is not connected yet. Open a request instead and the modelling team will pick it up from there.",
+    "changeGreeting": "Hi, I would like to request changes to a model I found on ModelTree.",
+    "requestChangesCta": "Request changes",
+    "fabLabel": "Custom modelling on WhatsApp",
+    "fabCta": "Request custom modelling"
   },
   "membership": {
     "badge": "Membership",

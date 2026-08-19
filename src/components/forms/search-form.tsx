@@ -4,6 +4,7 @@ import { useTransition } from "react"
 import { useRouter } from "@/i18n/navigation"
 import { useTranslations } from "next-intl"
 import { useForm } from "react-hook-form"
+import { useHotkeys } from "react-hotkeys-hook"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2, Search } from "lucide-react"
 
@@ -25,6 +26,12 @@ type SearchFormProps = {
   size?: "hero" | "compact"
   className?: string
   autoFocus?: boolean
+  /**
+   * Binds ⌘K / Ctrl+K to focus this field. Set on the one always-present search
+   * (the header) so the shortcut has a single, predictable target — leave it off
+   * the hero copy so the two don't both answer the same key.
+   */
+  commandKey?: boolean
 }
 
 export function SearchForm({
@@ -32,6 +39,7 @@ export function SearchForm({
   size = "hero",
   className,
   autoFocus,
+  commandKey = false,
 }: SearchFormProps) {
   const router = useRouter()
   const t = useTranslations("nav")
@@ -41,6 +49,16 @@ export function SearchForm({
     defaultValues: { q: "" },
     mode: "onSubmit",
   })
+
+  // `mod` is ⌘ on macOS and Ctrl elsewhere. enableOnFormTags so it still fires
+  // while another field is focused; shouldSelect highlights any existing term
+  // so a second search overwrites cleanly.
+  useHotkeys(
+    "mod+k",
+    () => form.setFocus("q", { shouldSelect: true }),
+    { enabled: commandKey, enableOnFormTags: true, preventDefault: true },
+    [form],
+  )
 
   // No toast for search — the results page is the confirmation. What it does
   // need is a busy state, since the catalog reads the database and cannot be

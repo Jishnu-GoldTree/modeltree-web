@@ -46,22 +46,37 @@ export async function getMarketplaceStats(): Promise<MarketplaceStats> {
 }
 
 /**
- * Live counts per metal and per stone, for the landing page's browse lists.
+ * Live counts per metal, stone, category and format, for the landing page's
+ * browse lists.
  *
- * One query, grouped in memory: eleven `head: true` counts would be eleven
- * round trips to render one card.
+ * One query, grouped in memory: a per-value `head: true` count would be dozens
+ * of round trips to render these cards. `formats` is an array column, so a
+ * model counts once per format it ships; the values are stored uppercase
+ * (STL, 3DM), matching the catalog's `?format=` filter.
  */
 export async function getFacetCounts() {
   const { data } = await supabasePublic
     .from("models")
-    .select("metal, stone")
+    .select("metal, stone, formats, categories ( slug )")
     .eq("status", "published")
 
   const metals: Record<string, number> = {}
   const stones: Record<string, number> = {}
-  for (const row of data ?? []) {
+  const formats: Record<string, number> = {}
+  const categories: Record<string, number> = {}
+  for (const row of (data ?? []) as unknown as {
+    metal: string
+    stone: string
+    formats: string[] | null
+    categories: { slug: string } | null
+  }[]) {
     metals[row.metal] = (metals[row.metal] ?? 0) + 1
     stones[row.stone] = (stones[row.stone] ?? 0) + 1
+    for (const format of row.formats ?? []) {
+      formats[format] = (formats[format] ?? 0) + 1
+    }
+    const slug = row.categories?.slug
+    if (slug) categories[slug] = (categories[slug] ?? 0) + 1
   }
-  return { metals, stones }
+  return { metals, stones, formats, categories }
 }

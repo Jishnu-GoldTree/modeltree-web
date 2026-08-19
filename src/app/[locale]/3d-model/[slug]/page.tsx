@@ -9,7 +9,6 @@ import {
   ChevronRight,
   Download,
   Gem,
-  Ruler,
   Heart,
   ShieldCheck,
   ShoppingCart,
@@ -31,7 +30,7 @@ import { SiteFooter } from "@/components/layout/site-footer"
 import { ModelCard } from "@/components/marketplace/model-card"
 import { ReviewForm } from "@/components/marketplace/review-form"
 import { ProductGallery } from "@/components/marketplace/product-gallery"
-import { BackButton } from "@/components/marketplace/back-button"
+import { RequestChangesButton } from "@/components/requests/request-changes-cta"
 import { tempGallery } from "@/lib/temp-previews"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -131,8 +130,6 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
 
       <main id="main-content" className="flex-1 pt-26">
         <div className="shell py-6">
-          <BackButton />
-
           {/* Gallery and buy rail share the top row; the description and the
               rest of the detail sit under the gallery in column one. The rail
               is last in the DOM but placed explicitly, so on desktop it lands
@@ -206,7 +203,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                       <li key={tag}>
                         <Link
                           href={`/3d-models?tag=${encodeURIComponent(tag.toLowerCase())}`}
-                          className="inline-flex rounded-full border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-brand hover:text-foreground"
+                          className="inline-flex rounded-md border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-brand hover:text-foreground"
                         >
                           {tag}
                         </Link>
@@ -339,15 +336,14 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                   {t("commercial", { license: lic(model.license) })}
                 </p>
 
-                {/* Priced next to the price, which is the only place the
-                    comparison lands: a buyer deciding on this model is exactly
-                    who the membership is for. */}
-                <Button asChild variant="outline" className="mt-3 h-10 w-full gap-2">
-                  <Link href={`/requests/new?kind=adjustment&model=${model.id}`}>
-                    <Ruler className="size-4 text-brand-accent" aria-hidden />
-                    {member("adjustCta")}
-                  </Link>
-                </Button>
+                {/* Request changes to this exact model, on WhatsApp. Gated: a
+                    signed-out tap routes through sign-up first, and the number
+                    only appears on the account-gated terms page — never here on
+                    the public, prerendered product page. */}
+                <RequestChangesButton
+                  modelSlug={model.slug}
+                  className="mt-3 h-10 w-full gap-2"
+                />
 
                 <Link
                   href="/pricing"

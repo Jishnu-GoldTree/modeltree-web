@@ -1,10 +1,8 @@
-import { Fragment } from "react"
 import { Link } from "@/i18n/navigation"
 import { ArrowRight, ChevronRight, Gem, SearchX, X } from "lucide-react"
 
-import { cn } from "@/lib/utils"
-import { type CatalogResult } from "@/lib/data/catalog"
-import { ModelCard } from "@/components/marketplace/model-card"
+import { type CatalogQuery, type CatalogResult } from "@/lib/data/catalog"
+import { CatalogGrid } from "@/components/marketplace/catalog-grid"
 import { CatalogCategories } from "@/components/marketplace/catalog-categories"
 import {
   CatalogToolbar,
@@ -27,6 +25,7 @@ const BROWSE_TYPES = ["free", "cast-ready", "print-ready"] as const
 export async function CatalogView({
   base,
   params,
+  patch = {},
   result,
   lockedCategory,
   favorites,
@@ -35,6 +34,9 @@ export async function CatalogView({
 }: {
   base: string
   params: Params
+  /** The segment's locked filter (category/collection), merged into the query
+   *  server-side. Passed to the grid so it can fetch matching later pages. */
+  patch?: Partial<CatalogQuery>
   result: CatalogResult
   lockedCategory?: string
   favorites: Set<string>
@@ -152,112 +154,44 @@ export async function CatalogView({
             </Button>
           </div>
         ) : (
-          <ul className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {items.map((model, index) => (
-              <Fragment key={model.slug}>
-                <li>
-                  <ModelCard model={model} favorited={favorites.has(model.slug)} />
-                </li>
-                {/* Placed after the first full row rather than above the grid:
-                    it reaches someone already comparing pieces, which is when
-                    "two of these a month" means something. Once per page. */}
-                {index === 4 && (
-                  <li className="col-span-2 sm:col-span-3 lg:col-span-4 xl:col-span-5">
-                    <Link
-                      href="/pricing"
-                      className="flex flex-col gap-3 rounded-xl border border-brand bg-brand-muted p-5 outline-none transition-colors hover:bg-brand-muted/70 focus-visible:ring-3 focus-visible:ring-brand/50 sm:flex-row sm:items-center sm:justify-between"
-                    >
-                      <span className="flex items-start gap-3">
-                        <Gem className="mt-0.5 size-5 shrink-0 text-brand-accent" aria-hidden />
-                        <span>
-                          <span className="block font-medium">{member("stripTitle")}</span>
-                          <span className="mt-0.5 block text-sm text-muted-foreground">
-                            {member("stripBody")}
-                          </span>
-                        </span>
-                      </span>
-                      <span className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-brand-accent">
-                        {member("stripCta")}
-                        <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden />
-                      </span>
-                    </Link>
-                  </li>
-                )}
-              </Fragment>
-            ))}
-          </ul>
-        )}
-
-        {pageCount > 1 && (
-          <nav
-            aria-label="Pagination"
-            className="flex items-center justify-center gap-1 pt-10"
-          >
-            <PageLink
-              base={base}
-              params={params}
-              page={page - 1}
-              disabled={page === 1}
-              label="Previous"
-            />
-            {Array.from({ length: pageCount }, (_, i) => i + 1).map((n) => (
+          <CatalogGrid
+            // Reset accumulated pages when the filters change: a client-side
+            // navigation keeps this mounted, and useState would otherwise hold
+            // the previous query's results.
+            key={JSON.stringify({ base, params, patch })}
+            initialItems={items}
+            initialFavoritedSlugs={items
+              .filter((model) => favorites.has(model.slug))
+              .map((model) => model.slug)}
+            params={params}
+            patch={patch}
+            initialPage={page}
+            pageCount={pageCount}
+            loadMoreLabel={t("loadMore")}
+            errorLabel={t("loadError")}
+            promo={
               <Link
-                key={n}
-                href={catalogHref(base, params, { page: n === 1 ? undefined : String(n) })}
-                aria-current={n === page ? "page" : undefined}
-                className={cn(
-                  "inline-flex size-9 items-center justify-center rounded-md border text-sm tabular-nums outline-none",
-                  "hover:bg-accent focus-visible:ring-3 focus-visible:ring-brand/50",
-                  n === page &&
-                    "border-brand bg-brand-muted font-medium text-brand-accent",
-                )}
+                href="/pricing"
+                className="flex flex-col gap-3 rounded-xl border border-brand bg-brand-muted p-5 outline-none transition-colors hover:bg-brand-muted/70 focus-visible:ring-3 focus-visible:ring-brand/50 sm:flex-row sm:items-center sm:justify-between"
               >
-                {n}
+                <span className="flex items-start gap-3">
+                  <Gem className="mt-0.5 size-5 shrink-0 text-brand-accent" aria-hidden />
+                  <span>
+                    <span className="block font-medium">{member("stripTitle")}</span>
+                    <span className="mt-0.5 block text-sm text-muted-foreground">
+                      {member("stripBody")}
+                    </span>
+                  </span>
+                </span>
+                <span className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-brand-accent">
+                  {member("stripCta")}
+                  <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden />
+                </span>
               </Link>
-            ))}
-            <PageLink
-              base={base}
-              params={params}
-              page={page + 1}
-              disabled={page === pageCount}
-              label="Next"
-            />
-          </nav>
+            }
+          />
         )}
       </div>
     </>
-  )
-}
-
-function PageLink({
-  base,
-  params,
-  page,
-  disabled,
-  label,
-}: {
-  base: string
-  params: Params
-  page: number
-  disabled: boolean
-  label: string
-}) {
-  if (disabled) {
-    return (
-      <span
-        aria-disabled
-        className="inline-flex h-9 items-center rounded-md border px-3 text-sm text-muted-foreground opacity-50"
-      >
-        {label}
-      </span>
-    )
-  }
-  return (
-    <Link
-      href={catalogHref(base, params, { page: page === 1 ? undefined : String(page) })}
-      className="inline-flex h-9 items-center rounded-md border px-3 text-sm outline-none hover:bg-accent focus-visible:ring-3 focus-visible:ring-brand/50"
-    >
-      {label}
-    </Link>
   )
 }

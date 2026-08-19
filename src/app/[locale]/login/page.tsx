@@ -1,12 +1,12 @@
 import { formatStat, getMarketplaceStats } from "@/lib/data/stats"
 import { getTranslations } from "next-intl/server"
+import Image from "next/image"
 import { Link } from "@/i18n/navigation"
 import { ArrowLeft, Check } from "lucide-react"
 
 import { Logo } from "@/components/layout/logo"
-import { Thumb } from "@/components/marketplace/thumb"
 import { LoginForm } from "@/components/forms/login-form"
-import { ENABLED_OAUTH_PROVIDERS, SHOW_DEMO_HINT } from "@/lib/auth-config"
+import { ENABLED_OAUTH_PROVIDERS } from "@/lib/auth-config"
 
 export async function generateMetadata({
   params,
@@ -58,12 +58,16 @@ export default async function LoginPage({ searchParams }: PageProps<"/[locale]/l
       {/* Brand panel — decorative, so it's hidden rather than stacked on
           mobile, where it would push the form below the fold. */}
       <aside className="relative hidden flex-col justify-between overflow-hidden bg-ink p-10 text-white lg:flex">
-        {/* Seed chosen for its all-cool palette — the generator's warm hues
-            fight the teal brand at this size. Blurred and dimmed because the
-            art is tuned for ~300px cards and reads oversized at panel scale. */}
-        <Thumb
-          seed="modeltree-login"
-          className="absolute inset-0 opacity-35 blur-[1px]"
+        {/* unoptimized: the file is already a hand-tuned webp, so let Next serve
+            it verbatim rather than re-encoding it at its default quality and
+            softening the fine wireframe lines. Dimmed so the white copy and teal
+            accents keep contrast over it — the art is a backdrop, not the message. */}
+        <Image
+          src="/images/auth-cover.webp"
+          alt=""
+          fill
+          unoptimized
+          className="absolute inset-0 object-cover opacity-70"
         />
 
         <div className="relative">
@@ -103,16 +107,16 @@ export default async function LoginPage({ searchParams }: PageProps<"/[locale]/l
           <div className="lg:hidden">
             <Logo tone="dark" />
           </div>
+        </div>
+
+        <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-10">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 rounded-md text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-brand/50"
+            className="mb-4 inline-flex items-center gap-1.5 self-start rounded-md text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-brand/50"
           >
             <ArrowLeft className="size-4 rtl:-scale-x-100" aria-hidden />
             {t("backToMarket")}
           </Link>
-        </div>
-
-        <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-10">
           <h1 className="text-2xl font-semibold tracking-tight">{t("logInTitle")}</h1>
           <p className="mt-1.5 mb-8 text-sm text-muted-foreground">
             {t("logInSubtitle")}
@@ -121,7 +125,6 @@ export default async function LoginPage({ searchParams }: PageProps<"/[locale]/l
           <LoginForm
             enabledProviders={ENABLED_OAUTH_PROVIDERS}
             authError={authError}
-            demoEnabled={SHOW_DEMO_HINT}
             redirectTo={redirectTo}
           />
         </div>

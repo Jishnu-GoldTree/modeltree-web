@@ -99,6 +99,7 @@ export default async function SegmentPage({
         <CatalogView
           base={`/3d-models/${segment}`}
           params={raw}
+          patch={resolved.patch}
           result={result}
           lockedCategory={resolved.lockedCategory}
           favorites={favorites}

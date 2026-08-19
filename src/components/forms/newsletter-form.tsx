@@ -77,7 +77,11 @@ export function NewsletterForm() {
                   {t("subscribe")}
                 </Button>
               </div>
-              <FormMessage className="text-xs" />
+              {/* Blank field is a no-op, not a mistake — only flag input the
+                  visitor actually typed. */}
+              {field.value.trim().length > 0 && (
+                <FormMessage className="text-xs" />
+              )}
             </FormItem>
           )}
         />
