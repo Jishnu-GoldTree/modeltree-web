@@ -231,3 +231,33 @@
     display: none;
   }
 }
+
+/* ── Showreel marquee ────────────────────────────────────────────────
+   Used by the "in motion" band to slide the in-house render tiles past
+   continuously. The track holds two identical halves and translates by
+   exactly one half (-50%), so the loop point is seamless. Motion is paused
+   for visitors who ask for reduced motion — the tiles simply sit still,
+   and each one keeps its own poster/pause behaviour from ProductVideo. */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@layer utilities {
+  .animate-marquee {
+    animation: marquee-scroll var(--marquee-duration, 60s) linear infinite;
+  }
+  /* Pause on hover so a visitor can settle on a piece. */
+  .marquee-group:hover .animate-marquee {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-marquee {
+      animation: none;
+    }
+  }
+}

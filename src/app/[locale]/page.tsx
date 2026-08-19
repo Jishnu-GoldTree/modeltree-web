@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { Hero } from "@/components/landing/hero";
 import { PromoBanner } from "@/components/landing/promo-banner";
 import { JewelleryLibrary } from "@/components/landing/jewellery-library";
+import { VideoShowreel } from "@/components/landing/video-showreel";
 import { CategoryExplorer } from "@/components/landing/category-explorer";
 import { Collections } from "@/components/landing/collections";
 import { FeaturedDesigner } from "@/components/landing/featured-designer";
@@ -27,6 +28,7 @@ export default async function HomePage() {
         <Hero />
         <PromoBanner />
         <JewelleryLibrary />
+        <VideoShowreel />
         <TrendingModels />
         <CategoryExplorer
           title={t("assetsTitle")}
