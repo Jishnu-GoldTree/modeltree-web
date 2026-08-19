@@ -326,6 +326,11 @@
     "sizes": "Ring sizes and stone settings adjusted on request",
     "inhouse": "Modelled in-house by GoldTree, not resold from third parties"
   },
+  "showreel": {
+    "badge": "In-house renders, in motion",
+    "title": "See the library turn",
+    "description": "Every piece here was modelled and rendered in-house by GoldTree. Watch the cast-ready geometry from every angle before you licence it."
+  },
   "toast": {
     "profileSaved": "Profile saved",
     "profileFailed": "Could not save your profile",
