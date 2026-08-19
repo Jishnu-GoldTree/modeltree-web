@@ -97,7 +97,7 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.45rem;
+  --radius: 0.35rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -159,6 +159,11 @@
   }
   html {
     @apply font-sans;
+    /* Nudge the root up from the browser-default 16px so the whole UI scales a
+       little — text and the rem-based spacing/sizing that tracks it. Percentage
+       rather than a px value so it still honors a user's browser font-size
+       preference. */
+    font-size: 106.25%; /* ~17px at the 16px default */
   }
   /* Geist carries no Hebrew glyphs. Heebo must come FIRST here, not after
      Geist: next/font expands --font-geist-sans to "Geist, Geist Fallback", and

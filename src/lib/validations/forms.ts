@@ -74,6 +74,26 @@ export const signupSchema = z.object({
 
 export type SignupValues = z.infer<typeof signupSchema>
 
+export const forgotPasswordSchema = z.object({
+  email: z.email("Enter a valid email address"),
+})
+
+export type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>
+
+/**
+ * Setting a new password is held to the same policy as signup — same
+ * PASSWORD_RULES, same one-failure-at-a-time reporting — so a reset can't
+ * quietly weaken an account below the bar its original password had to clear.
+ */
+export const resetPasswordSchema = z.object({
+  password: z.string().superRefine((value, ctx) => {
+    const failed = PASSWORD_RULES.find((rule) => !rule.test(value))
+    if (failed) ctx.addIssue({ code: "custom", message: failed.message })
+  }),
+})
+
+export type ResetPasswordValues = z.infer<typeof resetPasswordSchema>
+
 /**
  * `handle` is a public URL segment (/designers/<handle>), so it is constrained
  * to a lowercase slug — the column is citext-unique, and letting mixed case or
