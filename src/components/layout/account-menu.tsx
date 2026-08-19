@@ -7,6 +7,8 @@ import type { Locale } from "@/i18n/routing"
 import { useState } from "react"
 import { createPortal } from "react-dom"
 
+import { useHasHydrated } from "@/lib/use-has-hydrated"
+
 import { createClient } from "@/lib/supabase/client"
 import { useViewer } from "@/lib/queries/viewer"
 import {
@@ -85,7 +87,7 @@ function SignOutForm({
         })()
       }}
     >
-      <button type="submit" className="flex w-full items-center gap-2">
+      <button type="submit" className="flex w-full items-center gap-1.5">
         <LogOut className="size-4" aria-hidden />
         {label}
       </button>
@@ -111,8 +113,12 @@ export function AccountMenu() {
   const t = useTranslations("nav")
   const { data: viewer, isPending } = useViewer()
   const [leaving, setLeaving] = useState(false)
+  // The viewer query can resolve before React hydrates the header, so gate on
+  // hydration: without it the first client render could show the signed-in/out
+  // UI while the server sent the pending skeleton, and disagree.
+  const hydrated = useHasHydrated()
 
-  if (isPending) {
+  if (!hydrated || isPending) {
     return <Skeleton className="size-8 rounded-full" />
   }
 

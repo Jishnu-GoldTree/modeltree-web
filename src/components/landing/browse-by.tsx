@@ -5,7 +5,7 @@ import { getTranslations } from "next-intl/server"
 import { BROWSE_BY_METAL, BROWSE_BY_STONE } from "@/lib/data/landing"
 import { getFacetCounts } from "@/lib/data/stats"
 
-function BrowseList({
+export function BrowseList({
   heading,
   blurb,
   items,

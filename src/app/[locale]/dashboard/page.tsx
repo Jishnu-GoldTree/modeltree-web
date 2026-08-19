@@ -5,7 +5,7 @@ import { formatPrice } from "@/lib/money"
 import type { Locale } from "@/i18n/routing"
 import { Link } from "@/i18n/navigation"
 import { redirect } from "@/i18n/navigation"
-import { Download, Pencil, Plus, Star, Trash2, Wallet } from "lucide-react"
+import { Download, LayoutList, Pencil, Plus, Star, Trash2, Wallet } from "lucide-react"
 
 import { getCurrentUser } from "@/lib/supabase/server"
 import { getDesignerEarnings, getMyModels } from "@/lib/data/designer"
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
 
   const published = models.filter((m) => m.status === "published").length
   const tiles = [
-    { label: t("listings"), value: String(models.length), Icon: Plus },
+    { label: t("listings"), value: String(models.length), Icon: LayoutList },
     { label: t("publishedCount"), value: String(published), Icon: Star },
     { label: t("downloads"), value: String(models.reduce((s, m) => s + m.downloads, 0)), Icon: Download },
     { label: t("earned30"), value: money(earnings.last30Cents), Icon: Wallet },
@@ -100,7 +100,9 @@ export default async function DashboardPage() {
           <ul className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {tiles.map((tile) => (
               <li key={tile.label} className="rounded-xl border p-4">
-                <tile.Icon className="size-4 text-brand-accent" aria-hidden />
+                <span className="inline-flex size-9 items-center justify-center rounded-lg bg-brand-muted text-brand-accent">
+                  <tile.Icon className="size-4" aria-hidden />
+                </span>
                 <p className="mt-3 text-2xl font-semibold tracking-tight tabular-nums">
                   {tile.value}
                 </p>

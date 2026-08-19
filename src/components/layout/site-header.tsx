@@ -104,11 +104,11 @@ export function SiteHeader() {
           rides above every page the way a marketplace runs its house banner. */}
       <Link
         href="/pricing"
-        className="flex h-10 items-center justify-center gap-2 bg-ink px-4 text-center text-xs text-white/90 transition-colors hover:bg-ink/90 sm:text-sm"
+        className="flex h-10 items-center justify-center gap-2 bg-brand px-4 text-center text-xs text-white/90 transition-colors hover:bg-brand/90 sm:text-sm"
       >
         <span className="truncate font-medium">{member("stripTitle")}</span>
         <span aria-hidden className="hidden text-white/40 sm:inline">·</span>
-        <span className="hidden shrink-0 items-center gap-1 font-medium text-brand-on-ink sm:inline-flex">
+        <span className="hidden shrink-0 items-center gap-1 font-medium text-white sm:inline-flex">
           {member("cta")}
           <ArrowRight className="size-3.5 rtl:-scale-x-100" aria-hidden />
         </span>
@@ -123,7 +123,7 @@ export function SiteHeader() {
               away. Given a generous fixed width so it reads as the centrepiece
               while still leaving the trailing cluster room. */}
           <div className="hidden w-full max-w-sm md:block lg:max-w-md xl:max-w-lg">
-            <SearchForm size="compact" />
+            <SearchForm size="compact" commandKey />
           </div>
 
           {/* Category nav and account actions form one trailing cluster, pushed

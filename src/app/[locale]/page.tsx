@@ -10,6 +10,7 @@ import { CategoryExplorer } from "@/components/landing/category-explorer";
 import { Collections } from "@/components/landing/collections";
 import { FeaturedDesigner } from "@/components/landing/featured-designer";
 import { BrowseBy } from "@/components/landing/browse-by";
+import { BrowseByCatalog } from "@/components/landing/browse-by-catalog";
 import { TrendingModels } from "@/components/landing/trending-models";
 import { ValueProps } from "@/components/landing/value-props";
 import { CraftStandard } from "@/components/landing/craft-standard";
@@ -26,6 +27,7 @@ export default async function HomePage() {
         <Hero />
         <PromoBanner />
         <JewelleryLibrary />
+        <TrendingModels />
         <CategoryExplorer
           title={t("assetsTitle")}
           description={t("assetsDescription")}
@@ -41,11 +43,11 @@ export default async function HomePage() {
         <Collections />
         <FeaturedDesigner />
         <BrowseBy />
+        <BrowseByCatalog />
         {/* The page's third full-bleed ink band, sat midway between the other
             two — Jewellery library above, Custom solutions below — so the dark
             bands space out rather than clump. */}
         <CraftStandard />
-        <TrendingModels />
         <ValueProps />
         <CustomSolutions />
         <BusinessAccount />

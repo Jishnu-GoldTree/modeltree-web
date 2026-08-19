@@ -5,6 +5,7 @@ import { Link, redirect } from "@/i18n/navigation"
 import type { Locale } from "@/i18n/routing"
 import { getCurrentUser } from "@/lib/supabase/server"
 import { getProfile } from "@/lib/data/profile"
+import { getModel } from "@/lib/data/catalog"
 import { CHAT_PATH, whatsappChatUrl } from "@/lib/whatsapp"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
@@ -27,14 +28,24 @@ export async function generateMetadata({
  * publishing the team's number to anonymous traffic would turn it into a spam
  * target. Reaching this page at all means an account.
  */
-export default async function ChatPage() {
+export default async function ChatPage({
+  searchParams,
+}: PageProps<"/[locale]/custom-work/chat">) {
   const locale = (await getLocale()) as Locale
   const t = await getTranslations("custom")
+
+  // A `?model=` slug means the chat was started from a listing ("request
+  // changes to this model"); the title then rides along in the greeting.
+  const { model: modelSlug } = await searchParams
+  const model = typeof modelSlug === "string" ? await getModel(modelSlug) : null
+  const returnTo = model
+    ? `${CHAT_PATH}?model=${encodeURIComponent(model.slug)}`
+    : CHAT_PATH
 
   const user = await getCurrentUser()
   if (!user) {
     return redirect({
-      href: `/signup?next=${encodeURIComponent(CHAT_PATH)}`,
+      href: `/signup?next=${encodeURIComponent(returnTo)}`,
       locale,
     })
   }
@@ -44,8 +55,9 @@ export default async function ChatPage() {
   // profile row that has not been created yet.
   const profile = await getProfile(user.id)
   const url = whatsappChatUrl(
-    t("chatGreeting"),
+    model ? t("changeGreeting") : t("chatGreeting"),
     profile?.handle ?? user.email ?? user.id,
+    model?.title,
   )
 
   const steps = [1, 2, 3] as const

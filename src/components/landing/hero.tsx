@@ -1,6 +1,6 @@
 import { formatStat, getMarketplaceStats } from "@/lib/data/stats"
 import { Link } from "@/i18n/navigation"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Search } from "lucide-react"
 
 import { getTranslations } from "next-intl/server"
 
@@ -79,8 +79,9 @@ export async function Hero() {
             <li key={filter.key}>
               <Link
                 href={filter.href}
-                className="inline-flex shrink-0 items-center rounded-lg border border-white/20 bg-white/5 px-4 py-1.5 text-sm text-white/85 whitespace-nowrap backdrop-blur transition-colors hover:border-brand/60 hover:bg-white/10 hover:text-white"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-white/20 bg-white/5 px-4 py-1.5 text-sm text-white/85 whitespace-nowrap backdrop-blur transition-colors hover:border-brand/60 hover:bg-white/10 hover:text-white"
               >
+                <Search className="size-3.5 text-white/60" aria-hidden />
                 {t(`heroFilters.${filter.key}`)}
               </Link>
             </li>

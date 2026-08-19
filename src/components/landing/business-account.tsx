@@ -1,9 +1,9 @@
 import { Link } from "@/i18n/navigation"
-import { Building2, CreditCard, FileCheck, Users } from "lucide-react"
+import { CreditCard, FileCheck, Users } from "lucide-react"
 
 import { useTranslations } from "next-intl"
 
-import { BUSINESS_PERKS, SITE, TRUSTED_BY } from "@/lib/data/landing"
+import { BUSINESS_PERKS, SITE } from "@/lib/data/landing"
 import { Button } from "@/components/ui/button"
 
 const ICONS = {
@@ -19,11 +19,7 @@ export function BusinessAccount() {
     <section>
       <div className="shell">
         <div className="flex flex-col items-center text-center">
-          <span className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1 text-xs font-medium text-muted-foreground">
-            <Building2 className="size-3.5" aria-hidden />
-            {t("badge")}
-          </span>
-          <h2 className="mt-4 text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
+          <h2 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
             {t("title", { name: SITE.name })}
           </h2>
           <p className="mt-3 max-w-2xl text-sm text-pretty text-muted-foreground">
@@ -52,22 +48,6 @@ export function BusinessAccount() {
             )
           })}
         </ul>
-
-        <div className="mt-14">
-          <p className="text-center text-sm text-muted-foreground">
-            Trusted by Fortune 500 companies, including:
-          </p>
-          <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-5">
-            {TRUSTED_BY.map((company) => (
-              <li
-                key={company}
-                className="text-lg font-semibold tracking-tight text-muted-foreground/55 grayscale transition-colors hover:text-muted-foreground"
-              >
-                {company}
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
     </section>
   )

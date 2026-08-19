@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { useTranslations } from "next-intl"
+import { useHotkeys } from "react-hotkeys-hook"
 import Image from "next/image"
 import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react"
 
@@ -74,22 +75,25 @@ export function ProductGallery({
     }
   }, [active])
 
-  // Arrow-key navigation in fullscreen. Outside fullscreen we don't bind
-  // globally so we don't hijack keys the user might expect for the page.
-  useEffect(() => {
-    if (!fullscreen) return
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") prev()
-      else if (e.key === "ArrowRight") next()
-    }
-    window.addEventListener("keydown", handler)
-    return () => window.removeEventListener("keydown", handler)
-  }, [fullscreen, prev, next])
+  // Arrow-key navigation. Bound to the document, but only acted on — and only
+  // preventing the page from scrolling — when the gallery is the thing the user
+  // is engaging with: in fullscreen, when hovered, or when focus is inside it.
+  // Anywhere else arrows scroll the page as normal, so we don't hijack them.
+  const galleryRef = useRef<HTMLDivElement>(null)
+  const galleryActive = useCallback(
+    () =>
+      fullscreen ||
+      galleryRef.current?.matches(":hover") === true ||
+      galleryRef.current?.contains(document.activeElement) === true,
+    [fullscreen],
+  )
+  useHotkeys("ArrowLeft", prev, { enabled: galleryActive, preventDefault: true }, [prev, galleryActive])
+  useHotkeys("ArrowRight", next, { enabled: galleryActive, preventDefault: true }, [next, galleryActive])
 
   const showNav = total > 1
 
   return (
-    <div>
+    <div ref={galleryRef}>
       {/* Main image */}
       <div
         className="group relative aspect-16/10 w-full overflow-hidden rounded-xl border bg-ink select-none"

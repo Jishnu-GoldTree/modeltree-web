@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Heebo } from "next/font/google";
 import { notFound } from "next/navigation";
@@ -9,10 +10,12 @@ import "../globals.css";
 import { SITE } from "@/lib/data/landing";
 import { LOCALE_DIR, routing, type Locale } from "@/i18n/routing";
 import { Providers } from "@/components/providers";
+import { RouteProgress } from "@/components/layout/route-progress";
 import { SkipLink } from "@/components/layout/skip-link";
 import { Toaster } from "@/components/layout/toaster";
 import { FlashToast } from "@/components/layout/flash-toast";
 import { NewListingFab } from "@/components/layout/new-listing-fab";
+import { WhatsAppFab } from "@/components/layout/whatsapp-fab";
 import { VisitorPrompts } from "@/components/layout/visitor-prompts";
 
 const geistSans = Geist({
@@ -126,11 +129,15 @@ export default async function LocaleLayout({
       <body className="flex min-h-full flex-col bg-background">
         <NextIntlClientProvider>
           <Providers>
+            <Suspense fallback={null}>
+              <RouteProgress />
+            </Suspense>
             <SkipLink />
             {children}
             <Toaster />
             <FlashToast />
             <NewListingFab />
+            <WhatsAppFab />
             <VisitorPrompts />
           </Providers>
         </NextIntlClientProvider>

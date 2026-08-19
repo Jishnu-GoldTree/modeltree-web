@@ -23,8 +23,8 @@ export const ogSize = { width: 1200, height: 630 };
 export const ogContentType = "image/png";
 
 const INK = "#101924";
-/** --brand, champagne gold. */
-const BRAND = "#d4b275";
+/** --brand, vivid raspberry (#CB2957). */
+const BRAND = "#cb2957";
 const WHITE = "#ffffff";
 const MUTED = "#93a4b8";
 
@@ -49,13 +49,13 @@ type Copy = {
 const COPY: Record<Locale, Copy> = {
   en: {
     alt: `${SITE.name} | Jewellery 3D models, cast-ready`,
-    tagline: ["40,000 jewellery models,", "cast-ready"],
+    tagline: ["40,000+ jewellery models,", "cast-ready", "2 free models every month"],
     blurb: "Rings, pendants and settings modelled in-house. Buy, sell, or commission a piece.",
     stats: ["Cast-ready", "In-house modelers", "₪55 / month for 2 models"],
   },
   he: {
     alt: `${SITE.name} | מודלים של תכשיטים, מוכנים ליציקה`,
-    tagline: ["40,000 מודלים של תכשיטים,", "מוכנים ליציקה"],
+    tagline: ["40,000+ מודלים של תכשיטים,", "מוכנים ליציקה", "2 מודלים חינם מדי חודש"],
     blurb: "טבעות, תליונים ומשבצות שעוצבו אצלנו. לקנות, למכור או להזמין פריט.",
     stats: ["מוכן ליציקה", "מעצבים בבית", "55 ₪ לחודש ל־2 מודלים"],
   },
@@ -94,8 +94,8 @@ export function BrandFrame({ locale }: { locale: Locale }) {
         textAlign: rtl ? "right" : "left",
         padding: 72,
         backgroundColor: INK,
-        // Gold glow bleeding in from the top corner, over a faint grid.
-        backgroundImage: `radial-gradient(circle at ${rtl ? "22%" : "78%"} 12%, rgba(212,178,117,0.26) 0%, rgba(212,178,117,0) 45%),
+        // Raspberry glow bleeding in from the top corner, over a faint grid.
+        backgroundImage: `radial-gradient(circle at ${rtl ? "22%" : "78%"} 12%, rgba(203,41,87,0.26) 0%, rgba(203,41,87,0) 45%),
           linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
           linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px)`,
         backgroundSize: "100% 100%, 48px 48px, 48px 48px",

@@ -170,6 +170,21 @@ export const BROWSE_BY_STONE = [
   { key: "cushion", href: "/3d-models?stone=cushion" },
 ];
 
+/**
+ * Jewellery type is a category path segment (/3d-models/pendants), not a
+ * `?category=` query — the same URLs the nav uses. `key` doubles as the
+ * `landing.categories` label key and the DB category slug the counts group by.
+ */
+export const BROWSE_BY_TYPE = [
+  { key: "engagement-rings", href: "/3d-models/engagement-rings" },
+  { key: "wedding-bands", href: "/3d-models/wedding-bands" },
+  { key: "rings", href: "/3d-models/rings" },
+  { key: "pendants", href: "/3d-models/pendants" },
+  { key: "earrings", href: "/3d-models/earrings" },
+  { key: "necklaces", href: "/3d-models/necklaces" },
+  { key: "bracelets", href: "/3d-models/bracelets" },
+];
+
 export const VALUE_PROPS = [
   { key: "a", icon: "layers" },
   { key: "b", icon: "tag" },
@@ -200,19 +215,6 @@ export const BUSINESS_PERKS = [
   { key: "b", icon: "credit-card" },
   { key: "c", icon: "file-check" },
 ] as const;
-
-export const TRUSTED_BY = [
-  "Meta",
-  "SONY",
-  "Google",
-  "amazon",
-  "NETFLIX",
-  "ROBLOX",
-  "Microsoft",
-  "Disney",
-  "SAMSUNG",
-  "WebFlix",
-];
 
 export const FOOTER_COLUMNS = [
   {

@@ -27,12 +27,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 export function LoginForm({
   enabledProviders,
   authError,
-  demoEnabled,
   redirectTo,
 }: {
   enabledProviders: string[];
   authError?: string;
-  demoEnabled: boolean;
   redirectTo: string;
 }) {
   const t = useTranslations("auth");
@@ -209,20 +207,6 @@ export function LoginForm({
           </Button>
         </form>
       </Form>
-
-      {demoEnabled && (
-        <div className="rounded-lg border border-dashed p-3 text-xs text-muted-foreground">
-          <p className="font-medium text-foreground">{t("demoTitle")}</p>
-          <p className="mt-1">
-            {t("demoBuyer")}{" "}
-            <code className="font-mono">omri@goldtree.com</code> ·{" "}
-            {t("demoDesigner")}{" "}
-            <code className="font-mono">designer@modeltree.demo</code>
-            <br />
-            {t("demoPassword")} <code className="font-mono">demo1234</code>
-          </p>
-        </div>
-      )}
 
       <p className="text-center text-sm text-muted-foreground">
         {t("newHere")}{" "}

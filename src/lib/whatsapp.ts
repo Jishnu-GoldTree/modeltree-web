@@ -54,11 +54,26 @@ export function whatsappHandoffUrl(context: HandoffContext, greeting: string) {
  * Carries the account handle where the request version carries a reference:
  * there is no row to point at, and a message arriving from an unknown phone
  * number is otherwise impossible to tie back to an account.
+ *
+ * `modelTitle` is set when the chat starts from a specific listing ("request
+ * changes to this model"), so the modeler opens the thread already knowing
+ * which piece is meant.
  */
-export function whatsappChatUrl(greeting: string, handle: string) {
+export function whatsappChatUrl(
+  greeting: string,
+  handle: string,
+  modelTitle?: string | null,
+) {
   if (!WHATSAPP_NUMBER) return null
 
-  const text = [greeting, "", `ModelTree: @${handle}`].join("\n")
+  const text = [
+    greeting,
+    "",
+    `ModelTree: @${handle}`,
+    modelTitle ? `Model: ${modelTitle}` : null,
+  ]
+    .filter(Boolean)
+    .join("\n")
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`
 }
 
