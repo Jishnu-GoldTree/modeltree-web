@@ -50,7 +50,9 @@
     "production": "Production",
     "allCategories": "All",
     "home": "Home",
-    "browseByType": "Browse by type"
+    "browseByType": "Browse by type",
+    "scrollLeft": "Scroll categories left",
+    "scrollRight": "Scroll categories right"
   },
   "cart": {
     "title": "Your cart",
@@ -138,6 +140,7 @@
     "createdBy": "Created by",
     "fileFormats": "File formats",
     "tags": "Tags",
+    "relatedTags": "Related tags",
     "published": "Published",
     "download": "Download",
     "reviewsTitle": "Reviews",
@@ -220,6 +223,17 @@
     "saved": "Profile saved.",
     "dashboard": "Designer dashboard",
     "yourProfile": "Your profile"
+  },
+  "designer": {
+    "designer": "Designer",
+    "memberSince": "Member since {date}",
+    "published": "Models published",
+    "downloads": "Total downloads",
+    "reviews": "Reviews",
+    "ratingLine": "{rating} · {count} reviews",
+    "modelsHeading": "Models by {name}",
+    "empty": "This designer hasn't published any models yet.",
+    "browseModels": "Browse all models"
   },
   "sell": {
     "title": "Turn the models you've already made into income",
@@ -639,6 +653,10 @@
     "name": "Name",
     "handle": "Handle",
     "handleHint": "Your public storefront address. Changing it breaks existing links.",
+    "handleChecking": "Checking availability…",
+    "handleAvailable": "Available",
+    "handleTaken": "Already taken",
+    "handleInvalid": "Letters, numbers, dots, dashes and underscores only.",
     "accountType": "Account type",
     "buyer": "Buyer",
     "designer": "Designer",
@@ -667,12 +685,10 @@
     "badgeEditors": "Editor's pick"
   },
   "license": {
-    "royalty-free": "Royalty-free",
-    "editorial": "Editorial use",
+    "standard": "Standard commercial",
     "extended": "Extended commercial",
-    "blurbRoyalty": "One seat. Commercial use in games, film and visualisation.",
-    "blurbEditorial": "Editorial and non-commercial use. One seat.",
-    "blurbExtended": "Unlimited seats, resale in end products, and merchandising."
+    "blurbStandard": "For one workshop. Cast or print and sell the finished pieces you make.",
+    "blurbExtended": "For multiple benches or production at scale, with resale of the finished pieces."
   },
   "sort": {
     "label": "Sort",
@@ -847,7 +863,7 @@
     "stripTitle": "Two of these a month, free",
     "stripBody": "₪55 a month, any two pieces in the catalog, licences yours to keep.",
     "stripCta": "See membership",
-    "adjustCta": "Need this adjusted?"
+    "adjustCta": "Request size adjustments"
   },
   "requests": {
     "metaTitle": "Custom work requests",

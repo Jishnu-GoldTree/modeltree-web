@@ -25,7 +25,6 @@ export type CartEntry = { slug: string; license: string }
 export type CartLine = {
   model: CatalogModel
   license: string
-  licenseName: string
   price: number
 }
 
@@ -80,7 +79,6 @@ export async function toLines(entries: CartEntry[]): Promise<CartLine[]> {
       return {
         model,
         license: option.id,
-        licenseName: option.name,
         price: option.price,
       }
     }),

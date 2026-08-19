@@ -19,7 +19,7 @@ import { presignGet } from "@/lib/r2/presign"
  * "free") because that is what the UI has always rendered.
  */
 
-export type License = "royalty-free" | "editorial" | "extended"
+export type License = "standard" | "extended"
 
 // Constants and enums live in `./catalog-facets` so client components can
 // import them without pulling this file's server-only module graph
@@ -69,9 +69,15 @@ export type SortValue = (typeof SORTS)[number]["value"]
 export const PAGE_SIZE = 24
 
 export const LICENSE_LABELS: Record<License, string> = {
-  "royalty-free": "Royalty-free",
-  editorial: "Editorial use",
+  standard: "Standard commercial",
   extended: "Extended commercial",
+}
+
+// Legacy catalogs carry retired license codes (royalty-free, editorial); the
+// app now models just two tiers. Fold anything that isn't `extended` into
+// `standard` so labels resolve instead of leaking the raw `license.<code>` key.
+function normalizeLicense(code: string): License {
+  return code === "extended" ? "extended" : "standard"
 }
 
 export type CatalogQuery = {
@@ -185,7 +191,7 @@ async function toModel(row: ModelRow): Promise<CatalogModel> {
     seed: row.slug,
     cover,
     category: row.categories?.slug ?? "",
-    license: row.license_code,
+    license: normalizeLicense(row.license_code),
     priceAgorot: row.price_cents,
     metal: row.metal,
     stone: row.stone,
@@ -372,7 +378,7 @@ async function computeFacets(query: CatalogQuery): Promise<CatalogResult["facets
       return Object.fromEntries(entries)
     })(),
     (async () => {
-      const codes: License[] = ["royalty-free", "editorial", "extended"]
+      const codes: License[] = ["standard", "extended"]
       const entries = await Promise.all(
         codes.map(async (code) => [code, await countFor({ license: code })] as const),
       )
@@ -452,6 +458,88 @@ export async function allModelSlugs(): Promise<string[]> {
     .select("slug")
     .eq("status", "published")
   return (data ?? []).map((m) => m.slug)
+}
+
+/* ──────────────────────────── designer storefront ───────────────────────── */
+
+export type Designer = {
+  handle: string
+  fullName: string | null
+  bio: string | null
+  location: string | null
+  /** Raw ISO timestamp; the page formats it for the active locale. */
+  memberSince: string
+  models: CatalogModel[]
+  stats: {
+    published: number
+    downloads: number
+    reviews: number
+    /** Mean rating across this designer's rated models; 0 when none are rated. */
+    rating: number
+  }
+}
+
+/**
+ * A designer's public storefront: their profile plus every model they've
+ * published, most-downloaded first. Reads through the anon client, so RLS
+ * limits it to the same rows a signed-out visitor sees. Returns undefined for
+ * an unknown handle, which the page turns into a 404.
+ */
+export async function getDesigner(handle: string): Promise<Designer | undefined> {
+  const { data: profile } = await supabasePublic
+    .from("profiles")
+    .select("id, handle, full_name, bio, location, created_at")
+    .eq("handle", handle)
+    .maybeSingle()
+  if (!profile) return undefined
+
+  const p = profile as {
+    id: string
+    handle: string
+    full_name: string | null
+    bio: string | null
+    location: string | null
+    created_at: string
+  }
+
+  const { data } = await supabasePublic
+    .from("models")
+    .select(SELECT)
+    .eq("status", "published")
+    .eq("designer_id", p.id)
+    .order("download_count", { ascending: false })
+
+  const models = await Promise.all(((data ?? []) as unknown as ModelRow[]).map(toModel))
+
+  const downloads = models.reduce((sum, m) => sum + m.downloads, 0)
+  const reviews = models.reduce((sum, m) => sum + m.reviews, 0)
+  const rated = models.filter((m) => m.reviews > 0)
+  const rating = rated.length
+    ? rated.reduce((sum, m) => sum + m.rating, 0) / rated.length
+    : 0
+
+  return {
+    handle: p.handle,
+    fullName: p.full_name,
+    bio: p.bio,
+    location: p.location,
+    memberSince: p.created_at,
+    models,
+    stats: { published: models.length, downloads, reviews, rating },
+  }
+}
+
+/** Handles of designers with at least one published model — the storefronts
+ *  worth prerendering. */
+export async function allDesignerHandles(): Promise<string[]> {
+  const { data } = await supabasePublic
+    .from("models")
+    .select("profiles!models_designer_id_fkey ( handle )")
+    .eq("status", "published")
+  const handles = (data ?? [])
+    .map((r) => (r as unknown as { profiles: { handle: string } | null }).profiles?.handle)
+    .filter((h): h is string => Boolean(h))
+  return [...new Set(handles)]
 }
 
 /* ─────────────────────────── product-page extras ────────────────────────── */
@@ -547,17 +635,13 @@ export async function getLicenseOptions(model: CatalogModel) {
     id: model.license,
     name: LICENSE_LABELS[model.license],
     price: base,
-    blurb:
-      model.license === "editorial"
-        ? "Editorial and non-commercial use. One seat."
-        : "One seat. Commercial use in games, film and visualisation.",
   }
 
   if (model.license === "extended") return [standard]
 
   const { data } = await supabasePublic
     .from("licenses")
-    .select("code, label, blurb, price_multiplier")
+    .select("label, price_multiplier")
     .eq("code", "extended")
     .maybeSingle()
 
@@ -568,7 +652,6 @@ export async function getLicenseOptions(model: CatalogModel) {
       id: "extended",
       name: data?.label ?? LICENSE_LABELS.extended,
       price: base === 0 ? 29 : Math.round((base * multiplier) / 5) * 5,
-      blurb: data?.blurb ?? "Unlimited seats, resale in end products, and merchandising.",
     },
   ]
 }

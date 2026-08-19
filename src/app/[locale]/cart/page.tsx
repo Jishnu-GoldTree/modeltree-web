@@ -133,7 +133,7 @@ export default async function CartPage() {
                           </form>
                         ) : (
                           <p className="mt-3 text-xs text-muted-foreground">
-                            {line.licenseName}
+                            {lic(line.license)}
                           </p>
                         )}
                       </div>

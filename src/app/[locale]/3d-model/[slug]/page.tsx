@@ -6,10 +6,8 @@ import { initials } from "@/lib/utils"
 import { Link } from "@/i18n/navigation"
 import { notFound } from "next/navigation"
 import {
-  Check,
   ChevronRight,
   Download,
-  FileBox,
   Gem,
   Ruler,
   Heart,
@@ -21,8 +19,6 @@ import {
 import { ASSET_CATEGORIES } from "@/lib/data/landing"
 import {
   allModelSlugs,
-  getDownloadableFormats,
-  getFiles,
   getLicenseOptions,
   getModel,
   getModelImages,
@@ -38,8 +34,8 @@ import { ProductGallery } from "@/components/marketplace/product-gallery"
 import { tempGallery } from "@/lib/temp-previews"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { CardFooter } from "@/components/ui/card"
 import { addToCart } from "@/lib/actions/cart"
-import { downloadModelFile } from "@/lib/actions/models"
 import { addFavorite } from "@/lib/actions/favorites"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
@@ -90,11 +86,6 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
     freeLabel: t("free"),
   })
   const reviews = await getReviews(model)
-  const files = await getFiles(model)
-  // Which of those formats this viewer may actually pull down. Empty for
-  // anonymous or un-entitled visitors, so the "What you get" list stays a
-  // read-only manifest until they own the model.
-  const downloadable = await getDownloadableFormats(model.id)
   const licenses = await getLicenseOptions(model)
   const images = await getModelImages(model.id)
   // Null when nobody is signed in, which renders no form rather than an empty one.
@@ -144,7 +135,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
               is last in the DOM but placed explicitly, so on desktop it lands
               beside the image while on mobile it stacks straight after it —
               title and price before the long-form detail either way. */}
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem]">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-y-4">
             <div className="min-w-0 lg:col-start-1 lg:row-start-1">
               {/* Uploaded previews when the designer supplied any; falls back
                   to the placeholder set for legacy models with no images. */}
@@ -195,45 +186,26 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                 </UserText>
               </div>
 
-              <h2 className="mt-10 text-lg font-semibold tracking-tight">
-                {t("whatYouGet")}
-              </h2>
-              <ul className="mt-4 flex flex-col gap-2">
-                {files.map((file) => (
-                  <li
-                    key={file.format}
-                    className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5 text-sm"
-                  >
-                    <span className="flex items-center gap-2">
-                      <FileBox className="size-4 text-muted-foreground" aria-hidden />
-                      <span className="font-medium">{file.format}</span>
-                    </span>
-                    <span className="flex items-center gap-3">
-                      <span className="tabular-nums text-muted-foreground">
-                        {file.size}
-                      </span>
-                      {/* Only entitled viewers see the button. The action re-checks
-                          the same RLS boundary, so this is convenience, not the
-                          gate. */}
-                      {downloadable.has(file.format) && (
-                        <form action={downloadModelFile}>
-                          <input type="hidden" name="slug" value={model.slug} />
-                          <input type="hidden" name="format" value={file.format} />
-                          <Button
-                            type="submit"
-                            variant="outline"
-                            size="sm"
-                            className="h-8 gap-1.5"
-                          >
-                            <Download className="size-3.5" aria-hidden />
-                            {t("download")}
-                          </Button>
-                        </form>
-                      )}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              {/* Designer keywords, linked into the `?tag=` browse filter so
+                  a tag doubles as a way to find more like this. Its own card
+                  below the description rather than a section inside it. */}
+              {model.tags.length > 0 && (
+                <div className="mt-4 rounded-xl border p-5">
+                  <h2 className="text-xs text-muted-foreground">{t("relatedTags")}</h2>
+                  <ul className="mt-2.5 flex flex-wrap gap-1.5">
+                    {model.tags.map((tag) => (
+                      <li key={tag}>
+                        <Link
+                          href={`/3d-models?tag=${encodeURIComponent(tag.toLowerCase())}`}
+                          className="inline-flex rounded-full border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-brand hover:text-foreground"
+                        >
+                          {tag}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               <Separator className="mt-10" />
 
@@ -308,13 +280,13 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
             {/* Buy rail. Sticky on desktop so the price stays reachable while
                 the detail scrolls. */}
             <aside className="lg:sticky lg:top-28 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
-              <div className="rounded-xl border p-5">
+              <div className="overflow-hidden rounded-xl border p-5">
                 {/* The h1 lives here rather than under the gallery: this is the
                     column a buyer reads top to bottom — name, who made it,
                     what it scores, what it costs. */}
                 <UserText
                   as="h1"
-                  className="block text-xl font-semibold tracking-tight text-balance"
+                  className="block text-2xl font-semibold tracking-tight text-balance"
                 >
                   {model.title}
                 </UserText>
@@ -412,7 +384,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                               </span>
                             </span>
                             <span className="text-xs text-muted-foreground">
-                              {lic(`blurb${option.id === "editorial" ? "Editorial" : option.id === "extended" ? "Extended" : "Royalty"}`)}
+                              {lic(option.id === "extended" ? "blurbExtended" : "blurbStandard")}
                             </span>
                           </label>
                         </li>
@@ -429,44 +401,44 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                 </form>
 
                 {/* Both buttons sit outside their forms and point back with
-                    `form`. That is what lets two separate actions drive their
-                    own action, and it still works with JavaScript off. The buy
-                    button is the loud one — full width and tall so it reads as
-                    the page's primary move; Save trails it as a quieter row. */}
-                <Button
-                  type="submit"
-                  form="buy-form"
-                  className="mt-5 h-12 w-full gap-2 text-base font-semibold bg-brand text-brand-foreground hover:bg-brand/85"
-                >
-                  {model.price === "free" ? (
-                    <Download className="size-5" aria-hidden />
-                  ) : (
-                    <ShoppingCart className="size-5" aria-hidden />
-                  )}
-                  {model.price === "free" ? t("getModel") : t("addToCart")}
-                </Button>
-                <Button
-                  type="submit"
-                  form="save-form"
-                  variant="outline"
-                  className="mt-2 h-10 w-full"
-                >
-                  <Heart className="size-4" aria-hidden />
-                  {t("save")}
-                </Button>
+                    `form`, so two separate actions share one joined block and
+                    still work with JavaScript off. Welded into a single unit at
+                    the foot of the card — Save is the quieter half up top, buy
+                    the loud primary below it as the card's bottom edge. */}
+                <CardFooter className="-mx-5 -mb-5 mt-6 flex-col gap-0 border-t-0 bg-transparent p-0">
+                  <Button
+                    type="submit"
+                    form="save-form"
+                    variant="outline"
+                    className="h-13 w-full gap-2 rounded-none border-x-0 text-base"
+                  >
+                    <Heart className="size-5" aria-hidden />
+                    {t("save")}
+                  </Button>
+                  <Button
+                    type="submit"
+                    form="buy-form"
+                    className="h-13 w-full gap-2 rounded-none border-0 text-base font-semibold bg-brand text-brand-foreground hover:bg-brand/85"
+                  >
+                    {model.price === "free" ? (
+                      <Download className="size-5" aria-hidden />
+                    ) : (
+                      <ShoppingCart className="size-5" aria-hidden />
+                    )}
+                    {model.price === "free" ? t("getModel") : t("addToCart")}
+                  </Button>
+                </CardFooter>
+              </div>
 
-                <ul className="mt-5 flex flex-col gap-2 border-t pt-4">
-                  {[
-                    t("formatsIncluded", { count: model.formats.length }),
-                    t("updates"),
-                    t("invoice"),
-                  ].map((item) => (
+              <div className="mt-4 rounded-xl border p-5">
+                <h2 className="text-xs text-muted-foreground">{t("fileFormats")}</h2>
+                <ul className="mt-3 flex flex-wrap gap-1.5">
+                  {model.formats.map((format) => (
                     <li
-                      key={item}
-                      className="flex items-start gap-2 text-xs text-muted-foreground"
+                      key={format}
+                      className="flex h-7 min-w-10 items-center justify-center rounded-md border bg-muted/40 px-2 font-mono text-[11px] font-semibold tracking-wide text-foreground uppercase"
                     >
-                      <Check className="mt-px size-3.5 shrink-0 text-brand-accent" aria-hidden />
-                      {item}
+                      {format}
                     </li>
                   ))}
                 </ul>
@@ -511,20 +483,6 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                 <Button asChild variant="outline" className="mt-4 h-9 w-full">
                   <Link href={`/designers/${model.author}`}>{t("viewStorefront")}</Link>
                 </Button>
-              </div>
-
-              <div className="mt-4 rounded-xl border p-5">
-                <h2 className="text-xs text-muted-foreground">{t("fileFormats")}</h2>
-                <ul className="mt-3 flex flex-wrap gap-2">
-                  {model.formats.map((format) => (
-                    <li
-                      key={format}
-                      className="flex h-11 min-w-14 items-center justify-center rounded-md border bg-muted/40 px-3 font-mono text-xs font-semibold tracking-wide text-foreground uppercase"
-                    >
-                      {format}
-                    </li>
-                  ))}
-                </ul>
               </div>
 
               {/* Keyword tags double as discovery links: each points back at the

@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { ASSET_CATEGORIES } from "@/lib/data/landing"
 import type { CatalogResult } from "@/lib/data/catalog"
 import { Thumb } from "@/components/marketplace/thumb"
+import { CategoryScroller } from "@/components/marketplace/category-scroller"
 
 /**
  * Category shortcut strip, pinned under the header — the row of thumbnailed
@@ -29,7 +30,10 @@ export async function CatalogCategories({
   return (
     <div className="border-b bg-background">
       <div className="shell">
-        <ul className="no-scrollbar flex items-center gap-2.5 overflow-x-auto py-3">
+        <CategoryScroller
+          prevLabel={c("scrollLeft")}
+          nextLabel={c("scrollRight")}
+        >
           <li>
             <Link
               href="/3d-models"
@@ -83,7 +87,7 @@ export async function CatalogCategories({
               </li>
             )
           })}
-        </ul>
+        </CategoryScroller>
       </div>
     </div>
   )
