@@ -47,7 +47,7 @@ export function toParams(raw: RawParams): Record<string, string | undefined> {
   return out
 }
 
-const LICENSES: License[] = ["royalty-free", "editorial", "extended"]
+const LICENSES: License[] = ["standard", "extended"]
 
 export function toQuery(params: Record<string, string | undefined>): CatalogQuery {
   const sort = SORTS.find((s) => s.value === params.sort)?.value as

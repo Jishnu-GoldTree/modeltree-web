@@ -210,7 +210,7 @@ export function ProductGallery({
             <button
               type="button"
               onClick={() => setFullscreen(false)}
-              className="absolute end-4 top-4 z-10 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/25 focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none"
+              className="absolute end-4 top-4 z-10 rounded-full bg-black/60 p-2 text-white shadow-lg shadow-black/30 ring-1 ring-white/25 backdrop-blur-sm transition-colors hover:bg-black/80 focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:outline-none"
               aria-label={t("closeFullscreen")}
             >
               <X className="size-5" aria-hidden />
@@ -260,9 +260,9 @@ export function ProductGallery({
 
 /**
  * Arrow button used in both the tile and the lightbox. Fixed to the vertical
- * middle so it aligns with the image regardless of aspect ratio; only visible
- * on hover/focus on desktop, always visible on touch (no hover state to lean
- * on). Sizes are the two we actually use — `lg` for the fullscreen view.
+ * middle so it aligns with the image regardless of aspect ratio, and always
+ * visible so the controls never disappear on the image. Sizes are the two we
+ * actually use — `lg` for the fullscreen view.
  */
 function ArrowButton({
   side,
@@ -285,11 +285,12 @@ function ArrowButton({
         // `rounded-lg` matches the Button component's base radius so the
         // overlay controls read as part of the same UI kit instead of a
         // stray media-viewer pill.
-        "absolute top-1/2 -translate-y-1/2 rounded-lg bg-black/40 text-white backdrop-blur-sm transition-all",
-        "hover:bg-black/65 focus-visible:bg-black/65 focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:outline-none",
-        // Touch: visible by default. Pointer devices: only surface on hover
-        // or keyboard focus so the image isn't cluttered.
-        "opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100",
+        "absolute top-1/2 -translate-y-1/2 rounded-lg bg-black/60 text-white shadow-lg shadow-black/30 ring-1 ring-white/25 backdrop-blur-sm transition-all",
+        "hover:bg-black/80 focus-visible:bg-black/80 focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:outline-none",
+        // Always visible on every device — no hover/focus reveal. The dark
+        // fill + light ring keep the arrows legible over pale jewellery shots,
+        // not just dark backgrounds.
+        "opacity-100",
         side === "start" ? "start-3" : "end-3",
         size === "lg" ? "p-3" : "p-2",
       )}

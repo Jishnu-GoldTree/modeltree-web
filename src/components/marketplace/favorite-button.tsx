@@ -54,10 +54,18 @@ export function FavoriteButton({
         type="submit"
         aria-label={favorited ? `Remove ${title} from saved` : `Save ${title}`}
         aria-pressed={favorited}
-        className="inline-flex size-8 items-center justify-center rounded-full bg-black/45 text-white outline-none backdrop-blur hover:bg-black/65 focus-visible:ring-3 focus-visible:ring-brand/50"
+        className={cn(
+          "inline-flex size-8 items-center justify-center rounded-full outline-none backdrop-blur focus-visible:ring-3 focus-visible:ring-brand/50",
+          // Saved: the whole chip goes brand red with a white heart (5.26:1),
+          // rather than a red heart on the translucent grey chip, which sat
+          // near 1.5:1. Unsaved keeps the dark chip with a white outline heart.
+          favorited
+            ? "bg-brand text-brand-foreground hover:bg-brand/90"
+            : "bg-black/45 text-white hover:bg-black/65",
+        )}
       >
         <Heart
-          className={cn("size-4", favorited && "fill-brand text-brand")}
+          className={cn("size-4", favorited && "fill-current")}
           aria-hidden
         />
       </button>

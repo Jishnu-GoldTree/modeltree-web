@@ -15,6 +15,7 @@
   --color-brand-foreground: var(--brand-foreground);
   --color-brand-accent: var(--brand-accent);
   --color-brand-muted: var(--brand-muted);
+  --color-brand-on-ink: var(--brand-on-ink);
   --color-ink: var(--ink);
   --color-ink-foreground: var(--ink-foreground);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -74,6 +75,11 @@
      --brand-muted tint. */
   --brand-accent: oklch(0.51 0.19 12);
   --brand-muted: oklch(0.955 0.022 11);
+  /* The raspberry as text on the dark --ink strip. The mid-dark --brand only
+     reaches ~2.8:1 there; lifting the lightness to 0.72 (chroma pulled back so
+     it doesn't glow) clears AA at ~5.6:1. Not theme-scoped: the ink surface is
+     dark in both modes, so this stays the same tone in .dark. */
+  --brand-on-ink: oklch(0.72 0.16 13);
   --ink: oklch(0.2 0.012 15);
   --ink-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);

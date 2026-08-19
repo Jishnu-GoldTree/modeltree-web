@@ -75,11 +75,27 @@ export const signupSchema = z.object({
 export type SignupValues = z.infer<typeof signupSchema>
 
 /**
- * Profile edits.
- *
  * `handle` is a public URL segment (/designers/<handle>), so it is constrained
  * to a lowercase slug — the column is citext-unique, and letting mixed case or
  * spaces through would produce URLs that only work sometimes.
+ *
+ * Exported on its own so the availability endpoint validates a handle by the
+ * same rules the profile save does; two rule sets would let the live check and
+ * the write disagree.
+ */
+export const handleField = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .min(3, "Handles need at least 3 characters")
+  .max(30, "Keep your handle under 30 characters")
+  .regex(
+    /^[a-z0-9][a-z0-9._-]*$/,
+    "Use letters, numbers, dots, dashes and underscores; start with a letter or number",
+  );
+
+/**
+ * Profile edits.
  */
 export const profileSchema = z.object({
   fullName: z
@@ -87,16 +103,7 @@ export const profileSchema = z.object({
     .trim()
     .min(2, "Enter your name")
     .max(60, "Keep your name under 60 characters"),
-  handle: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .min(3, "Handles need at least 3 characters")
-    .max(30, "Keep your handle under 30 characters")
-    .regex(
-      /^[a-z0-9][a-z0-9._-]*$/,
-      "Use letters, numbers, dots, dashes and underscores; start with a letter or number",
-    ),
+  handle: handleField,
   accountType: z.enum(ACCOUNT_TYPES),
   bio: z.string().trim().max(500, "Keep your bio under 500 characters").optional(),
   location: z.string().trim().max(80, "Keep the location under 80 characters").optional(),

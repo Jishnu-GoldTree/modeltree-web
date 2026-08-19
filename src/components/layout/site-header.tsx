@@ -67,7 +67,7 @@ export function SiteHeader() {
       >
         <span className="truncate font-medium">{member("stripTitle")}</span>
         <span aria-hidden className="hidden text-white/40 sm:inline">·</span>
-        <span className="hidden shrink-0 items-center gap-1 font-medium text-brand sm:inline-flex">
+        <span className="hidden shrink-0 items-center gap-1 font-medium text-brand-on-ink sm:inline-flex">
           {member("cta")}
           <ArrowRight className="size-3.5 rtl:-scale-x-100" aria-hidden />
         </span>

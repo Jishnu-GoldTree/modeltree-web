@@ -212,6 +212,7 @@ export async function getLicenseOptionsForForm() {
   const { data } = await supabase
     .from("licenses")
     .select("code, label, blurb")
+    .eq("active", true)
     .order("position")
   return (data ?? []) as { code: string; label: string; blurb: string }[]
 }

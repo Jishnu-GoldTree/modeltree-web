@@ -52,7 +52,7 @@ async function buildMetadata(locale: string): Promise<Metadata> {
   keywords: [
     "3D models",
     "3D model marketplace",
-    "royalty-free 3D models",
+    "commercial-use jewellery models",
     "buy 3D models",
     "sell 3D models",
     "PBR textures",

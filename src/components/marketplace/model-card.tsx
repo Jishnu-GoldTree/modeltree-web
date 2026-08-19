@@ -47,7 +47,7 @@ export function ModelCard({
         src={model.cover}
         sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
         className="aspect-4/3 shrink-0"
-        imageClassName="transition-transform duration-300 group-hover:scale-[1.04]"
+        imageClassName="transform-gpu transition-transform duration-500 ease-out will-change-transform group-hover:scale-[1.04]"
       >
         {model.badge && (
           <Badge className="absolute top-2.5 start-2.5 border-0 bg-black/55 text-white backdrop-blur">
