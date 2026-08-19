@@ -19,7 +19,7 @@ export function BusinessAccount() {
     <section>
       <div className="shell">
         <div className="flex flex-col items-center text-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1 text-xs font-medium text-muted-foreground">
             <Building2 className="size-3.5" aria-hidden />
             {t("badge")}
           </span>

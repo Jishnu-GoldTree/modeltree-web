@@ -75,9 +75,9 @@ export default async function ProfilePage() {
 
   return (
     <>
-      <SiteHeader solid />
+      <SiteHeader />
 
-      <main id="main-content" className="flex-1 pt-16">
+      <main id="main-content" className="flex-1 pt-26">
         <div className="border-b bg-ink">
           <div className="shell flex flex-col gap-5 py-10 sm:flex-row sm:items-center">
             <Avatar className="size-20 border-2 border-white/15">
@@ -158,7 +158,7 @@ export default async function ProfilePage() {
             </section>
           )}
 
-          <section id="purchases" className="scroll-mt-24">
+          <section id="purchases" className="scroll-mt-28">
             <div className="flex items-center justify-between gap-4">
               <h2 className="text-lg font-semibold tracking-tight">{t("purchases")}</h2>
               <Link
@@ -223,7 +223,7 @@ export default async function ProfilePage() {
             )}
           </section>
 
-          <section id="saved" className="scroll-mt-24">
+          <section id="saved" className="scroll-mt-28">
             <div className="flex items-center justify-between gap-4">
               <h2 className="text-lg font-semibold tracking-tight">{t("savedModels")}</h2>
               <Link href="/favorites" className="text-sm text-brand-accent hover:underline">

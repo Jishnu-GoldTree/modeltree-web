@@ -245,7 +245,7 @@ export function ProductGallery({
                   icon={<ChevronRight className="size-6 rtl:-scale-x-100" aria-hidden />}
                 />
                 <div className="pointer-events-none absolute inset-x-0 bottom-6 flex justify-center">
-                  <span className="rounded-full bg-white/10 px-3 py-1 text-sm font-medium text-white tabular-nums backdrop-blur-sm">
+                  <span className="rounded-md bg-white/10 px-3 py-1 text-sm font-medium text-white tabular-nums backdrop-blur-sm">
                     {active + 1} / {total}
                   </span>
                 </div>

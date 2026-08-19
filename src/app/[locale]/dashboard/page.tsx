@@ -58,9 +58,9 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <SiteHeader solid />
+      <SiteHeader />
 
-      <main id="main-content" className="flex-1 pt-16">
+      <main id="main-content" className="flex-1 pt-26">
         <div className="relative overflow-hidden border-b bg-ink">
           {/* Same grid as the landing hero, at the same 64px pitch, so the two
               dark bands read as one surface. Faded out before the bottom border

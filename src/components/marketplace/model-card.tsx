@@ -38,7 +38,7 @@ export function ModelCard({
   return (
     <article
       className={cn(
-        "group relative flex h-full flex-col overflow-hidden rounded-xl border bg-card transition-shadow hover:shadow-md",
+        "group relative flex h-full flex-col overflow-hidden rounded-xl border bg-card transition-colors hover:border-brand",
         className
       )}
     >
@@ -79,7 +79,7 @@ export function ModelCard({
           <Link
             href={`/3d-model/${model.slug}`}
             title={model.title}
-            className="after:absolute after:inset-0 after:content-[''] hover:underline"
+            className="after:absolute after:inset-0 after:content-['']"
           >
             <UserText className="line-clamp-2">{model.title}</UserText>
           </Link>

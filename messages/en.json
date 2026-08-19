@@ -35,6 +35,8 @@
     "clearAll": "Clear all",
     "searchedFor": "Search: “{query}”",
     "clearSearch": "Clear search",
+    "taggedWith": "Tag: {tag}",
+    "clearTag": "Clear tag",
     "emptyTitle": "No models match those filters",
     "emptyBody": "Try removing a filter. Combining a narrow category with a rare file format usually comes up empty.",
     "price": "Price",
@@ -45,7 +47,10 @@
     "paid": "Paid",
     "metal": "Metal",
     "stone": "Stone",
-    "production": "Production"
+    "production": "Production",
+    "allCategories": "All",
+    "home": "Home",
+    "browseByType": "Browse by type"
   },
   "cart": {
     "title": "Your cart",
@@ -130,6 +135,10 @@
     "downloads": "downloads",
     "specifications": "Specifications",
     "whatYouGet": "What you get",
+    "createdBy": "Created by",
+    "fileFormats": "File formats",
+    "tags": "Tags",
+    "published": "Published",
     "download": "Download",
     "reviewsTitle": "Reviews",
     "outOf5": "out of 5",
@@ -385,6 +394,7 @@
         "description": "Quality bar, licensing and file requirements"
       }
     },
+    "heroCta": "Explore marketplace",
     "heroFilters": {
       "engagement": "Engagement rings",
       "bands": "Wedding bands",
@@ -601,6 +611,11 @@
     "size": "Size (mm)",
     "priceIls": "Price (₪)",
     "priceHintIls": "Leave at 0 to give it away. Prices are in shekels.",
+    "tags": "Tags & keywords",
+    "tagsHint": "Add up to {max} keywords buyers might search — piece, style, occasion. Press Enter or comma after each.",
+    "tagsPlaceholder": "engagement, solitaire, vintage…",
+    "tagsFull": "You've reached the {max}-tag limit. Remove one to add another.",
+    "tagRemove": "Remove tag {tag}",
     "backToDashboard": "Back to dashboard"
   },
   "upload": {
@@ -800,7 +815,28 @@
     "adjustCta": "Request an adjustment",
     "newCta": "Commission a piece",
     "howItWorksTitle": "How the conversation runs.",
-    "howItWorksBody": "You open a request here so the brief, the quote and the status stay on your account. The back-and-forth happens on WhatsApp, where the modelling team answers fastest."
+    "howItWorksBody": "You open a request here so the brief, the quote and the status stay on your account. The back-and-forth happens on WhatsApp, where the modelling team answers fastest.",
+    "chatCta": "Chat with our designers",
+    "chatTitle": "Chat with our designers",
+    "chatBack": "Back to custom work",
+    "chatIntro": "You are about to message GoldTree's own modelling team — the modelers who built the library on this site. Tell them what you need and they will scope it, price it and build it. Read this first, so the conversation starts in the right place.",
+    "chatStepsTitle": "How it works",
+    "chatStep1Title": "Send your brief",
+    "chatStep1Body": "A photo, a sketch, or a sentence. For an adjustment, say which model you bought and what has to change — ring size, stone dimensions, band width.",
+    "chatStep2Title": "Get a quote",
+    "chatStep2Body": "A modeler replies with a price and a timeframe. Editing a model you already own costs a fraction of commissioning a new one.",
+    "chatStep3Title": "Approve, then we build",
+    "chatStep3Body": "Nothing starts until you accept the quote. The finished files arrive in the formats you asked for, cast-ready.",
+    "chatTermsTitle": "Before you message",
+    "chatTerm1": "Quotes are given per job. Nothing is charged until you accept one.",
+    "chatTerm2": "Adjustments apply to models bought on ModelTree — say which one.",
+    "chatTerm3": "Anything discussed on WhatsApp that becomes an order is recorded here, so the brief and the quote stay on your account.",
+    "chatTerm4": "Messaging shares your phone number with GoldTree. It is used to answer you, and nothing else.",
+    "chatOpen": "Chat on WhatsApp",
+    "chatNewTab": "opens in a new tab",
+    "chatHours": "The team answers Sunday to Thursday, Israeli business hours.",
+    "chatGreeting": "Hi, I would like to talk to the modelling team about a custom piece.",
+    "chatUnavailable": "The chat is not connected yet. Open a request instead and the modelling team will pick it up from there."
   },
   "membership": {
     "badge": "Membership",

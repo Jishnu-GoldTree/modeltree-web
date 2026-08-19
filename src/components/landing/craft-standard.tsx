@@ -65,7 +65,7 @@ export function CraftStandard() {
           </div>
 
           <div className="order-1 flex flex-col justify-center lg:order-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80">
+            <span className="inline-flex items-center gap-1.5 rounded-md border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80">
               <Sparkles className="size-3.5" aria-hidden />
               {t("badge")}
             </span>

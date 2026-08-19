@@ -29,7 +29,7 @@ export async function JewelleryLibrary() {
     <section className="section-band border-y bg-ink text-ink-foreground">
       <div className="shell grid gap-10 lg:grid-cols-2 lg:items-center">
         <div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/15 px-3 py-1 text-xs font-medium text-brand">
+          <span className="inline-flex items-center gap-1.5 rounded-md bg-brand/15 px-3 py-1 text-xs font-medium text-brand">
             <Gem className="size-3.5" aria-hidden />
             {t("badge")}
           </span>

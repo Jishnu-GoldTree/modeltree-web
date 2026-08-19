@@ -69,12 +69,12 @@ export default async function PricingPage() {
 
   return (
     <>
-      <SiteHeader solid />
+      <SiteHeader />
 
-      <main id="main-content" className="flex-1 pt-16">
+      <main id="main-content" className="flex-1 pt-26">
         <section className="border-b bg-ink text-ink-foreground">
           <div className="shell py-16 text-center md:py-20">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/15 px-3 py-1 text-xs font-medium text-brand">
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-brand/15 px-3 py-1 text-xs font-medium text-brand">
               <Gem className="size-3.5" aria-hidden />
               {t("eyebrow")}
             </span>
@@ -99,7 +99,7 @@ export default async function PricingPage() {
                 )}
               >
                 {plan.featured && (
-                  <span className="absolute -top-3 start-6 rounded-full bg-brand px-3 py-1 text-xs font-medium text-brand-foreground">
+                  <span className="absolute -top-3 start-6 rounded-md bg-brand px-3 py-1 text-xs font-medium text-brand-foreground">
                     {t("popular")}
                   </span>
                 )}

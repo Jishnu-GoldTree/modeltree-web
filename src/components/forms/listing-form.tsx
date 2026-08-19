@@ -4,12 +4,19 @@ import { useActionState, useCallback, useEffect, useMemo, useState } from "react
 import { useFormStatus } from "react-dom"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
-import { CheckCircle2, ImagePlus, Info, Loader2, Trash2, UploadCloud, XCircle } from "lucide-react"
+import { CheckCircle2, ImagePlus, Info, Loader2, Trash2, UploadCloud, X, XCircle } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { createListing, updateListing, type ListingState } from "@/lib/actions/models"
 import type { ListingEditData } from "@/lib/data/designer"
-import { FORMATS, METALS, PRODUCTION, STONES } from "@/lib/data/catalog-facets"
+import {
+  FORMATS,
+  MAX_TAGS,
+  METALS,
+  PRODUCTION,
+  STONES,
+  normalizeTag,
+} from "@/lib/data/catalog-facets"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -244,6 +251,37 @@ export function ListingForm({
     })),
   )
 
+  // Keyword tags. Stored normalised so a chip reads exactly as it will be saved
+  // and searched; the server re-normalises regardless, so this is convenience.
+  const [tags, setTags] = useState<string[]>(() => initial?.tags ?? [])
+  const [tagDraft, setTagDraft] = useState("")
+  const tagsFull = tags.length >= MAX_TAGS
+
+  const commitTag = useCallback((raw: string) => {
+    const tag = normalizeTag(raw)
+    if (!tag) return
+    setTags((prev) =>
+      prev.includes(tag) || prev.length >= MAX_TAGS ? prev : [...prev, tag],
+    )
+    setTagDraft("")
+  }, [])
+
+  function onTagKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    // Enter and comma both commit; Enter must not submit the whole form.
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault()
+      commitTag(tagDraft)
+    } else if (e.key === "Backspace" && tagDraft === "" && tags.length > 0) {
+      // Backspace on an empty field peels the last chip — the expected shortcut
+      // for a chips input.
+      setTags((prev) => prev.slice(0, -1))
+    }
+  }
+
+  function removeTag(tag: string) {
+    setTags((prev) => prev.filter((t) => t !== tag))
+  }
+
   // Object URLs are handles into memory; leaking them means holding onto the
   // image bytes long after the row is gone.
   useEffect(() => {
@@ -477,6 +515,7 @@ export function ListingForm({
           inserts the model_files / model_images rows. */}
       <input type="hidden" name="uploadedFiles" value={JSON.stringify(uploadedFilesPayload)} />
       <input type="hidden" name="uploadedImages" value={JSON.stringify(uploadedImagesPayload)} />
+      <input type="hidden" name="tags" value={JSON.stringify(tags)} />
 
       <fieldset className="flex flex-col gap-3">
         <legend className="text-sm font-medium">{u("filesLegend")}</legend>
@@ -655,6 +694,52 @@ export function ListingForm({
           is included.
         </p>
         <FieldError message={errors.description} />
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="tag-input">{t("tags")}</Label>
+        <div
+          className={cn(
+            "flex flex-wrap items-center gap-1.5 rounded-lg border border-input bg-transparent p-2 text-sm",
+            "focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50",
+          )}
+          onClick={() => document.getElementById("tag-input")?.focus()}
+        >
+          {tags.map((tag) => (
+            <span
+              key={tag}
+              className="inline-flex items-center gap-1 rounded-md border border-brand bg-brand-muted/60 py-0.5 ps-2 pe-1 text-xs font-medium text-brand-accent"
+            >
+              {/* dir=auto so a Hebrew tag lays out right-to-left inside an
+                  otherwise LTR chip row. */}
+              <span dir="auto">{tag}</span>
+              <button
+                type="button"
+                onClick={() => removeTag(tag)}
+                className="rounded-sm p-0.5 hover:bg-brand/15 focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:outline-none"
+                aria-label={t("tagRemove", { tag })}
+                title={t("tagRemove", { tag })}
+              >
+                <X className="size-3" aria-hidden />
+              </button>
+            </span>
+          ))}
+          {!tagsFull && (
+            <input
+              id="tag-input"
+              type="text"
+              value={tagDraft}
+              onChange={(e) => setTagDraft(e.target.value)}
+              onKeyDown={onTagKeyDown}
+              onBlur={() => commitTag(tagDraft)}
+              placeholder={tags.length === 0 ? t("tagsPlaceholder") : ""}
+              className="min-w-[8rem] flex-1 bg-transparent px-1 py-0.5 text-sm outline-none"
+            />
+          )}
+        </div>
+        <p className="text-xs text-muted-foreground">
+          {tagsFull ? t("tagsFull", { max: MAX_TAGS }) : t("tagsHint", { max: MAX_TAGS })}
+        </p>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">

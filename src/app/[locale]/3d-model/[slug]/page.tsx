@@ -14,6 +14,7 @@ import {
   Ruler,
   Heart,
   ShieldCheck,
+  ShoppingCart,
   Star,
 } from "lucide-react"
 
@@ -104,8 +105,9 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
   const relativeDay = (days: number) =>
     days === 0 ? rev("today") : days === 1 ? rev("yesterday") : t("daysAgo", { days })
 
+  // Formats are missing on purpose: they get their own chip row in the rail,
+  // and repeating them here as a comma list said the same thing twice.
   const specs = [
-    { label: t("formats"), value: model.formats.join(", ") },
     { label: t("license"), value: lic(model.license) },
     { label: t("metal"), value: facet(`metal.${model.metal}`) },
     { label: t("stone"), value: facet(`stone.${model.stone}`) },
@@ -119,104 +121,79 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
       ? [{ label: t("size"), value: t("mm", { value: model.sizeMm }) }]
       : []),
     { label: t("downloads"), value: number(model.downloads) },
+    ...(model.publishedAt
+      ? [
+          {
+            label: t("published"),
+            value: new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(
+              new Date(model.publishedAt),
+            ),
+          },
+        ]
+      : []),
   ]
 
   return (
     <>
-      <SiteHeader solid />
+      <SiteHeader />
 
-      <main id="main-content" className="flex-1 pt-16">
+      <main id="main-content" className="flex-1 pt-26">
         <div className="shell py-6">
-          <nav aria-label="Breadcrumb">
-            <ol className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
-              <li>
-                <Link href="/3d-models" className="hover:text-foreground">
-                  {cat("footer.models")}
-                </Link>
-              </li>
-              {category && (
-                <>
-                  <ChevronRight className="size-3 rtl:-scale-x-100" aria-hidden />
-                  <li>
-                    <Link
-                      href={`/3d-models/${category.slug}`}
-                      className="hover:text-foreground"
-                    >
-                      {cat(`categories.${category.key}`)}
-                    </Link>
-                  </li>
-                </>
-              )}
-              <ChevronRight className="size-3 rtl:-scale-x-100" aria-hidden />
-              <li aria-current="page" title={model.title} className="truncate text-foreground">
-                {model.title}
-              </li>
-            </ol>
-          </nav>
-
-          <div className="mt-5 grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
-            <div className="min-w-0">
+          {/* Gallery and buy rail share the top row; the description and the
+              rest of the detail sit under the gallery in column one. The rail
+              is last in the DOM but placed explicitly, so on desktop it lands
+              beside the image while on mobile it stacks straight after it —
+              title and price before the long-form detail either way. */}
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem]">
+            <div className="min-w-0 lg:col-start-1 lg:row-start-1">
               {/* Uploaded previews when the designer supplied any; falls back
                   to the placeholder set for legacy models with no images. */}
               <ProductGallery
                 images={images.length > 0 ? images : tempGallery(model.slug)}
                 title={model.title}
               />
+            </div>
 
-              <UserText
-                as="h1"
-                className="mt-8 block text-2xl font-semibold tracking-tight text-balance"
-              >
-                {model.title}
-              </UserText>
+            <div className="order-last min-w-0 lg:order-none lg:col-start-1 lg:row-start-2">
+              <div className="rounded-xl border p-5">
+                <nav aria-label="Breadcrumb">
+                  <ol className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
+                    <li>
+                      <Link href="/3d-models" className="hover:text-foreground">
+                        {cat("footer.models")}
+                      </Link>
+                    </li>
+                    {category && (
+                      <>
+                        <ChevronRight className="size-3 rtl:-scale-x-100" aria-hidden />
+                        <li>
+                          <Link
+                            href={`/3d-models/${category.slug}`}
+                            className="hover:text-foreground"
+                          >
+                            {cat(`categories.${category.key}`)}
+                          </Link>
+                        </li>
+                      </>
+                    )}
+                    <ChevronRight className="size-3 rtl:-scale-x-100" aria-hidden />
+                    <li
+                      aria-current="page"
+                      title={model.title}
+                      className="truncate text-foreground"
+                    >
+                      {model.title}
+                    </li>
+                  </ol>
+                </nav>
 
-              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-                <span>
-                  {t("by")}{" "}
-                  <Link
-                    href={`/designers/${model.author}`}
-                    className="font-medium text-brand-accent hover:underline"
-                  >
-                    {model.author}
-                  </Link>
-                </span>
-                {model.reviews > 0 && (
-                  <span className="flex items-center gap-1">
-                    <Star className="size-4 fill-amber-400 text-amber-400" aria-hidden />
-                    {model.rating}
-                    <span className="sr-only">{common("outOf5From")}</span>
-                    <span>{t("reviewsCount", { count: number(model.reviews) })}</span>
-                  </span>
-                )}
-                <span className="flex items-center gap-1">
-                  <Download className="size-4" aria-hidden />
-                  {t("downloadsCount", { count: number(model.downloads) })}
-                </span>
+                <UserText
+                  as="p"
+                  className="mt-4 block text-sm leading-relaxed text-muted-foreground"
+                >
+                  {model.description}
+                </UserText>
               </div>
-
-              <UserText
-                as="p"
-                className="mt-5 block max-w-2xl text-sm leading-relaxed text-muted-foreground"
-              >
-                {model.description}
-              </UserText>
-
-              <h2 className="mt-10 text-lg font-semibold tracking-tight">
-                {t("specifications")}
-              </h2>
-              <dl className="mt-4 grid grid-cols-1 gap-x-8 sm:grid-cols-2">
-                {specs.map((spec) => (
-                  <div
-                    key={spec.label}
-                    className="flex items-baseline justify-between gap-4 border-b py-2.5 text-sm"
-                  >
-                    <dt className="text-muted-foreground">{spec.label}</dt>
-                    <dd className="text-end font-medium tabular-nums">
-                      {spec.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
 
               <h2 className="mt-10 text-lg font-semibold tracking-tight">
                 {t("whatYouGet")}
@@ -328,11 +305,40 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
               )}
             </div>
 
-            {/* Buy box. Sticky on desktop so the price stays reachable while
-                the specs scroll. */}
-            <aside className="lg:sticky lg:top-24 lg:self-start">
+            {/* Buy rail. Sticky on desktop so the price stays reachable while
+                the detail scrolls. */}
+            <aside className="lg:sticky lg:top-28 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
               <div className="rounded-xl border p-5">
-                <div className="flex items-baseline justify-between gap-3">
+                {/* The h1 lives here rather than under the gallery: this is the
+                    column a buyer reads top to bottom — name, who made it,
+                    what it scores, what it costs. */}
+                <UserText
+                  as="h1"
+                  className="block text-xl font-semibold tracking-tight text-balance"
+                >
+                  {model.title}
+                </UserText>
+
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {t("by")}{" "}
+                  <Link
+                    href={`/designers/${model.author}`}
+                    className="font-medium text-brand-accent hover:underline"
+                  >
+                    {model.author}
+                  </Link>
+                </p>
+
+                {model.reviews > 0 && (
+                  <p className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
+                    <Star className="size-4 fill-amber-400 text-amber-400" aria-hidden />
+                    <span className="font-medium text-foreground">{model.rating}</span>
+                    <span className="sr-only">{common("outOf5From")}</span>
+                    <span>{t("reviewsCount", { count: number(model.reviews) })}</span>
+                  </p>
+                )}
+
+                <div className="mt-4 flex items-baseline justify-between gap-3">
                   <span
                     className={`text-3xl font-semibold tracking-tight ${
                       model.price === "free" ? "text-brand-accent" : ""
@@ -355,13 +361,12 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                 {/* Priced next to the price, which is the only place the
                     comparison lands: a buyer deciding on this model is exactly
                     who the membership is for. */}
-                <Link
-                  href={`/requests/new?kind=adjustment&model=${model.id}`}
-                  className="mt-3 flex items-center justify-center gap-2 rounded-lg border p-2.5 text-xs font-medium outline-none transition-colors hover:bg-accent focus-visible:ring-3 focus-visible:ring-brand/50"
-                >
-                  <Ruler className="size-3.5 text-brand-accent" aria-hidden />
-                  {member("adjustCta")}
-                </Link>
+                <Button asChild variant="outline" className="mt-3 h-10 w-full gap-2">
+                  <Link href={`/requests/new?kind=adjustment&model=${model.id}`}>
+                    <Ruler className="size-4 text-brand-accent" aria-hidden />
+                    {member("adjustCta")}
+                  </Link>
+                </Button>
 
                 <Link
                   href="/pricing"
@@ -382,7 +387,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                     the chosen tier posts with it. Radios + submit means it
                     works with JS disabled and there's no client state to keep
                     in sync with the cart cookie. */}
-                <form action={addToCart} className="mt-5">
+                <form id="buy-form" action={addToCart} className="mt-5">
                   <input type="hidden" name="slug" value={model.slug} />
 
                   <fieldset>
@@ -415,25 +420,40 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                     </ul>
                   </fieldset>
 
-                  <div className="mt-4 flex flex-col gap-2">
-                    <Button
-                      type="submit"
-                      className="h-10 bg-brand text-brand-foreground hover:bg-brand/85"
-                    >
-                      {model.price === "free" ? t("getModel") : t("addToCart")}
-                    </Button>
-                  </div>
                 </form>
 
                 {/* Its own form: nesting it inside the add-to-cart form would
                     make one submit carry the other's fields. */}
-                <form action={addFavorite} className="mt-2">
+                <form id="save-form" action={addFavorite}>
                   <input type="hidden" name="slug" value={model.slug} />
-                  <Button type="submit" variant="outline" className="h-10 w-full">
-                    <Heart className="size-4" aria-hidden />
-                    {t("save")}
-                  </Button>
                 </form>
+
+                {/* Both buttons sit outside their forms and point back with
+                    `form`. That is what lets two separate actions drive their
+                    own action, and it still works with JavaScript off. The buy
+                    button is the loud one — full width and tall so it reads as
+                    the page's primary move; Save trails it as a quieter row. */}
+                <Button
+                  type="submit"
+                  form="buy-form"
+                  className="mt-5 h-12 w-full gap-2 text-base font-semibold bg-brand text-brand-foreground hover:bg-brand/85"
+                >
+                  {model.price === "free" ? (
+                    <Download className="size-5" aria-hidden />
+                  ) : (
+                    <ShoppingCart className="size-5" aria-hidden />
+                  )}
+                  {model.price === "free" ? t("getModel") : t("addToCart")}
+                </Button>
+                <Button
+                  type="submit"
+                  form="save-form"
+                  variant="outline"
+                  className="mt-2 h-10 w-full"
+                >
+                  <Heart className="size-4" aria-hidden />
+                  {t("save")}
+                </Button>
 
                 <ul className="mt-5 flex flex-col gap-2 border-t pt-4">
                   {[
@@ -455,7 +475,8 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
               {/* Designer card — the trust signal that decides a lot of
                   marketplace purchases. */}
               <div className="mt-4 rounded-xl border p-5">
-                <div className="flex items-center gap-3">
+                <h2 className="text-xs text-muted-foreground">{t("createdBy")}</h2>
+                <div className="mt-3 flex items-center gap-3">
                   <Avatar className="size-11">
                     <AvatarFallback className="bg-ink text-xs font-semibold text-ink-foreground">
                       {initials(model.author)}
@@ -490,6 +511,60 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                 <Button asChild variant="outline" className="mt-4 h-9 w-full">
                   <Link href={`/designers/${model.author}`}>{t("viewStorefront")}</Link>
                 </Button>
+              </div>
+
+              <div className="mt-4 rounded-xl border p-5">
+                <h2 className="text-xs text-muted-foreground">{t("fileFormats")}</h2>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {model.formats.map((format) => (
+                    <li
+                      key={format}
+                      className="flex h-11 min-w-14 items-center justify-center rounded-md border bg-muted/40 px-3 font-mono text-xs font-semibold tracking-wide text-foreground uppercase"
+                    >
+                      {format}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Keyword tags double as discovery links: each points back at the
+                  catalog filtered to that tag, turning one listing into an entry
+                  into everything else sharing the keyword. */}
+              {model.tags.length > 0 && (
+                <div className="mt-4 rounded-xl border p-5">
+                  <h2 className="text-xs text-muted-foreground">{t("tags")}</h2>
+                  <ul className="mt-3 flex flex-wrap gap-2">
+                    {model.tags.map((tag) => (
+                      <li key={tag}>
+                        <Link
+                          href={`/3d-models?tag=${encodeURIComponent(tag)}`}
+                          dir="auto"
+                          className="inline-flex items-center rounded-md border bg-muted/40 px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                        >
+                          {tag}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* The spec table reads as a scannable sidebar rather than a
+                  body section — a jeweler checking metal, stone and size wants
+                  it next to the price, not below the fold. */}
+              <div className="mt-4 rounded-xl border p-5">
+                <h2 className="text-xs text-muted-foreground">{t("specifications")}</h2>
+                <dl className="mt-1 divide-y">
+                  {specs.map((spec) => (
+                    <div
+                      key={spec.label}
+                      className="flex items-baseline justify-between gap-4 py-2 text-xs"
+                    >
+                      <dt className="text-muted-foreground">{spec.label}</dt>
+                      <dd className="text-end font-medium tabular-nums">{spec.value}</dd>
+                    </div>
+                  ))}
+                </dl>
               </div>
 
               <p className="mt-4 flex items-start gap-2 text-xs text-muted-foreground">

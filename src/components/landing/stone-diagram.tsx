@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils"
  * assistive tech — the heading and list beside it carry the meaning.
  *
  * Drawn for a dark surface. It is used inside the ink band and nowhere else;
- * on white the gold strokes fall below 3:1 and stop reading.
+ * on white the raspberry hairlines fall below 3:1 and stop reading.
  */
 export function StoneDiagram({ className }: { className?: string }) {
   return (
@@ -38,11 +38,11 @@ export function StoneDiagram({ className }: { className?: string }) {
       className={cn("size-full", className)}
     >
       <defs>
-        {/* Gold, brightest where the light hits and falling off down the stone. */}
+        {/* Raspberry, brightest where the light hits and falling off down the stone. */}
         <linearGradient id="stoneMetal" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="oklch(0.88 0.07 88)" />
-          <stop offset="45%" stopColor="oklch(0.78 0.088 82)" />
-          <stop offset="100%" stopColor="oklch(0.55 0.09 72)" />
+          <stop offset="0%" stopColor="oklch(0.75 0.15 12)" />
+          <stop offset="45%" stopColor="oklch(0.63 0.19 12)" />
+          <stop offset="100%" stopColor="oklch(0.46 0.16 12)" />
         </linearGradient>
 
         {/* Fades the floor into the horizon so it reads as distance rather than
@@ -78,7 +78,7 @@ export function StoneDiagram({ className }: { className?: string }) {
 
         The consequence to keep in mind: this SVG is now transparent, so it
         takes whatever it is placed on. It is drawn for a dark surface — on
-        white the gold strokes fall below 3:1 and stop reading.
+        white the raspberry hairlines fall below 3:1 and stop reading.
       */}
 
       {/* ── Perspective floor ────────────────────────────────────────────
@@ -87,7 +87,7 @@ export function StoneDiagram({ className }: { className?: string }) {
           instead of being a tapered ladder. */}
       <g
         mask="url(#stoneFloorMask)"
-        stroke="oklch(0.78 0.088 82)"
+        stroke="oklch(0.63 0.19 12)"
         strokeWidth="1"
         opacity="0.26"
       >
@@ -107,13 +107,13 @@ export function StoneDiagram({ className }: { className?: string }) {
         y1="430"
         x2="800"
         y2="430"
-        stroke="oklch(0.78 0.088 82)"
+        stroke="oklch(0.63 0.19 12)"
         strokeWidth="1"
         opacity="0.32"
       />
 
       {/* The stone's footprint on the stage, compressed and faint. */}
-      <ellipse cx="400" cy="452" rx="185" ry="22" fill="oklch(0.78 0.088 82)" opacity="0.07" />
+      <ellipse cx="400" cy="452" rx="185" ry="22" fill="oklch(0.63 0.19 12)" opacity="0.07" />
 
       {/* ── The stone ────────────────────────────────────────────────────
           Geometry was computed around a centre of (400, 400) at radius 180;
@@ -124,7 +124,7 @@ export function StoneDiagram({ className }: { className?: string }) {
           cx="400"
           cy="400"
           r="180"
-          fill="oklch(0.78 0.088 82 / 0.04)"
+          fill="oklch(0.63 0.19 12 / 0.04)"
           stroke="url(#stoneMetal)"
           strokeWidth="2"
           filter="url(#stoneGlow)"
@@ -167,7 +167,7 @@ export function StoneDiagram({ className }: { className?: string }) {
         {/* Table — the flat top, and the brightest line in the drawing. */}
         <path
           d="M 436.5 311.9 L 488.1 363.5 L 488.1 436.5 L 436.5 488.1 L 363.5 488.1 L 311.9 436.5 L 311.9 363.5 L 363.5 311.9 Z"
-          fill="oklch(0.78 0.088 82 / 0.07)"
+          fill="oklch(0.63 0.19 12 / 0.07)"
           stroke="url(#stoneMetal)"
           strokeWidth="2"
         />
@@ -178,7 +178,7 @@ export function StoneDiagram({ className }: { className?: string }) {
           stage rather than being scaled with the stone. A drawing carrying a
           dimension reads as a working file rather than as an illustration of
           one. Left-to-right in both locales: this is a measurement, not prose. */}
-      <g stroke="oklch(0.78 0.088 82)" strokeWidth="1" opacity="0.45">
+      <g stroke="oklch(0.63 0.19 12)" strokeWidth="1" opacity="0.45">
         <line x1="400" y1="404" x2="540" y2="404" />
         <line x1="400" y1="394" x2="400" y2="414" />
         <line x1="540" y1="394" x2="540" y2="414" />
@@ -188,7 +188,7 @@ export function StoneDiagram({ className }: { className?: string }) {
         y="390"
         textAnchor="middle"
         direction="ltr"
-        fill="oklch(0.78 0.088 82)"
+        fill="oklch(0.63 0.19 12)"
         opacity="0.6"
         className="font-mono text-[15px]"
       >

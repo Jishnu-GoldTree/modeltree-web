@@ -18,10 +18,10 @@ import { SITE } from "@/lib/data/landing";
  *
  * Strokes are currentColor, and `tone` picks it:
  *
- *   light — on the ink header, gold, exactly as the admin sidebar renders it.
- *   dark  — on white, gold measures 2.01:1 and a hairline wireframe in it
- *           disappears, so the glyph takes the foreground ink instead. Same
- *           geometry, legible ground. Only the colour differs between the two.
+ *   light — on the ink header, raspberry, exactly as the admin sidebar renders it.
+ *   dark  — on white the glyph takes the foreground ink for a calmer, higher-
+ *           contrast mark; the raspberry is kept for the "TREE" wordmark accent.
+ *           Same geometry either way, only the colour differs.
  */
 export function Logo({
   className,

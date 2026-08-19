@@ -52,6 +52,8 @@ export type CatalogModel = ModelCard & {
   vertices: number
   description: string
   publishedAt: string
+  /** Designer-supplied keywords. Also drive the `?tag=` browse filter. */
+  tags: string[]
 }
 
 export const SORTS = [
@@ -137,6 +139,7 @@ type ModelRow = {
   review_count: number
   published_at: string | null
   formats: string[]
+  tags: string[]
   file_summary: { format: string; size_bytes: number }[]
   categories: { slug: string } | null
   profiles: { handle: string } | null
@@ -149,7 +152,7 @@ const SELECT = `
   id, slug, title, description, price_cents, license_code,
   metal, stone, production, weight_grams, size_mm, polygons, vertices,
   download_count, rating, review_count, published_at,
-  formats, file_summary,
+  formats, tags, file_summary,
   categories ( slug ),
   profiles!models_designer_id_fkey ( handle ),
   model_images ( storage_key, position )
@@ -193,6 +196,7 @@ async function toModel(row: ModelRow): Promise<CatalogModel> {
     polygons: row.polygons ?? 0,
     vertices: row.vertices ?? 0,
     publishedAt: row.published_at ?? "",
+    tags: row.tags ?? [],
   }
 }
 
@@ -226,8 +230,32 @@ function applyFilters<T extends Builder>(query: T, q: CatalogQuery): T {
     const label = FORMATS.find((f) => f.value === q.format)?.label
     if (label) out = out.contains("formats", [label]) as T
   }
-  if (q.q) out = out.ilike("title", `%${q.q}%`) as T
+  // Exact-tag browse filter (?tag=engagement). Stored tags are lowercased, so a
+  // hand-typed uppercase value is folded to match rather than silently missing.
+  if (q.tag) {
+    const tag = q.tag.trim().toLowerCase()
+    if (tag) out = out.contains("tags", [tag]) as T
+  }
+  if (q.q) {
+    // Search now spans title and tags. `.or()` takes a raw filter string, so the
+    // term is interpolated by hand — sanitise it down to the same character set
+    // tags allow (letters/numbers/space/hyphen) so a stray comma or paren can't
+    // break PostgREST's grammar. Inside `or`, the ilike wildcard is `*`, not `%`.
+    const term = searchTerm(q.q)
+    if (term) out = out.or(`title.ilike.*${term}*,tags.cs.{"${term}"}`) as T
+  }
   return out
+}
+
+/** Strips a free-text query to characters safe to splice into a PostgREST
+ *  `or` filter, lowercased so it matches the stored (lowercased) tags. */
+function searchTerm(raw: string): string {
+  return raw
+    .normalize("NFKC")
+    .replace(/[^\p{L}\p{N}\s-]/gu, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase()
 }
 
 function applySort<T extends Builder>(query: T, sort: SortValue): T {
@@ -262,7 +290,7 @@ function joinedSelect(q: CatalogQuery) {
     id, slug, title, description, price_cents, license_code,
     metal, stone, production, weight_grams, size_mm, polygons, vertices,
     download_count, rating, review_count, published_at,
-    formats, file_summary,
+    formats, tags, file_summary,
     ${category},
     profiles!models_designer_id_fkey ( handle ),
     model_images ( storage_key, position )

@@ -226,8 +226,10 @@ export function LoginForm({
 
       <p className="text-center text-sm text-muted-foreground">
         {t("newHere")}{" "}
+        {/* Carries the destination across, so bouncing to sign-up does not
+            lose where they were headed. */}
         <Link
-          href="/signup"
+          href={`/signup?next=${encodeURIComponent(redirectTo)}`}
           className="font-medium text-brand-accent hover:underline"
         >
           {t("createOne")}

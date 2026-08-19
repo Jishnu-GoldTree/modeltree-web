@@ -32,9 +32,9 @@ export default async function ProfileSettingsPage() {
 
   return (
     <>
-      <SiteHeader solid />
+      <SiteHeader />
 
-      <main id="main-content" className="flex-1 pt-16">
+      <main id="main-content" className="flex-1 pt-26">
         <div className="shell max-w-2xl py-10">
           <Link
             href="/profile"

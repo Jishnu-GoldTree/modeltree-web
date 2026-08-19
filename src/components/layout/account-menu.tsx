@@ -113,7 +113,7 @@ export function AccountMenu() {
   const [leaving, setLeaving] = useState(false)
 
   if (isPending) {
-    return <Skeleton className="size-8 rounded-full bg-white/10" />
+    return <Skeleton className="size-8 rounded-full" />
   }
 
   if (!viewer) {
@@ -121,7 +121,7 @@ export function AccountMenu() {
       <>
         <Button
           variant="ghost"
-          className="hidden text-white/85 hover:bg-white/10 hover:text-white sm:inline-flex"
+          className="hidden sm:inline-flex"
           asChild
         >
           <Link href="/login">{t("logIn")}</Link>
@@ -167,7 +167,7 @@ export function AccountMenu() {
           title={name}
           className="inline-flex items-center gap-2 rounded-full outline-none focus-visible:ring-3 focus-visible:ring-brand/50"
         >
-          <Avatar className="size-8 border border-white/20">
+          <Avatar className="size-8 border border-border">
             <AvatarFallback className="bg-brand text-xs font-semibold text-brand-foreground">
               {initials(name)}
             </AvatarFallback>

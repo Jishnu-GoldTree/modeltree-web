@@ -98,6 +98,7 @@ export type ListingEditData = {
   stone: string
   production: string
   weightGrams: number | null
+  tags: string[]
   files: { format: string; storageKey: string; sizeBytes: number }[]
   images: {
     storageKey: string
@@ -115,7 +116,7 @@ export async function getListingForEdit(id: string): Promise<ListingEditData | n
   const { data: model } = await supabase
     .from("models")
     .select(
-      "id, title, description, category_id, license_code, price_cents, metal, stone, production, weight_grams",
+      "id, title, description, category_id, license_code, price_cents, metal, stone, production, weight_grams, tags",
     )
     .eq("id", id)
     .eq("designer_id", user.id)
@@ -126,6 +127,7 @@ export async function getListingForEdit(id: string): Promise<ListingEditData | n
     id: string; title: string; description: string | null
     category_id: string | null; license_code: string; price_cents: number
     metal: string; stone: string; production: string; weight_grams: number | null
+    tags: string[] | null
   }
 
   const [{ data: fileRows }, { data: imageRows }] = await Promise.all([
@@ -165,6 +167,7 @@ export async function getListingForEdit(id: string): Promise<ListingEditData | n
     stone: m.stone,
     production: m.production,
     weightGrams: m.weight_grams,
+    tags: m.tags ?? [],
     files,
     images,
   }
