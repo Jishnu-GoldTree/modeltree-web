@@ -1,11 +1,9 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { useEffect, useState } from "react"
 import { Link } from "@/i18n/navigation"
-import { Gem, Menu, Upload } from "lucide-react"
+import { ArrowRight, Gem, Menu, Upload } from "lucide-react"
 
-import { cn } from "@/lib/utils"
 import { PRIMARY_NAV } from "@/lib/data/landing"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -32,13 +30,14 @@ import { LocaleSwitcher } from "@/components/layout/locale-switcher"
 import { SearchForm } from "@/components/forms/search-form"
 
 /**
- * The header floats over the hero at the top of the page and hardens into a
- * solid sticky bar (with its own compact search) once the hero scrolls away.
+ * Solid white marketplace header — a 3D-asset store's chrome, not a boutique's.
  *
- * `solid` starts it hardened. The floating state paints its logo, nav and
- * actions in white, which only works over a dark hero — on an interior page
- * with a light background the entire header renders invisible. Any page that
- * doesn't open on a dark band wants `solid`.
+ * A slim promo strip sits on top; below it a white nav bar carries the logo, a
+ * prominent search that stays visible on every page (the store's primary action),
+ * then the category nav and account actions clustered on the trailing edge.
+ *
+ * The bar no longer floats over the hero or recolours on scroll. The fixed stack
+ * is 104px tall (h-10 strip + h-16 bar); pages clear it with `pt-26`.
  */
 /**
  * Top-level nav labels come from PRIMARY_NAV, which is data rather than copy.
@@ -53,122 +52,108 @@ const NAV_KEYS: Record<string, "models" | "production" | "custom" | "designers">
   "/designers": "designers",
 }
 
-export function SiteHeader({ solid = false }: { solid?: boolean }) {
+export function SiteHeader() {
   const t = useTranslations("nav")
   const nav = useTranslations("landing.navChildren")
   const member = useTranslations("membership")
-  const [scrolled, setScrolled] = useState(false)
-  const stuck = solid || scrolled
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 220)
-    onScroll()
-    window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [])
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
-        stuck
-          ? "border-b border-white/10 bg-ink/95 backdrop-blur supports-[backdrop-filter]:bg-ink/80"
-          : "bg-transparent"
-      )}
-    >
-      <div className="shell flex h-16 items-center gap-4">
-        <Logo />
+    <header className="fixed inset-x-0 top-0 z-50">
+      {/* Promo strip — the subscription is the client's headline offer, so it
+          rides above every page the way a marketplace runs its house banner. */}
+      <Link
+        href="/pricing"
+        className="flex h-10 items-center justify-center gap-2 bg-ink px-4 text-center text-xs text-white/90 transition-colors hover:bg-ink/90 sm:text-sm"
+      >
+        <span className="truncate font-medium">{member("stripTitle")}</span>
+        <span aria-hidden className="hidden text-white/40 sm:inline">·</span>
+        <span className="hidden shrink-0 items-center gap-1 font-medium text-brand sm:inline-flex">
+          {member("cta")}
+          <ArrowRight className="size-3.5 rtl:-scale-x-100" aria-hidden />
+        </span>
+      </Link>
 
-        <NavigationMenu className="hidden lg:flex" viewport={false}>
-          <NavigationMenuList>
-            {PRIMARY_NAV.map((item) => (
-              <NavigationMenuItem key={item.label}>
-                {/* The trigger sits on a dark bar, so every state has to be
-                    overridden off the light default. Use `data-open:` (not
-                    `data-[state=open]:`) to match the variant stacks the base
-                    style uses — otherwise twMerge sees different modifiers,
-                    keeps both, and the base's `data-open:hover:bg-muted` wins
-                    the cascade, leaving white text on a near-white pill. */}
-                <NavigationMenuTrigger className="bg-transparent text-sm font-medium text-white/85 hover:bg-white/10 hover:text-white focus:bg-white/10 data-open:bg-white/10 data-open:text-white data-open:hover:bg-white/10 data-open:focus:bg-white/10 data-popup-open:bg-white/10 data-popup-open:hover:bg-white/10">
-                  {NAV_KEYS[item.href] ? t(NAV_KEYS[item.href]) : item.label}
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  {/* gap-2, not gap-1: each row paints a full-width hover fill,
-                      so a 4px gutter left neighbouring fills visually touching. */}
-                  <ul className="grid w-[520px] gap-2 p-2 md:grid-cols-2">
-                    {item.children?.map((child) => (
-                      <li key={child.key}>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href={child.href}
-                            className="block rounded-md p-3 leading-tight no-underline outline-none transition-colors hover:bg-accent focus:bg-accent"
-                          >
-                            <div className="text-sm font-medium">
-                              {nav(`${child.key}.label`)}
-                            </div>
-                            <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
-                              {nav(`${child.key}.description`)}
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            ))}
-          </NavigationMenuList>
-        </NavigationMenu>
+      <div className="border-b bg-background">
+        <div className="shell flex h-16 items-center gap-4">
+          <Logo tone="dark" />
 
-        {/* Compact search only earns its space once the hero search is gone. */}
-        <div
-          className={cn(
-            "ms-auto hidden max-w-xs flex-1 transition-all duration-300 md:block",
-            stuck
-              ? "pointer-events-auto translate-y-0 opacity-100"
-              : "pointer-events-none -translate-y-1 opacity-0"
-          )}
-        >
-          {/* No placeholder prop: SearchForm falls back to the translated
-              nav.search, which a hardcoded English string was overriding. */}
-          <SearchForm size="compact" />
-        </div>
+          {/* Search leads the bar and stays put on every page — it is the store's
+              primary verb, not something that only appears once the hero scrolls
+              away. Given a generous fixed width so it reads as the centrepiece
+              while still leaving the trailing cluster room. */}
+          <div className="hidden w-full max-w-sm md:block lg:max-w-md xl:max-w-lg">
+            <SearchForm size="compact" />
+          </div>
 
-        {/* Pushed right by its own auto margin, except at md+ when stuck —
-            there the compact search above carries the auto margin instead.
-            Below md that search is display:none, so this must keep its own or
-            the actions collapse against the logo. */}
-        <div className={cn("flex items-center gap-1 ms-auto", stuck && "md:ms-0")}>
-          {/* The membership is the thing the client most wants seen, so it sits
-              in the header on every page rather than only on the landing page.
-              Hidden below sm, where the row is already tight. */}
-          <Button
-            asChild
-            size="sm"
-            variant="ghost"
-            className="hidden text-white/85 hover:bg-white/10 hover:text-white sm:inline-flex"
-          >
-            <Link href="/pricing">
-              <Gem className="size-4" aria-hidden />
-              {member("headerCta")}
-            </Link>
-          </Button>
+          {/* Category nav and account actions form one trailing cluster, pushed
+              to the far edge so the search owns the left. */}
+          <div className="ms-auto flex items-center gap-1">
+            <NavigationMenu className="hidden lg:flex" viewport={false}>
+              <NavigationMenuList>
+                {PRIMARY_NAV.map((item) => (
+                  <NavigationMenuItem key={item.label}>
+                    <NavigationMenuTrigger className="bg-transparent text-sm font-medium text-foreground/80">
+                      {NAV_KEYS[item.href] ? t(NAV_KEYS[item.href]) : item.label}
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      {/* gap-2, not gap-1: each row paints a full-width hover fill,
+                          so a 4px gutter left neighbouring fills visually touching. */}
+                      <ul className="grid w-[520px] gap-2 p-2 md:grid-cols-2">
+                        {item.children?.map((child) => (
+                          <li key={child.key}>
+                            <NavigationMenuLink asChild>
+                              <Link
+                                href={child.href}
+                                className="block rounded-md p-3 leading-tight no-underline outline-none transition-colors hover:bg-accent focus:bg-accent"
+                              >
+                                <div className="text-sm font-medium">
+                                  {nav(`${child.key}.label`)}
+                                </div>
+                                <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                                  {nav(`${child.key}.description`)}
+                                </p>
+                              </Link>
+                            </NavigationMenuLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
 
-          <HeaderBadges />
-          <LocaleSwitcher />
+            {/* The membership is the thing the client most wants seen, so it
+                sits in the header on every page. Hidden below sm, where the row
+                is already tight. */}
+            <Button
+              asChild
+              size="sm"
+              variant="ghost"
+              className="hidden text-brand-accent hover:bg-brand-muted hover:text-brand-accent sm:inline-flex"
+            >
+              <Link href="/pricing">
+                <Gem className="size-4" aria-hidden />
+                {member("headerCta")}
+              </Link>
+            </Button>
 
-          {/* data-vertical:self-center, not self-center: the base separator
-              style sets data-vertical:self-stretch, which wins on specificity
-              and makes the rule stretch to the line box before !h-5 caps it at
-              20px — leaving it sitting 6px above the avatar's centre. */}
-          <Separator
-            orientation="vertical"
-            className="mx-2 hidden !h-5 bg-white/20 data-vertical:self-center sm:block"
-          />
+            <HeaderBadges />
+            <LocaleSwitcher />
 
-          <AccountMenu />
+            {/* data-vertical:self-center, not self-center: the base separator
+                style sets data-vertical:self-stretch, which wins on specificity
+                and makes the rule stretch to the line box before !h-5 caps it at
+                20px — leaving it sitting 6px above the avatar's centre. */}
+            <Separator
+              orientation="vertical"
+              className="mx-2 hidden !h-5 data-vertical:self-center sm:block"
+            />
 
-          <MobileNav />
+            <AccountMenu />
+
+            <MobileNav />
+          </div>
         </div>
       </div>
     </header>
@@ -187,7 +172,7 @@ function MobileNav() {
           size="icon"
           aria-label={t("openMenu")}
           title={t("openMenu")}
-          className="text-white hover:bg-white/10 lg:hidden"
+          className="lg:hidden"
         >
           <Menu className="size-5" aria-hidden />
         </Button>

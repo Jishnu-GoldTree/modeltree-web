@@ -28,13 +28,13 @@ export async function PromoBanner() {
           className="absolute inset-0 opacity-70"
           style={{
             backgroundImage:
-              "radial-gradient(at 90% 20%, oklch(0.95 0.035 85) 0px, transparent 55%), radial-gradient(at 10% 90%, oklch(0.96 0.022 65) 0px, transparent 50%)",
+              "radial-gradient(at 90% 20%, oklch(0.96 0.025 15) 0px, transparent 55%), radial-gradient(at 10% 90%, oklch(0.97 0.015 20) 0px, transparent 50%)",
           }}
         />
 
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-xl">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/15 px-3 py-1 text-xs font-medium text-brand-accent">
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-brand/15 px-3 py-1 text-xs font-medium text-brand-accent">
               <Sparkles className="size-3.5" aria-hidden />
               {t("badge")}
             </span>

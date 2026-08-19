@@ -30,7 +30,7 @@ export async function RequestStatusBadge({ status }: { status: RequestStatus }) 
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium",
+        "inline-flex shrink-0 rounded-md px-2.5 py-0.5 text-xs font-medium",
         STYLE[status],
       )}
     >

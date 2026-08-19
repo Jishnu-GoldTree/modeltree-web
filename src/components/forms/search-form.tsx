@@ -72,8 +72,13 @@ export function SearchForm({
             <FormItem className="gap-1.5">
               <div
                 className={cn(
-                  "flex items-center gap-2 rounded-full border border-white/15 bg-white/95 shadow-lg shadow-black/10 backdrop-blur focus-within:border-brand focus-within:ring-3 focus-within:ring-brand/30",
-                  isHero ? "p-1.5 ps-5" : "p-1 ps-4"
+                  "flex items-center gap-2 rounded-lg focus-within:border-brand focus-within:ring-3 focus-within:ring-brand/30",
+                  // Hero sits on the dark hero band: a white glass pill. Compact
+                  // rides the white header, so it needs a visible neutral border
+                  // and light fill instead — a white-on-white pill would vanish.
+                  isHero
+                    ? "border border-white/15 bg-white/95 p-1.5 ps-5 shadow-lg shadow-black/10 backdrop-blur"
+                    : "border border-input bg-muted/40 p-1 ps-4"
                 )}
               >
                 <Search
@@ -100,7 +105,7 @@ export function SearchForm({
                   aria-label={t("search")}
                   disabled={isSearching}
                   className={cn(
-                    "shrink-0 rounded-full bg-brand text-brand-foreground hover:bg-brand/85",
+                    "shrink-0 rounded-md bg-brand text-brand-foreground hover:bg-brand/85",
                     isHero ? "size-11" : "size-8"
                   )}
                 >

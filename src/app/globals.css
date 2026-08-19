@@ -64,20 +64,17 @@
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
-  /* MODELTREE brand — champagne gold on a cool near-black ink base.
-     The pairing is the point: gold reads jewellery, and the ink stays a cool
-     navy-black rather than warming to match, which is what keeps the CAD/3D
-     register. It is the display-case look — warm metal on cold ground.
-     Chroma is held at 0.088 against the previous teal's 0.128, so it reads as
-     metal rather than as a yellow warning state. */
-  --brand: oklch(0.78 0.088 82);
-  /* Text/icon colour on solid brand fills. 8.2:1 on --brand. */
-  --brand-foreground: oklch(0.24 0.02 60);
-  /* Darkened to bronze so it passes as body text on white: 6.97:1. Gold at
-     fill lightness would be ~1.9:1 and unreadable. */
-  --brand-accent: oklch(0.47 0.078 62);
-  --brand-muted: oklch(0.965 0.018 84);
-  --ink: oklch(0.21 0.026 255);
+  /* MODELTREE brand — a vivid raspberry (#CB2957). Unlike the earlier metallic
+     schemes this accent is a mid-dark saturated fill, so it carries white text
+     rather than dark. Hue ~11 (rose-red). */
+  --brand: oklch(0.556 0.196 11);
+  /* White on the raspberry fill — 5.26:1, passes AA. */
+  --brand-foreground: oklch(0.985 0 0);
+  /* Darkened a touch so it holds up as text/icons on white and on the light
+     --brand-muted tint. */
+  --brand-accent: oklch(0.51 0.19 12);
+  --brand-muted: oklch(0.955 0.022 11);
+  --ink: oklch(0.2 0.012 15);
   --ink-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -94,7 +91,7 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+  --radius: 0.45rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -114,13 +111,13 @@
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);
-  --brand: oklch(0.8 0.086 84);
-  --brand-foreground: oklch(0.22 0.02 60);
+  --brand: oklch(0.6 0.2 12);
+  --brand-foreground: oklch(0.985 0 0);
   /* Lightened rather than darkened here: on a dark card the accent has to sit
-     above the surface, not below it. 10.2:1 on --card. */
-  --brand-accent: oklch(0.82 0.08 84);
-  --brand-muted: oklch(0.3 0.03 70);
-  --ink: oklch(0.24 0.026 255);
+     above the surface, not below it. */
+  --brand-accent: oklch(0.72 0.16 13);
+  --brand-muted: oklch(0.33 0.09 12);
+  --ink: oklch(0.22 0.012 15);
   --ink-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -179,9 +176,12 @@
 }
 
 @layer components {
-  /* Page gutter shared by every landing section so bands stay aligned. */
+  /* Page gutter shared by every landing section so bands stay aligned.
+     Widened to a marketplace-scale column (1600px) with tighter gutters so the
+     catalog grid and product layouts fill the viewport the way a 3D-asset store
+     does, rather than sitting in the narrow centred band a boutique site uses. */
   .shell {
-    @apply mx-auto w-full max-w-350 px-4 sm:px-6 lg:px-10;
+    @apply mx-auto w-full max-w-400 px-4 sm:px-6 lg:px-8;
   }
 
   /* ── Section rhythm ──────────────────────────────────────────────────

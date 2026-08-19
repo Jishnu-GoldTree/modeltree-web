@@ -23,9 +23,19 @@ export async function generateMetadata({
 
 const BENEFITS = ["signup1", "signup2", "signup3"]
 
-export default async function SignupPage() {
+export default async function SignupPage({
+  searchParams,
+}: PageProps<"/[locale]/signup">) {
   const t = await getTranslations("auth")
   const aside = await getTranslations("authAside")
+  const { next } = await searchParams
+
+  // Same guard as /login: only same-site relative paths, since "//evil.com" is
+  // protocol-relative and would make this an open redirect. Defaults to the
+  // profile, which is where sign-up landed before anything passed `next`.
+  const target = typeof next === "string" ? next : ""
+  const redirectTo =
+    target.startsWith("/") && !target.startsWith("//") ? target : "/profile"
   return (
     <main id="main-content" className="grid min-h-svh lg:grid-cols-2">
       <aside className="relative hidden flex-col justify-between overflow-hidden bg-ink p-10 text-white lg:flex">
@@ -82,7 +92,10 @@ export default async function SignupPage() {
             {t("signUpSubtitle")}
           </p>
 
-          <SignupForm enabledProviders={ENABLED_OAUTH_PROVIDERS} />
+          <SignupForm
+            enabledProviders={ENABLED_OAUTH_PROVIDERS}
+            redirectTo={redirectTo}
+          />
         </div>
       </div>
     </main>

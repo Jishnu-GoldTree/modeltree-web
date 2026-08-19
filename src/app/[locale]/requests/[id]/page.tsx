@@ -48,9 +48,9 @@ export default async function RequestPage({ params }: PageProps<"/[locale]/reque
   return (
     <>
       <FlashToast />
-      <SiteHeader solid />
+      <SiteHeader />
 
-      <main id="main-content" className="flex-1 pt-16">
+      <main id="main-content" className="flex-1 pt-26">
         <div className="shell max-w-5xl py-10">
           <Link
             href="/requests"
@@ -104,7 +104,7 @@ export default async function RequestPage({ params }: PageProps<"/[locale]/reque
               </div>
             </div>
 
-            <aside className="lg:sticky lg:top-24 lg:self-start">
+            <aside className="lg:sticky lg:top-28 lg:self-start">
               <QuotePanel
                 requestId={request.id}
                 status={request.status}

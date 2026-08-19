@@ -41,9 +41,9 @@ export default async function CartPage() {
 
   return (
     <>
-      <SiteHeader solid />
+      <SiteHeader />
 
-      <main id="main-content" className="flex-1 pt-16">
+      <main id="main-content" className="flex-1 pt-26">
         <div className="shell py-10">
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
@@ -159,7 +159,7 @@ export default async function CartPage() {
                 })}
               </ul>
 
-              <aside className="lg:sticky lg:top-24">
+              <aside className="lg:sticky lg:top-28">
                 <div className="rounded-xl border p-5">
                   <h2 className="font-semibold">{t("summary")}</h2>
 

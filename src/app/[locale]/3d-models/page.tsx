@@ -28,37 +28,16 @@ export default async function ModelsPage({
 
   return (
     <>
-      <SiteHeader solid />
+      <SiteHeader />
 
-      <main id="main-content" className="flex-1 pt-16">
-        <div className="relative overflow-hidden border-b bg-ink">
-          {/* Faded out before the bottom border: at full strength the last
-              horizontal line lands near it and reads as a second rule. */}
-          <div
-            aria-hidden
-            className="absolute inset-0 opacity-[0.07]"
-            style={{
-              backgroundImage:
-                "linear-gradient(oklch(1 0 0 / 0.6) 1px, transparent 1px), linear-gradient(90deg, oklch(1 0 0 / 0.6) 1px, transparent 1px)",
-              backgroundSize: "64px 64px",
-              maskImage: "linear-gradient(180deg, #000 25%, transparent 95%)",
-            }}
-          />
-          <div className="shell relative py-10">
-            <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-              {t("title")}
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm text-white/65">
-              {t("description")}
-            </p>
-          </div>
-        </div>
-
+      <main id="main-content" className="flex-1 pt-26">
         <CatalogView
           base="/3d-models"
           params={params}
           result={result}
           favorites={favorites}
+          title={t("title")}
+          description={t("description")}
         />
       </main>
 

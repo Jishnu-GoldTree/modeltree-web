@@ -1,31 +1,28 @@
 import { Fragment } from "react"
 import { Link } from "@/i18n/navigation"
-import { ArrowRight, Gem, SearchX, SlidersHorizontal, X } from "lucide-react"
+import { ArrowRight, ChevronRight, Gem, SearchX, X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { SORTS, type CatalogResult } from "@/lib/data/catalog"
+import { type CatalogResult } from "@/lib/data/catalog"
 import { ModelCard } from "@/components/marketplace/model-card"
+import { CatalogCategories } from "@/components/marketplace/catalog-categories"
 import {
-  CatalogFilters,
+  CatalogToolbar,
   catalogHref,
-} from "@/components/marketplace/catalog-filters"
+} from "@/components/marketplace/catalog-toolbar"
 import { getTranslations } from "next-intl/server"
 
 import { Button } from "@/components/ui/button"
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
 
 type Params = Record<string, string | undefined>
 
+/** Named filters offered under "Browse by type", mirroring COLLECTION_SEGMENTS. */
+const BROWSE_TYPES = ["free", "cast-ready", "print-ready"] as const
+
 /**
  * The listing body, shared by /3d-models and /3d-models/[segment] so the two
- * routes can't drift. Filters live in a sheet below `lg`, where a permanent
- * rail would eat the whole screen.
+ * routes can't drift. The layout follows a marketplace shape: a category strip
+ * and a horizontal filter bar pinned under the header, then a full-width grid.
  */
 export async function CatalogView({
   base,
@@ -33,104 +30,118 @@ export async function CatalogView({
   result,
   lockedCategory,
   favorites,
+  title,
+  description,
 }: {
   base: string
   params: Params
   result: CatalogResult
   lockedCategory?: string
   favorites: Set<string>
+  title: string
+  description: string
 }) {
   const { items, total, page, pageCount, facets } = result
   const t = await getTranslations("catalog")
-  const s = await getTranslations("sort")
+  const seg = await getTranslations("segment")
   const member = await getTranslations("membership")
-  const filters = (
-    <CatalogFilters
-      base={base}
-      params={params}
-      facets={facets}
-      lockedCategory={lockedCategory}
-    />
-  )
+
+  // On the base /3d-models page the last crumb would repeat the H1, so it's
+  // dropped; segment pages keep it and link the parent catalog.
+  const isSegment = base !== "/3d-models"
 
   return (
-    <div className="shell flex gap-8 py-8">
-      {/* `self-start` so the flex container doesn't stretch the aside to
-          match the grid's full height — without it there's no room for the
-          sticky offset to travel and the pane just sits at the top of a
-          tall column. Sticky top matches the fixed 4rem header height plus
-          the shell's py-8, so filters pin flush under the header.
-          `max-h` + `overflow-y-auto` keeps very long filter lists from
-          overflowing the viewport when pinned. */}
-      <aside className="hidden w-60 shrink-0 self-start lg:sticky lg:top-20 lg:block lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto">
-        {filters}
-      </aside>
+    <>
+      <CatalogCategories active={lockedCategory ?? params.category} facets={facets} />
 
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-5">
-          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
-            {/* One interpolated message, not a number glued to a noun: word
-                order differs per language and concatenation breaks in RTL. */}
-            <p className="text-sm text-muted-foreground">{t("count", { count: total })}</p>
+      <div className="border-b bg-background">
+        <div className="shell py-3">
+          <CatalogToolbar
+            base={base}
+            params={params}
+            facets={facets}
+            lockedCategory={lockedCategory}
+          />
+        </div>
+      </div>
 
-            {/* The term arrives from the header search, so without this the
-                results have no visible cause. Clearing it keeps the filters,
-                mirroring how "clear all" keeps the term. */}
-            {params.q && (
-              <Link
-                href={catalogHref(base, params, { q: undefined })}
-                className="inline-flex min-w-0 items-center gap-1.5 rounded-full border border-brand bg-brand-muted py-1 ps-3 pe-2 text-xs font-medium text-brand-accent outline-none hover:bg-brand-muted/70 focus-visible:ring-3 focus-visible:ring-brand/50"
-              >
-                <span className="truncate">{t("searchedFor", { query: params.q })}</span>
-                <X className="size-3.5 shrink-0" aria-hidden />
-                <span className="sr-only">{t("clearSearch")}</span>
+      <div className="shell py-8">
+        <nav
+          aria-label="Breadcrumb"
+          className="flex items-center gap-1 text-xs text-muted-foreground"
+        >
+          <Link href="/" className="hover:text-foreground">
+            {t("home")}
+          </Link>
+          <ChevronRight className="size-3.5 rtl:-scale-x-100" aria-hidden />
+          {isSegment ? (
+            <>
+              <Link href="/3d-models" className="hover:text-foreground">
+                {t("title")}
               </Link>
-            )}
-          </div>
+              <ChevronRight className="size-3.5 rtl:-scale-x-100" aria-hidden />
+              <span className="text-foreground">{title}</span>
+            </>
+          ) : (
+            <span className="text-foreground">{title}</span>
+          )}
+        </nav>
 
-          <div className="flex items-center gap-2">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="lg" className="lg:hidden">
-                  <SlidersHorizontal className="size-4" aria-hidden />
-                  Filters
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="start" className="w-[300px] overflow-y-auto">
-                <SheetHeader>
-                  <SheetTitle>Filters</SheetTitle>
-                </SheetHeader>
-                <div className="px-4 pb-8">{filters}</div>
-              </SheetContent>
-            </Sheet>
+        <h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+          {title}
+        </h1>
+        <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
+          {description}
+        </p>
 
-            {/* Sort is a row of links for the same reason the filters are —
-                shareable URLs, and no client state to reconcile. */}
-            <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
-              {SORTS.map((sort) => {
-                const active = (params.sort ?? "trending") === sort.value
-                return (
-                  <Link
-                    key={sort.value}
-                    href={catalogHref(base, params, { sort: sort.value })}
-                    aria-current={active ? "true" : undefined}
-                    className={cn(
-                      "shrink-0 rounded-full border px-3 py-1 text-xs whitespace-nowrap outline-none",
-                      "hover:bg-accent focus-visible:ring-3 focus-visible:ring-brand/50",
-                      active &&
-                        "border-brand bg-brand-muted font-medium text-brand-accent",
-                    )}
-                  >
-                    {s(sort.value)}
-                  </Link>
-                )
-              })}
-            </div>
-          </div>
+        <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+          <span className="text-muted-foreground">{t("browseByType")}</span>
+          {BROWSE_TYPES.map((type) => (
+            <Link
+              key={type}
+              href={`/3d-models/${type}`}
+              className="font-medium text-brand-accent outline-none hover:underline focus-visible:ring-3 focus-visible:ring-brand/50"
+            >
+              {seg(type)}
+            </Link>
+          ))}
+        </div>
+
+        <div className="mt-6 flex flex-wrap items-center gap-3 border-t pt-5">
+          {/* One interpolated message, not a number glued to a noun: word
+              order differs per language and concatenation breaks in RTL. */}
+          <p className="text-sm text-muted-foreground">{t("count", { count: total })}</p>
+
+          {/* The term arrives from the header search, so without this the
+              results have no visible cause. Clearing it keeps the filters,
+              mirroring how "clear all" keeps the term. */}
+          {params.q && (
+            <Link
+              href={catalogHref(base, params, { q: undefined })}
+              className="inline-flex min-w-0 items-center gap-1.5 rounded-md border border-brand bg-brand-muted py-1 ps-3 pe-2 text-xs font-medium text-brand-accent outline-none hover:bg-brand-muted/70 focus-visible:ring-3 focus-visible:ring-brand/50"
+            >
+              <span className="truncate">{t("searchedFor", { query: params.q })}</span>
+              <X className="size-3.5 shrink-0" aria-hidden />
+              <span className="sr-only">{t("clearSearch")}</span>
+            </Link>
+          )}
+
+          {/* A tag arrives from a listing's tag chip, so like search it needs a
+              visible, removable cause for the narrowed results. */}
+          {params.tag && (
+            <Link
+              href={catalogHref(base, params, { tag: undefined })}
+              className="inline-flex min-w-0 items-center gap-1.5 rounded-md border border-brand bg-brand-muted py-1 ps-3 pe-2 text-xs font-medium text-brand-accent outline-none hover:bg-brand-muted/70 focus-visible:ring-3 focus-visible:ring-brand/50"
+            >
+              <span className="truncate" dir="auto">{t("taggedWith", { tag: params.tag })}</span>
+              <X className="size-3.5 shrink-0" aria-hidden />
+              <span className="sr-only">{t("clearTag")}</span>
+            </Link>
+          )}
         </div>
 
         {items.length === 0 ? (
-          <div className="flex flex-col items-center rounded-xl border py-20 text-center">
+          <div className="mt-6 flex flex-col items-center rounded-xl border py-20 text-center">
             <SearchX className="size-8 text-muted-foreground" aria-hidden />
             <h2 className="mt-4 font-semibold">{t("emptyTitle")}</h2>
             <p className="mt-1.5 max-w-sm text-sm text-muted-foreground">
@@ -141,7 +152,7 @@ export async function CatalogView({
             </Button>
           </div>
         ) : (
-          <ul className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
+          <ul className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {items.map((model, index) => (
               <Fragment key={model.slug}>
                 <li>
@@ -150,8 +161,8 @@ export async function CatalogView({
                 {/* Placed after the first full row rather than above the grid:
                     it reaches someone already comparing pieces, which is when
                     "two of these a month" means something. Once per page. */}
-                {index === 3 && (
-                  <li className="col-span-2 md:col-span-3 xl:col-span-4">
+                {index === 4 && (
+                  <li className="col-span-2 sm:col-span-3 lg:col-span-4 xl:col-span-5">
                     <Link
                       href="/pricing"
                       className="flex flex-col gap-3 rounded-xl border border-brand bg-brand-muted p-5 outline-none transition-colors hover:bg-brand-muted/70 focus-visible:ring-3 focus-visible:ring-brand/50 sm:flex-row sm:items-center sm:justify-between"
@@ -214,7 +225,7 @@ export async function CatalogView({
           </nav>
         )}
       </div>
-    </div>
+    </>
   )
 }
 

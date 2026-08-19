@@ -1,10 +1,12 @@
 import { formatStat, getMarketplaceStats } from "@/lib/data/stats"
 import { Link } from "@/i18n/navigation"
+import { ArrowRight } from "lucide-react"
 
 import { getTranslations } from "next-intl/server"
 
 import { HERO_FILTERS } from "@/lib/data/landing"
 import { SearchForm } from "@/components/forms/search-form"
+import { Button } from "@/components/ui/button"
 
 /**
  * Hero backdrop is drawn rather than photographed — layered SVG ridgelines over
@@ -57,7 +59,7 @@ export async function Hero() {
   const t = await getTranslations("landing")
   const site = await getTranslations("site")
   return (
-    <section className="relative isolate pt-16">
+    <section className="relative isolate pt-26">
       <HeroBackdrop />
 
       <div className="shell relative flex flex-col items-center pt-16 pb-14 text-center sm:pt-24 sm:pb-20">
@@ -77,13 +79,25 @@ export async function Hero() {
             <li key={filter.key}>
               <Link
                 href={filter.href}
-                className="inline-flex shrink-0 items-center rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-sm text-white/85 whitespace-nowrap backdrop-blur transition-colors hover:border-brand/60 hover:bg-white/10 hover:text-white"
+                className="inline-flex shrink-0 items-center rounded-lg border border-white/20 bg-white/5 px-4 py-1.5 text-sm text-white/85 whitespace-nowrap backdrop-blur transition-colors hover:border-brand/60 hover:bg-white/10 hover:text-white"
               >
                 {t(`heroFilters.${filter.key}`)}
               </Link>
             </li>
           ))}
         </ul>
+
+        {/* Search and the filter chips both assume the visitor already knows
+            what they are after. This is the way in for the one who doesn't. */}
+        <Button
+          asChild
+          className="mt-8 h-11 bg-brand px-7 text-brand-foreground hover:bg-brand/85"
+        >
+          <Link href="/3d-models">
+            {t("heroCta")}
+            <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden />
+          </Link>
+        </Button>
 
         <dl className="mt-10 grid grid-cols-3 gap-6 text-white sm:gap-12">
           {[

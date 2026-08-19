@@ -13,6 +13,7 @@ import {
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { Button } from "@/components/ui/button"
+import { ChatWithDesignersButton } from "@/components/requests/chat-cta"
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/custom-work">) {
   const { locale } = await params
@@ -28,9 +29,9 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/custom-w
  * (a ring resize) should cost a fraction of commissioning one from scratch, and
  * a buyer needs to see that before they ask.
  *
- * The chat itself is not built. The page says so plainly rather than shipping a
- * button that opens nothing — a dead "start chat" control would cost more trust
- * than the missing feature does.
+ * The chat itself runs on WhatsApp. The hero button is the entry point: it is
+ * shown to everyone, but it goes through sign-up and the terms page before any
+ * number is handed over.
  */
 export default async function CustomWorkPage() {
   const t = await getTranslations("custom")
@@ -54,12 +55,12 @@ export default async function CustomWorkPage() {
 
   return (
     <>
-      <SiteHeader solid />
+      <SiteHeader />
 
-      <main id="main-content" className="flex-1 pt-16">
+      <main id="main-content" className="flex-1 pt-26">
         <section className="border-b bg-ink text-ink-foreground">
           <div className="shell py-16 md:py-20">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/15 px-3 py-1 text-xs font-medium text-brand">
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-brand/15 px-3 py-1 text-xs font-medium text-brand">
               <MessagesSquare className="size-3.5" aria-hidden />
               {t("eyebrow")}
             </span>
@@ -69,19 +70,16 @@ export default async function CustomWorkPage() {
             <p className="mt-4 max-w-2xl text-sm text-pretty text-white/70 sm:text-base">
               {t("subtitle")}
             </p>
+            {/* White rather than brand teal: the WhatsApp mark is a fixed
+                green, and it only reads as itself against a light button. */}
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button
-                asChild
-                className="h-11 bg-brand px-6 text-brand-foreground hover:bg-brand/85"
-              >
-                <Link href="/requests/new">{t("primaryCta")}</Link>
-              </Button>
+              <ChatWithDesignersButton className="h-11 bg-white px-6 text-ink hover:bg-white/90" />
               <Button
                 asChild
                 variant="outline"
                 className="h-11 border-white/25 bg-transparent px-6 text-white hover:bg-white/10 hover:text-white"
               >
-                <Link href="/pricing">{t("secondaryCta")}</Link>
+                <Link href="/requests/new">{t("primaryCta")}</Link>
               </Button>
             </div>
           </div>
@@ -98,7 +96,7 @@ export default async function CustomWorkPage() {
                   <span className="inline-flex size-11 items-center justify-center rounded-xl bg-brand/15 text-brand-accent">
                     <track.Icon className="size-5" aria-hidden />
                   </span>
-                  <span className="rounded-full border px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                  <span className="rounded-md border px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
                     {t(`${track.key}Eyebrow`)}
                   </span>
                 </div>

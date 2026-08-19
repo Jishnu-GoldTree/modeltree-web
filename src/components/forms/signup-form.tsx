@@ -44,8 +44,10 @@ const ACCOUNT_OPTIONS = [
 
 export function SignupForm({
   enabledProviders,
+  redirectTo,
 }: {
   enabledProviders: string[];
+  redirectTo: string;
 }) {
   const t = useTranslations("auth");
   const feedback = useTranslations("toast");
@@ -117,7 +119,7 @@ export function SignupForm({
     toast.success(feedback("accountCreated"));
 
     startNavigation(() => {
-      router.push("/profile");
+      router.push(redirectTo);
       // Re-render server components so they see the new session cookie.
       router.refresh();
     });
@@ -361,8 +363,10 @@ export function SignupForm({
 
       <p className="text-center text-sm text-muted-foreground">
         {t("haveAccount")}{" "}
+        {/* Carries the destination across, so someone who already has an
+            account still lands where they were headed. */}
         <Link
-          href="/login"
+          href={`/login?next=${encodeURIComponent(redirectTo)}`}
           className="font-medium text-brand-accent hover:underline"
         >
           {t("login")}

@@ -34,6 +34,7 @@ export function toParams(raw: RawParams): Record<string, string | undefined> {
     "metal",
     "stone",
     "production",
+    "tag",
     "sort",
     "page",
     "q",
@@ -67,6 +68,9 @@ export function toQuery(params: Record<string, string | undefined>): CatalogQuer
     production: PRODUCTION.includes(params.production as Production)
       ? (params.production as Production)
       : undefined,
+    // Free-form, so no vocabulary to validate against — an unknown tag simply
+    // matches nothing, which is the intended "narrows to empty" behaviour.
+    tag: params.tag,
     q: params.q,
     sort,
     page: Number.isFinite(page) && page > 0 ? page : 1,

@@ -14,6 +14,14 @@
 /** Digits only, no `+` — wa.me rejects punctuation. */
 export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? ""
 
+/**
+ * The page that explains the terms before handing anyone to WhatsApp.
+ *
+ * Shared so the button, the sign-up return path and the page's own auth gate
+ * cannot disagree about where the flow lands.
+ */
+export const CHAT_PATH = "/custom-work/chat"
+
 export type HandoffContext = {
   /** Short, human-quotable reference — the uuid is not something to read out. */
   reference: string
@@ -38,6 +46,20 @@ export function whatsappHandoffUrl(context: HandoffContext, greeting: string) {
   ].filter(Boolean)
 
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`
+}
+
+/**
+ * Click-to-chat for someone who has not opened a request yet.
+ *
+ * Carries the account handle where the request version carries a reference:
+ * there is no row to point at, and a message arriving from an unknown phone
+ * number is otherwise impossible to tie back to an account.
+ */
+export function whatsappChatUrl(greeting: string, handle: string) {
+  if (!WHATSAPP_NUMBER) return null
+
+  const text = [greeting, "", `ModelTree: @${handle}`].join("\n")
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`
 }
 
 /** First eight characters of the uuid, which is short enough to read aloud. */

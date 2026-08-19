@@ -11,6 +11,7 @@ import { z } from "zod"
 
 import { createClient, getCurrentUser } from "@/lib/supabase/server"
 import { FORMATS, METALS, PRODUCTION, STONES } from "@/lib/data/catalog"
+import { normalizeTags } from "@/lib/data/catalog-facets"
 import { headObject, keyPrefix, presignDownload, type StoredObject } from "@/lib/r2/presign"
 
 /**
@@ -61,6 +62,10 @@ const listingSchema = z.object({
   stone: z.enum(STONES),
   production: z.enum(PRODUCTION),
   weightGrams: z.coerce.number().min(0).max(9999).optional(),
+  // Free-form keywords the catalog also searches on. The client posts a JSON
+  // array; it is re-normalised (lowercased, de-duplicated, capped) below, so
+  // this only guards against an absurdly large payload before that runs.
+  tags: z.array(z.string()).max(100).default([]),
   publish: z.boolean(),
   // Filled by the client after the browser PUTs each file to R2. Empty arrays
   // are allowed for a draft — a designer might save mid-flight — but a publish
@@ -120,6 +125,7 @@ export async function createListing(
     stone: formData.get("stone"),
     production: formData.get("production"),
     weightGrams: formData.get("weightGrams") || undefined,
+    tags: parseJsonField(formData.get("tags")),
     publish: formData.get("publish") === "1",
     uploadedFiles: parseJsonField(formData.get("uploadedFiles")),
     uploadedImages: parseJsonField(formData.get("uploadedImages")),
@@ -264,6 +270,7 @@ export async function createListing(
       stone: v.stone,
       production: v.production,
       weight_grams: v.weightGrams ?? null,
+      tags: normalizeTags(v.tags),
     })
     .select("id, slug")
     .single()
@@ -346,6 +353,7 @@ export async function updateListing(
     stone: formData.get("stone"),
     production: formData.get("production"),
     weightGrams: formData.get("weightGrams") || undefined,
+    tags: parseJsonField(formData.get("tags")),
     publish: formData.get("publish") === "1",
     uploadedFiles: parseJsonField(formData.get("uploadedFiles")),
     uploadedImages: parseJsonField(formData.get("uploadedImages")),
@@ -464,6 +472,7 @@ export async function updateListing(
       stone: v.stone,
       production: v.production,
       weight_grams: v.weightGrams ?? null,
+      tags: normalizeTags(v.tags),
     })
     .eq("id", modelId)
     .eq("designer_id", user.id)

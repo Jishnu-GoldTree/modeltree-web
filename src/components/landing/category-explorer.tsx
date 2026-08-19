@@ -51,7 +51,7 @@ export function CategoryExplorer({
           <li key={chip}>
             <Link
               href={`${chipBase}?q=${encodeURIComponent(t(`${chipNamespace}.${chip}`))}`}
-              className="inline-flex shrink-0 items-center rounded-full border bg-background px-3.5 py-1.5 text-sm whitespace-nowrap transition-colors hover:border-brand hover:text-brand-accent"
+              className="inline-flex shrink-0 items-center rounded-lg border bg-background px-3.5 py-1.5 text-sm whitespace-nowrap transition-colors hover:border-brand hover:text-brand-accent"
             >
               {t(`${chipNamespace}.${chip}`)}
             </Link>
@@ -95,7 +95,7 @@ export function CategoryExplorer({
       <div className="mt-6 flex justify-center">
         <Link
           href={footerAction.href}
-          className="inline-flex items-center rounded-full border px-5 py-2 text-sm font-medium transition-colors hover:bg-accent"
+          className="inline-flex items-center rounded-lg border px-5 py-2 text-sm font-medium transition-colors hover:bg-accent"
         >
           {footerAction.label}
         </Link>

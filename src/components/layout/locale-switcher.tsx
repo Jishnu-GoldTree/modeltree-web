@@ -59,7 +59,6 @@ export function LocaleSwitcher() {
           aria-label={`${t("label")}: ${currentLabel}`}
           title={`${t("label")}: ${currentLabel}`}
           disabled={pending}
-          className="text-white/85 hover:bg-white/10 hover:text-white"
         >
           <Languages className="size-5" aria-hidden />
         </Button>

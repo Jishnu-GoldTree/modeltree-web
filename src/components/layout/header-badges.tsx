@@ -44,7 +44,7 @@ export function HeaderBadges() {
         size="icon"
         aria-label={savedLabel}
         title={savedLabel}
-        className="relative hidden text-white/85 hover:bg-white/10 hover:text-white sm:inline-flex"
+        className="relative hidden sm:inline-flex"
         asChild
       >
         <Link href="/favorites">
@@ -58,7 +58,7 @@ export function HeaderBadges() {
         size="icon"
         aria-label={cartLabel}
         title={cartLabel}
-        className="relative hidden text-white/85 hover:bg-white/10 hover:text-white sm:inline-flex"
+        className="relative hidden sm:inline-flex"
         asChild
       >
         <Link href="/cart">
