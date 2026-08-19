@@ -2,9 +2,30 @@
 
 import { useTranslations } from "next-intl"
 import { Link } from "@/i18n/navigation"
-import { ArrowRight, Gem, Menu, Upload } from "lucide-react"
+import {
+  ArrowRight,
+  BookOpen,
+  Building2,
+  Circle,
+  Crown,
+  Diamond,
+  Flame,
+  Gem,
+  Gift,
+  LayoutDashboard,
+  LayoutGrid,
+  Link2,
+  Menu,
+  PenTool,
+  Printer,
+  Sliders,
+  Sparkles,
+  Store,
+  Upload,
+  type LucideIcon,
+} from "lucide-react"
 
-import { PRIMARY_NAV } from "@/lib/data/landing"
+import { PRIMARY_NAV, type NavChildIcon } from "@/lib/data/landing"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -50,6 +71,26 @@ const NAV_KEYS: Record<string, "models" | "production" | "custom" | "designers">
   "/3d-models/cast-ready": "production",
   "/custom-work": "custom",
   "/designers": "designers",
+}
+
+/** Maps the icon name on each nav child to its lucide component. */
+const NAV_ICONS: Record<NavChildIcon, LucideIcon> = {
+  grid: LayoutGrid,
+  diamond: Diamond,
+  circle: Circle,
+  gem: Gem,
+  sparkles: Sparkles,
+  crown: Crown,
+  flame: Flame,
+  printer: Printer,
+  link: Link2,
+  gift: Gift,
+  sliders: Sliders,
+  pen: PenTool,
+  building: Building2,
+  store: Store,
+  dashboard: LayoutDashboard,
+  book: BookOpen,
 }
 
 export function SiteHeader() {
@@ -99,23 +140,31 @@ export function SiteHeader() {
                       {/* gap-2, not gap-1: each row paints a full-width hover fill,
                           so a 4px gutter left neighbouring fills visually touching. */}
                       <ul className="grid w-[520px] gap-2 p-2 md:grid-cols-2">
-                        {item.children?.map((child) => (
-                          <li key={child.key}>
-                            <NavigationMenuLink asChild>
-                              <Link
-                                href={child.href}
-                                className="block rounded-md p-3 leading-tight no-underline outline-none transition-colors hover:bg-accent focus:bg-accent"
-                              >
-                                <div className="text-sm font-medium">
-                                  {nav(`${child.key}.label`)}
-                                </div>
-                                <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
-                                  {nav(`${child.key}.description`)}
-                                </p>
-                              </Link>
-                            </NavigationMenuLink>
-                          </li>
-                        ))}
+                        {item.children?.map((child) => {
+                          const Icon = NAV_ICONS[child.icon]
+                          return (
+                            <li key={child.key}>
+                              <NavigationMenuLink asChild>
+                                <Link
+                                  href={child.href}
+                                  className="flex items-start gap-3 rounded-md p-3 leading-tight no-underline outline-none transition-colors hover:bg-accent focus:bg-accent"
+                                >
+                                  <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-brand/15 text-brand-accent">
+                                    <Icon className="size-4" aria-hidden />
+                                  </span>
+                                  <span className="min-w-0">
+                                    <span className="block text-sm font-medium">
+                                      {nav(`${child.key}.label`)}
+                                    </span>
+                                    <span className="mt-1 block line-clamp-2 text-xs text-muted-foreground">
+                                      {nav(`${child.key}.description`)}
+                                    </span>
+                                  </span>
+                                </Link>
+                              </NavigationMenuLink>
+                            </li>
+                          )
+                        })}
                       </ul>
                     </NavigationMenuContent>
                   </NavigationMenuItem>

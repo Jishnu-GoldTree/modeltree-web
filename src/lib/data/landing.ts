@@ -29,11 +29,18 @@ export type ModelCard = {
   cover?: string;
 };
 
+/** Icon names for megamenu children; mapped to lucide components in the header. */
+export type NavChildIcon =
+  | "grid" | "diamond" | "circle" | "gem" | "sparkles" | "crown"
+  | "flame" | "printer" | "link" | "gift"
+  | "sliders" | "pen" | "building"
+  | "store" | "dashboard" | "book";
+
 export type NavItem = {
   label: string;
   href: string;
   description?: string;
-  children?: { key: string; href: string }[];
+  children?: { key: string; href: string; icon: NavChildIcon }[];
 };
 
 export const SITE = {
@@ -52,40 +59,40 @@ export const PRIMARY_NAV: NavItem[] = [
     label: "Jewellery",
     href: "/3d-models",
     children: [
-      { key: "allModels", href: "/3d-models" },
-      { key: "engagement", href: "/3d-models/engagement-rings" },
-      { key: "bands", href: "/3d-models/wedding-bands" },
-      { key: "pendants", href: "/3d-models/pendants" },
-      { key: "earrings", href: "/3d-models/earrings" },
-      { key: "settings", href: "/3d-models/settings" },
+      { key: "allModels", href: "/3d-models", icon: "grid" },
+      { key: "engagement", href: "/3d-models/engagement-rings", icon: "diamond" },
+      { key: "bands", href: "/3d-models/wedding-bands", icon: "circle" },
+      { key: "pendants", href: "/3d-models/pendants", icon: "gem" },
+      { key: "earrings", href: "/3d-models/earrings", icon: "sparkles" },
+      { key: "settings", href: "/3d-models/settings", icon: "crown" },
     ],
   },
   {
     label: "Production",
     href: "/3d-models/cast-ready",
     children: [
-      { key: "castReady", href: "/3d-models/cast-ready" },
-      { key: "printReady", href: "/3d-models/print-ready" },
-      { key: "findings", href: "/3d-models/findings" },
-      { key: "freeModels", href: "/3d-models/free" },
+      { key: "castReady", href: "/3d-models/cast-ready", icon: "flame" },
+      { key: "printReady", href: "/3d-models/print-ready", icon: "printer" },
+      { key: "findings", href: "/3d-models/findings", icon: "link" },
+      { key: "freeModels", href: "/3d-models/free", icon: "gift" },
     ],
   },
   {
     label: "Custom work",
     href: "/custom-work",
     children: [
-      { key: "adjust", href: "/custom-work/adjust" },
-      { key: "commission", href: "/custom-work/commission" },
-      { key: "enterprise", href: "/business" },
+      { key: "adjust", href: "/custom-work/adjust", icon: "sliders" },
+      { key: "commission", href: "/custom-work/commission", icon: "pen" },
+      { key: "enterprise", href: "/business", icon: "building" },
     ],
   },
   {
     label: "For Designers",
     href: "/designers",
     children: [
-      { key: "startSelling", href: "/sell" },
-      { key: "dashboard", href: "/dashboard" },
-      { key: "guidelines", href: "/guidelines" },
+      { key: "startSelling", href: "/sell", icon: "store" },
+      { key: "dashboard", href: "/dashboard", icon: "dashboard" },
+      { key: "guidelines", href: "/guidelines", icon: "book" },
     ],
   },
 ];

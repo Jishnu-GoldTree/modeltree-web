@@ -1,19 +1,13 @@
 import { Link } from "@/i18n/navigation"
-import { Star } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { UserText } from "@/components/user-text"
 import { FavoriteButton } from "@/components/marketplace/favorite-button"
 import type { ModelCard as ModelCardData } from "@/lib/data/landing"
-import { useLocale, useTranslations } from "next-intl"
-
-import { formatPrice } from "@/lib/money"
-import type { Locale } from "@/i18n/routing"
 
 import { Thumb } from "@/components/marketplace/thumb"
-import { Badge } from "@/components/ui/badge"
 
-
+const MAX_VISIBLE_FORMATS = 3
 
 export function ModelCard({
   model,
@@ -30,15 +24,20 @@ export function ModelCard({
    */
   favorited?: boolean
 }) {
-  const t = useTranslations("common")
-  const locale = useLocale() as Locale
-  const agorot = model.price === "free" ? 0 : Math.round(model.price * 100)
-  const price = formatPrice(agorot, locale, { freeLabel: t("badgeFree") })
+  const visibleFormats = model.formats.slice(0, MAX_VISIBLE_FORMATS)
+  const overflow = model.formats.length - visibleFormats.length
 
   return (
     <article
       className={cn(
-        "group relative flex h-full flex-col overflow-hidden rounded-xl border bg-card transition-colors hover:border-brand",
+        // self-start so the card sizes to its content instead of stretching to
+        // the tallest card in the grid row, which would leave a gap under short
+        // titles.
+        //
+        // transform-gpu promotes the card to its own layer so this rounded
+        // overflow-hidden actually clips the cover's group-hover scale; without
+        // it WebKit lets the zoomed image spill past the rounded bottom border.
+        "group relative flex flex-col self-start transform-gpu overflow-hidden rounded-xl border bg-card transition-colors hover:border-brand",
         className
       )}
     >
@@ -49,10 +48,22 @@ export function ModelCard({
         className="aspect-4/3 shrink-0"
         imageClassName="transform-gpu transition-transform duration-500 ease-out will-change-transform group-hover:scale-[1.04]"
       >
-        {model.badge && (
-          <Badge className="absolute top-2.5 start-2.5 border-0 bg-black/55 text-white backdrop-blur">
-            {t(model.badge, { count: 147 })}
-          </Badge>
+        {model.formats.length > 0 && (
+          <ul className="absolute top-2.5 start-2.5 flex flex-wrap gap-1">
+            {visibleFormats.map((format) => (
+              <li
+                key={format}
+                className="rounded bg-black/55 px-1.5 py-0.5 font-mono text-[10px] tracking-wide text-white uppercase backdrop-blur"
+              >
+                {format}
+              </li>
+            ))}
+            {overflow > 0 && (
+              <li className="rounded bg-black/55 px-1.5 py-0.5 font-mono text-[10px] tracking-wide text-white backdrop-blur">
+                +{overflow}
+              </li>
+            )}
+          </ul>
         )}
       </Thumb>
 
@@ -65,10 +76,8 @@ export function ModelCard({
           instead of saving it. As a child of the card it outranks the overlay. */}
       <FavoriteButton slug={model.slug} title={model.title} favorited={favorited} />
 
-      <div className="flex flex-1 flex-col p-3">
-        {/* Two lines are reserved for the title so prices and format chips
-            line up across the grid regardless of title length. */}
-        <h3 className="min-h-10 text-sm leading-snug font-medium">
+      <div className="p-3">
+        <h3 className="text-sm leading-snug font-medium">
           {/* Stretched link keeps the whole card clickable without nesting
               interactive elements inside an anchor.
 
@@ -84,47 +93,6 @@ export function ModelCard({
             <UserText className="line-clamp-2">{model.title}</UserText>
           </Link>
         </h3>
-
-        <p className="mt-1 text-xs text-muted-foreground">
-          {t("by")} <UserText>{model.author}</UserText>
-        </p>
-
-        <div className="mt-auto flex items-center justify-between gap-2 pt-2.5">
-          <span
-            className={cn(
-              "text-sm font-semibold",
-              model.price === "free" && "text-brand-accent"
-            )}
-          >
-            {price.primary}
-            {price.secondary && (
-              // Shekels are what gets charged; the dollar figure is guidance.
-              <span className="ms-1.5 text-xs font-normal text-muted-foreground">
-                ≈{price.secondary}
-              </span>
-            )}
-          </span>
-          {/* No reviews means no average to show; "0" would read as a one-star
-              verdict rather than an empty one. */}
-          {model.reviews > 0 && (
-            <span className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Star className="size-3.5 fill-amber-400 text-amber-400" aria-hidden />
-              {model.rating}
-              <span className="sr-only">{t("outOf5From")}</span>({model.reviews})
-            </span>
-          )}
-        </div>
-
-        <ul className="mt-2.5 flex flex-wrap gap-1">
-          {model.formats.map((format) => (
-            <li
-              key={format}
-              className="rounded border px-1.5 py-0.5 font-mono text-[10px] tracking-wide text-muted-foreground uppercase"
-            >
-              {format}
-            </li>
-          ))}
-        </ul>
       </div>
     </article>
   )

@@ -31,6 +31,7 @@ import { SiteFooter } from "@/components/layout/site-footer"
 import { ModelCard } from "@/components/marketplace/model-card"
 import { ReviewForm } from "@/components/marketplace/review-form"
 import { ProductGallery } from "@/components/marketplace/product-gallery"
+import { BackButton } from "@/components/marketplace/back-button"
 import { tempGallery } from "@/lib/temp-previews"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -130,12 +131,20 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
 
       <main id="main-content" className="flex-1 pt-26">
         <div className="shell py-6">
+          <BackButton />
+
           {/* Gallery and buy rail share the top row; the description and the
               rest of the detail sit under the gallery in column one. The rail
               is last in the DOM but placed explicitly, so on desktop it lands
               beside the image while on mobile it stacks straight after it —
               title and price before the long-form detail either way. */}
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-y-4">
+          {/* grid-rows [auto_1fr]: the buy rail spans both rows and is taller
+              than the gallery. With two auto rows, grid splits that excess
+              across both, inflating the gallery row and opening a gap above the
+              description. A spanning item that crosses a flexible track lets the
+              fr row (row 2) absorb the slack instead, so row 1 hugs the gallery
+              and any leftover height falls below the description column. */}
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] lg:grid-rows-[auto_1fr] lg:gap-y-4">
             <div className="min-w-0 lg:col-start-1 lg:row-start-1">
               {/* Uploaded previews when the designer supplied any; falls back
                   to the placeholder set for legacy models with no images. */}
