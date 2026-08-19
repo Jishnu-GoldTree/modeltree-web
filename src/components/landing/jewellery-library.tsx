@@ -3,7 +3,10 @@ import { getTranslations } from "next-intl/server"
 import { Gem, Ruler, Sparkles } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Thumb } from "@/components/marketplace/thumb"
+import { ProductVideo } from "@/components/marketplace/product-video"
+
+/** In-house renders shown in the 2×2 grid — one ring, earrings, pendant, bracelet. */
+const LIBRARY_CLIPS = ["ijewel-08", "ijewel-02", "ijewel-07", "ijewel-13"] as const
 
 /**
  * The jewellery library — GoldTree's actual differentiator.
@@ -72,10 +75,11 @@ export async function JewelleryLibrary() {
 
         <div>
           <ul className="grid grid-cols-2 gap-3">
-            {["ring", "pendant", "setting", "band"].map((piece) => (
-              <li key={piece}>
-                <Thumb
-                  seed={`jewellery-${piece}`}
+            {LIBRARY_CLIPS.map((clip) => (
+              <li key={clip}>
+                <ProductVideo
+                  src={`/videos/${clip}.webm`}
+                  poster={`/videos/posters/${clip}.webp`}
                   className="aspect-4/3 rounded-xl border border-white/10"
                 />
               </li>
