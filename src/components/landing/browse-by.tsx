@@ -1,9 +1,12 @@
+import type { ReactNode } from "react"
+
 import { Link } from "@/i18n/navigation"
-import { ArrowRight, Download, Gem, Gift } from "lucide-react"
+import { ArrowRight, ChevronRight, Download, Gem, Gift } from "lucide-react"
 import { getTranslations } from "next-intl/server"
 
 import { BROWSE_BY_METAL, BROWSE_BY_STONE } from "@/lib/data/landing"
 import { getFacetCounts } from "@/lib/data/stats"
+import { MetalIcon, StoneIcon } from "@/components/landing/browse-icons"
 
 export function BrowseList({
   heading,
@@ -12,23 +15,28 @@ export function BrowseList({
 }: {
   heading: string
   blurb: string
-  items: { label: string; count: number; href: string }[]
+  items: { label: string; count: number; href: string; icon?: ReactNode }[]
 }) {
   return (
     <div>
       <h3 className="font-semibold tracking-tight">{heading}</h3>
       <p className="mt-1 text-sm text-muted-foreground">{blurb}</p>
-      <ul className="mt-4 grid gap-1.5">
+      <ul className="mt-5 grid gap-1">
         {items.map((item) => (
           <li key={item.href}>
             <Link
               href={item.href}
-              className="flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent"
+              className="group flex items-center gap-3.5 rounded-xl px-3 py-3.5 text-base transition-colors hover:bg-accent"
             >
-              <span>{item.label}</span>
-              <span className="text-xs text-muted-foreground tabular-nums">
+              {item.icon}
+              <span className="flex-1 font-medium">{item.label}</span>
+              <span className="text-sm text-muted-foreground tabular-nums">
                 {item.count}
               </span>
+              <ChevronRight
+                aria-hidden
+                className="size-4 text-muted-foreground/50 transition-all group-hover:translate-x-0.5 group-hover:text-foreground rtl:-scale-x-100"
+              />
             </Link>
           </li>
         ))}
@@ -94,6 +102,7 @@ export async function BrowseBy() {
             href: m.href,
             label: facet(`metal.${m.key}`),
             count: counts.metals[m.key] ?? 0,
+            icon: <MetalIcon metal={m.key} className="size-6 shrink-0" />,
           }))}
         />
         <BrowseList
@@ -103,6 +112,12 @@ export async function BrowseBy() {
             href: s.href,
             label: facet(`stone.${s.key}`),
             count: counts.stones[s.key] ?? 0,
+            icon: (
+              <StoneIcon
+                cut={s.key}
+                className="size-6 shrink-0 text-muted-foreground"
+              />
+            ),
           }))}
         />
 
