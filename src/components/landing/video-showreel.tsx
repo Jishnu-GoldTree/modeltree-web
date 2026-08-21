@@ -59,8 +59,12 @@ export async function VideoShowreel() {
             "linear-gradient(90deg, transparent, black 6%, black 94%, transparent)",
         }}
       >
+        {/* Leading padding must equal the gap at every breakpoint: the -50%
+            marquee only loops seamlessly when the track is perfectly periodic
+            (leading space === inter-tile gap), so the duplicate half lands
+            exactly where the first began. */}
         <ul
-          className="animate-marquee flex w-max gap-4 pl-4 sm:gap-5 sm:pl-6"
+          className="animate-marquee flex w-max gap-4 pl-4 sm:gap-5 sm:pl-5"
           style={{ "--marquee-duration": "70s" } as CSSProperties}
         >
           {[...SHOWREEL_CLIPS, ...SHOWREEL_CLIPS].map((clip, i) => (
