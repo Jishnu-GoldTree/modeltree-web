@@ -2,12 +2,14 @@
 
 import { Suspense, useEffect, useRef } from "react"
 import { useSearchParams } from "next/navigation"
+import { useQueryClient } from "@tanstack/react-query"
 
 import { usePathname, useRouter } from "@/i18n/navigation"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 
-import { isFlashKey } from "@/lib/flash"
+import { affectsCounts, isFlashKey } from "@/lib/flash"
+import { countsKey } from "@/lib/queries/counts"
 
 /**
  * Reads `?flash=` and shows the matching toast, then strips the param so a
@@ -18,6 +20,7 @@ function FlashToastReader() {
   const params = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
+  const queryClient = useQueryClient()
   const shown = useRef<string | null>(null)
 
   const flash = params.get("flash")
@@ -27,12 +30,19 @@ function FlashToastReader() {
     shown.current = flash
     toast.success(t(flash))
 
+    // A cart/favourite action just changed a count the header shows. This is the
+    // signal that lets useCounts poll at the normal staleTime instead of
+    // refetching on every navigation — invalidate so the badge updates now.
+    if (affectsCounts(flash)) {
+      queryClient.invalidateQueries({ queryKey: countsKey })
+    }
+
     // Drop the param without adding a history entry.
     const next = new URLSearchParams(params)
     next.delete("flash")
     const query = next.toString()
     router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false })
-  }, [flash, params, pathname, router, t])
+  }, [flash, params, pathname, router, t, queryClient])
 
   return null
 }
