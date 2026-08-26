@@ -60,15 +60,28 @@ time before workers.dev URLs resolve. Visit
 and pick a name (e.g. `goldtree` or `modeltree`). After that,
 `modeltree-assets-cdn.<subdomain>.workers.dev` starts responding.
 
-### Wiring the app to it (not done yet)
+### Wiring the app to it
 
-When the subdomain (or a custom domain) is ready, set
-`R2_PUBLIC_BASE_URL=https://modeltree-assets-cdn.<subdomain>.workers.dev`
-in `.env.local` and on Vercel, then replace the `presignGet` calls in
-`src/lib/data/catalog.ts` and `src/lib/data/designer.ts` with
-`${R2_PUBLIC_BASE_URL}/${storage_key}` — signed URLs re-fetch on every
-render because the signature changes; the Worker URL is stable so the
-image optimizer can actually cache it.
+The app side is done: preview images resolve through `previewImageUrl()` in
+`src/lib/r2/presign.ts`, called from `src/lib/data/catalog.ts` and
+`src/lib/data/designer.ts`. When `R2_PUBLIC_BASE_URL` is set it returns the
+stable `${R2_PUBLIC_BASE_URL}/${storage_key}` Worker URL; when unset it falls
+back to a presigned URL so the app still works before the Worker is live.
+Signed URLs re-fetch on every render because the signature changes, which
+defeats the image optimizer's cache and burns transformation quota — the
+Worker URL is stable, so the optimizer and the browser cache it. Model source
+files are untouched: they still go through `presignDownload` after an
+entitlement check, and the Worker 403s `<env>/models/*` regardless.
+
+Remaining steps to activate:
+
+1. Pick the workers.dev subdomain (one-time dashboard step above), or attach a
+   custom domain to the Worker.
+2. `wrangler deploy --config workers/assets-cdn/wrangler.jsonc`.
+3. Set `R2_PUBLIC_BASE_URL=https://modeltree-assets-cdn.<subdomain>.workers.dev`
+   in `.env.local` and on Vercel (preview + prod). `next.config.ts` reads it at
+   build time to allow the host in `next/image`, so a fresh deploy is needed
+   after setting it.
 
 ## API token
 

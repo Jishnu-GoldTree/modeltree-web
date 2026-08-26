@@ -1,7 +1,7 @@
 import "server-only"
 
 import { createClient, getCurrentUser } from "@/lib/supabase/server"
-import { presignGet } from "@/lib/r2/presign"
+import { previewImageUrl } from "@/lib/r2/presign"
 
 /**
  * Designer-side reads.
@@ -56,7 +56,7 @@ export async function getMyModels(): Promise<DesignerModel[]> {
       const coverImage = [...(row.model_images ?? [])].sort(
         (a, b) => a.position - b.position,
       )[0]
-      const cover = coverImage ? await presignGet(coverImage.storage_key) : undefined
+      const cover = coverImage ? await previewImageUrl(coverImage.storage_key) : undefined
       return {
         id: row.id,
         slug: row.slug,
@@ -150,7 +150,7 @@ export async function getListingForEdit(id: string): Promise<ListingEditData | n
       }[]
     ).map(async (img) => ({
       storageKey: img.storage_key,
-      previewUrl: await presignGet(img.storage_key),
+      previewUrl: await previewImageUrl(img.storage_key),
       width: img.width,
       height: img.height,
     })),
