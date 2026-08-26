@@ -303,7 +303,14 @@ function joinedSelect(q: CatalogQuery) {
   `
 }
 
-export async function queryModels(query: CatalogQuery): Promise<CatalogResult> {
+export async function queryModels(
+  query: CatalogQuery,
+  options: { facets?: boolean } = {},
+): Promise<CatalogResult> {
+  // Facet counts are ~32 separate count() round trips. Only the catalog route's
+  // sidebar renders them; the landing trending row and infinite-scroll pages
+  // discard them, so they opt out and skip the queries entirely.
+  const withFacets = options.facets ?? true
 
   const build = (select: string, count?: "exact") => {
     let q = supabasePublic
@@ -326,7 +333,15 @@ export async function queryModels(query: CatalogQuery): Promise<CatalogResult> {
       count: number | null
       error: { message: string } | null
     }>,
-    computeFacets(query),
+    withFacets
+      ? computeFacets(query)
+      : Promise.resolve({
+          categories: {},
+          formats: {},
+          licenses: {},
+          metals: {},
+          stones: {},
+        } satisfies CatalogResult["facets"]),
   ])
 
   if (error) throw new Error(`catalog query failed: ${error.message}`)
