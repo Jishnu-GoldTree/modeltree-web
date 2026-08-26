@@ -13,7 +13,7 @@ import { SectionHeading } from "@/components/landing/section-heading"
 export async function TrendingModels() {
   const t = await getTranslations("landing.trending")
   const [{ items }, favorites] = await Promise.all([
-    queryModels({ sort: "trending", page: 1 }),
+    queryModels({ sort: "trending", page: 1 }, { facets: false }),
     getFavoriteSet(),
   ])
 

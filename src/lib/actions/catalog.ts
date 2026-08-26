@@ -31,7 +31,9 @@ export async function loadCatalogPage(
   patch: Partial<CatalogQuery>,
   page: number,
 ): Promise<CatalogPageResult> {
-  const result = await queryModels({ ...toQuery(params), ...patch, page })
+  // Infinite scroll only appends cards; the facet sidebar is rendered once by
+  // the route and never re-read here, so skip the ~32 count queries per page.
+  const result = await queryModels({ ...toQuery(params), ...patch, page }, { facets: false })
   const favorites = await getFavoriteSet()
 
   return {
