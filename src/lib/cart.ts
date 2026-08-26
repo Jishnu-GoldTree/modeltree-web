@@ -95,3 +95,14 @@ export async function getCart() {
   const lines = await toLines(await readCart())
   return { lines, ...cartTotals(lines) }
 }
+
+/**
+ * Count straight from the cookie, no catalog lookups. The header badge only
+ * needs the number, and `getCart` resolves every entry to a model (a Supabase
+ * fan-out) — far too much for a value the badge polls on. Counts cookie entries
+ * even if a slug was since removed from the catalog; that drifts by at most a
+ * unit until the cart page next reconciles the cookie, which a badge tolerates.
+ */
+export async function cartCount(): Promise<number> {
+  return (await readCart()).length
+}

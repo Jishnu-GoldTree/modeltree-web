@@ -1,8 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
-import { usePathname } from "next/navigation"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 
 export type Counts = { cart: number; favorites: number }
 
@@ -16,15 +14,15 @@ export const countsKey = ["counts"] as const
  * prerendered page dynamic. Both badges share one query, so this costs one
  * request regardless of how many badges render.
  *
- * `staleTime: 0` is deliberate. SiteHeader is rendered by each page rather than
- * the layout, so it remounts on every navigation; with a non-zero staleTime the
- * remount served a cached count and the badge sat at zero after adding to the
- * cart until some later navigation happened to miss the cache.
+ * Inherits the app-wide 30s staleTime rather than forcing `staleTime: 0`. The
+ * old zero meant every navigation refetched /api/counts (SiteHeader remounts
+ * per page), which was pure waste — the count only moves when the user adds or
+ * removes something. Those actions redirect with a `?flash=` marker, and
+ * FlashToast invalidates this query on that signal, so the badge still updates
+ * the instant it changes. Window-focus refetch (a Providers default) covers a
+ * change made in another tab.
  */
 export function useCounts() {
-  const pathname = usePathname()
-  const queryClient = useQueryClient()
-
   const query = useQuery<Counts>({
     queryKey: countsKey,
     queryFn: async () => {
@@ -32,23 +30,9 @@ export function useCounts() {
       if (!res.ok) throw new Error("Could not load counts")
       return res.json()
     },
-    staleTime: 0,
     // A failed count must not blank the links; fall back to what we had.
     placeholderData: (previous) => previous ?? { cart: 0, favorites: 0 },
   })
-
-  /**
-   * Belt and braces for the day SiteHeader moves into the layout and stops
-   * remounting. Compares against the previous pathname rather than a
-   * "has mounted" flag, so it fires on a real navigation and never duplicates
-   * the fetch the remount already performed.
-   */
-  const previousPath = useRef(pathname)
-  useEffect(() => {
-    if (previousPath.current === pathname) return
-    previousPath.current = pathname
-    queryClient.invalidateQueries({ queryKey: countsKey })
-  }, [pathname, queryClient])
 
   return query.data ?? { cart: 0, favorites: 0 }
 }
