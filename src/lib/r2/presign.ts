@@ -55,6 +55,29 @@ export async function presignGet(storageKey: string, expiresIn: number = ONE_DAY
 }
 
 /**
+ * URL for a preview image on a catalog page.
+ *
+ * Previews are public, so when `R2_PUBLIC_BASE_URL` points at a public custom
+ * domain / CDN in front of the bucket, they are served straight from that edge:
+ * the URL is *stable per object*, which is the whole game. A presigned URL
+ * carries a fresh `X-Amz-Date`/signature on every render, so `next/image`'s
+ * optimizer and the browser cache both miss every time — one catalog view
+ * re-transforms and re-downloads all 24 covers. A stable public URL is
+ * transformed and cached once, and served from Cloudflare's edge with free R2
+ * egress thereafter.
+ *
+ * Falls back to a presigned URL when the public base is unset so the app keeps
+ * working before the domain is live — but that path is the expensive one, so
+ * set `R2_PUBLIC_BASE_URL` in every deploy. Model source files must NOT use
+ * this: they stay behind `presignDownload` and its entitlement check.
+ */
+export function previewImageUrl(storageKey: string): string | Promise<string> {
+  const base = process.env.R2_PUBLIC_BASE_URL
+  if (!base) return presignGet(storageKey)
+  return `${base.replace(/\/+$/, "")}/${storageKey}`
+}
+
+/**
  * Signed URL that a browser follows to pull a purchased source file down.
  *
  * A tight five-minute TTL because this is the paid asset itself, not a public

@@ -1,7 +1,7 @@
 import type { ModelCard } from "@/lib/data/landing"
 import { supabasePublic } from "@/lib/supabase/public"
 import { createClient, getCurrentUser } from "@/lib/supabase/server"
-import { presignGet } from "@/lib/r2/presign"
+import { previewImageUrl } from "@/lib/r2/presign"
 
 /**
  * Catalog reads, backed by Postgres.
@@ -172,10 +172,10 @@ function coverKey(images: ModelRow["model_images"]): string | undefined {
 
 async function toModel(row: ModelRow): Promise<CatalogModel> {
   const key = coverKey(row.model_images)
-  // Sign the cover on demand. `<Thumb>` falls back to a deterministic
+  // Resolve the cover's public URL. `<Thumb>` falls back to a deterministic
   // placeholder if `cover` stays undefined, so a model with no images is
   // still renderable — we don't block on that.
-  const cover = key ? await presignGet(key) : undefined
+  const cover = key ? await previewImageUrl(key) : undefined
   return {
     id: row.id,
     slug: row.slug,
@@ -453,7 +453,7 @@ async function categoryIdFor(slug: string) {
 }
 
 /**
- * Signed URLs for every preview image on this model, in gallery order.
+ * Public URLs for every preview image on this model, in gallery order.
  * The product page falls back to placeholder art when this returns [].
  */
 export async function getModelImages(modelId: string): Promise<string[]> {
@@ -464,7 +464,7 @@ export async function getModelImages(modelId: string): Promise<string[]> {
     .order("position", { ascending: true })
 
   const rows = (data ?? []) as { storage_key: string; position: number }[]
-  return Promise.all(rows.map((r) => presignGet(r.storage_key)))
+  return Promise.all(rows.map((r) => previewImageUrl(r.storage_key)))
 }
 
 export async function allModelSlugs(): Promise<string[]> {
