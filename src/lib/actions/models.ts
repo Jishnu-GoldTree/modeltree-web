@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, updateTag } from "next/cache"
 import { redirect as externalRedirect } from "next/navigation"
 import { getLocale } from "next-intl/server"
 
@@ -10,7 +10,7 @@ import { withFlash } from "@/lib/flash"
 import { z } from "zod"
 
 import { createClient, getCurrentUser } from "@/lib/supabase/server"
-import { FORMATS, METALS, PRODUCTION, STONES } from "@/lib/data/catalog"
+import { CATALOG_TAG, FORMATS, METALS, PRODUCTION, STONES } from "@/lib/data/catalog"
 import { normalizeTags } from "@/lib/data/catalog-facets"
 import { headObject, keyPrefix, presignDownload, type StoredObject } from "@/lib/r2/presign"
 
@@ -306,6 +306,7 @@ export async function createListing(
     if (imageError) return { error: imageError.message }
   }
 
+  updateTag(CATALOG_TAG)
   revalidatePath("/dashboard")
   revalidatePath("/3d-models")
   redirect({ href: withFlash("/dashboard", v.publish ? "listingPublished" : "listingCreated"), locale })
@@ -535,6 +536,7 @@ export async function updateListing(
     if (error) return { error: error.message }
   }
 
+  updateTag(CATALOG_TAG)
   revalidatePath("/dashboard")
   revalidatePath("/3d-models")
   revalidatePath(`/3d-model/${currentRow.slug}`)
@@ -600,5 +602,6 @@ export async function deleteListing(formData: FormData) {
   // No ownership check here on purpose: RLS's models_delete_own decides, so a
   // forged id deletes nothing instead of someone else's listing.
   await supabase.from("models").delete().eq("id", id)
+  updateTag(CATALOG_TAG)
   revalidatePath("/dashboard")
 }

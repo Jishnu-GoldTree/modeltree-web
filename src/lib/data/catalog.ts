@@ -1,3 +1,5 @@
+import { unstable_cache } from "next/cache"
+
 import type { ModelCard } from "@/lib/data/landing"
 import { supabasePublic } from "@/lib/supabase/public"
 import { createClient, getCurrentUser } from "@/lib/supabase/server"
@@ -35,6 +37,17 @@ import {
 } from "./catalog-facets"
 export { FORMATS, METALS, PRODUCTION, STONES }
 export type { Metal, Production, Stone }
+
+/**
+ * Cache tags for the `unstable_cache`-wrapped public reads below. Mutation
+ * actions call `updateTag(...)` with these so an edit or a new review is
+ * reflected immediately instead of waiting out the TTL. `catalog` covers model
+ * rows, related lists, images and licence pricing; `reviews` covers the review
+ * list (a new review also bumps a model's denormalized rating, so a review
+ * write must expire both).
+ */
+export const CATALOG_TAG = "catalog"
+export const REVIEWS_TAG = "reviews"
 
 export type CatalogModel = ModelCard & {
   id: string
@@ -421,26 +434,47 @@ async function computeFacets(query: CatalogQuery): Promise<CatalogResult["facets
   return { categories, formats, licenses, metals, stones }
 }
 
-export async function getModel(slug: string): Promise<CatalogModel | undefined> {
-  const { data } = await supabasePublic
-    .from("models")
-    .select(SELECT)
-    .eq("status", "published")
-    .eq("slug", slug)
-    .maybeSingle()
-  return data ? await toModel(data as unknown as ModelRow) : undefined
-}
+// Cached across requests: the product route is force-dynamic (it reads the
+// signed-in viewer per request), so without this every view would re-run all
+// these public Supabase reads. The anon client carries no cookies, so the
+// result is identical for every visitor and safe to share. Keyed by slug;
+// expired on model writes via CATALOG_TAG, with a 1h TTL as a backstop for any
+// out-of-band change (e.g. the worker bumping download_count).
+export const getModel = unstable_cache(
+  async (slug: string): Promise<CatalogModel | undefined> => {
+    const { data } = await supabasePublic
+      .from("models")
+      .select(SELECT)
+      .eq("status", "published")
+      .eq("slug", slug)
+      .maybeSingle()
+    return data ? await toModel(data as unknown as ModelRow) : undefined
+  },
+  ["catalog-model"],
+  { revalidate: 3600, tags: [CATALOG_TAG] },
+)
+
+// Keyed by the primitives it actually queries on (slug, category, limit) rather
+// than the whole model, so the cache key stays stable when unrelated fields on
+// the source model change.
+const getRelatedCached = unstable_cache(
+  async (slug: string, category: string, limit: number): Promise<CatalogModel[]> => {
+    const { data } = await supabasePublic
+      .from("models")
+      .select(`${SELECT}`)
+      .eq("status", "published")
+      .neq("slug", slug)
+      .eq("category_id", await categoryIdFor(category))
+      .order("download_count", { ascending: false })
+      .limit(limit)
+    return Promise.all(((data ?? []) as unknown as ModelRow[]).map(toModel))
+  },
+  ["catalog-related"],
+  { revalidate: 3600, tags: [CATALOG_TAG] },
+)
 
 export async function getRelated(model: CatalogModel, limit = 4): Promise<CatalogModel[]> {
-  const { data } = await supabasePublic
-    .from("models")
-    .select(`${SELECT}`)
-    .eq("status", "published")
-    .neq("slug", model.slug)
-    .eq("category_id", await categoryIdFor(model.category))
-    .order("download_count", { ascending: false })
-    .limit(limit)
-  return Promise.all(((data ?? []) as unknown as ModelRow[]).map(toModel))
+  return getRelatedCached(model.slug, model.category, limit)
 }
 
 async function categoryIdFor(slug: string) {
@@ -456,16 +490,20 @@ async function categoryIdFor(slug: string) {
  * Public URLs for every preview image on this model, in gallery order.
  * The product page falls back to placeholder art when this returns [].
  */
-export async function getModelImages(modelId: string): Promise<string[]> {
-  const { data } = await supabasePublic
-    .from("model_images")
-    .select("storage_key, position")
-    .eq("model_id", modelId)
-    .order("position", { ascending: true })
+export const getModelImages = unstable_cache(
+  async (modelId: string): Promise<string[]> => {
+    const { data } = await supabasePublic
+      .from("model_images")
+      .select("storage_key, position")
+      .eq("model_id", modelId)
+      .order("position", { ascending: true })
 
-  const rows = (data ?? []) as { storage_key: string; position: number }[]
-  return Promise.all(rows.map((r) => previewImageUrl(r.storage_key)))
-}
+    const rows = (data ?? []) as { storage_key: string; position: number }[]
+    return Promise.all(rows.map((r) => previewImageUrl(r.storage_key)))
+  },
+  ["catalog-model-images"],
+  { revalidate: 3600, tags: [CATALOG_TAG] },
+)
 
 export async function allModelSlugs(): Promise<string[]> {
   const { data } = await supabasePublic
@@ -567,33 +605,52 @@ export type Review = {
   body: string
 }
 
-export async function getReviews(model: CatalogModel): Promise<Review[]> {
-  const { data } = await supabasePublic
-    .from("reviews")
-    .select("id, rating, body, created_at, profiles ( handle )")
-    .eq("model_id", model.id)
-    .order("created_at", { ascending: false })
-    .limit(4)
+// Only the DB read is cached (keyed by model id, expired on any review write
+// via REVIEWS_TAG). `daysAgo` is derived from the cached `createdAt` at read
+// time, so the relative label stays correct on a cache hit rather than freezing
+// at whatever it was when the entry was written.
+const getReviewRowsCached = unstable_cache(
+  async (modelId: string) => {
+    const { data } = await supabasePublic
+      .from("reviews")
+      .select("id, rating, body, created_at, profiles ( handle )")
+      .eq("model_id", modelId)
+      .order("created_at", { ascending: false })
+      .limit(4)
 
-  return (data ?? []).map((r) => {
-    const row = r as unknown as {
-      id: string
-      rating: number
-      body: string | null
-      created_at: string
-      profiles: { handle: string } | null
-    }
-    return {
-      id: row.id,
-      author: row.profiles?.handle ?? "buyer",
-      rating: row.rating,
-      daysAgo: Math.max(
-        0,
-        Math.round((Date.now() - new Date(row.created_at).getTime()) / 86_400_000),
-      ),
-      body: row.body ?? "",
-    }
-  })
+    return (data ?? []).map((r) => {
+      const row = r as unknown as {
+        id: string
+        rating: number
+        body: string | null
+        created_at: string
+        profiles: { handle: string } | null
+      }
+      return {
+        id: row.id,
+        author: row.profiles?.handle ?? "buyer",
+        rating: row.rating,
+        createdAt: row.created_at,
+        body: row.body ?? "",
+      }
+    })
+  },
+  ["catalog-reviews"],
+  { revalidate: 3600, tags: [REVIEWS_TAG] },
+)
+
+export async function getReviews(model: CatalogModel): Promise<Review[]> {
+  const rows = await getReviewRowsCached(model.id)
+  return rows.map((row) => ({
+    id: row.id,
+    author: row.author,
+    rating: row.rating,
+    daysAgo: Math.max(
+      0,
+      Math.round((Date.now() - new Date(row.createdAt).getTime()) / 86_400_000),
+    ),
+    body: row.body,
+  }))
 }
 
 /**
@@ -644,6 +701,21 @@ export async function getDownloadableFormats(modelId: string): Promise<Set<strin
  * A model already sold as extended has nothing to upgrade to and gets one tier
  * — otherwise the panel offers "Extended commercial" twice at two prices.
  */
+// The one DB read here is the extended-tier row, which is pricing config shared
+// by every model — cache it once under a static key rather than per model.
+const getExtendedLicense = unstable_cache(
+  async () => {
+    const { data } = await supabasePublic
+      .from("licenses")
+      .select("label, price_multiplier")
+      .eq("code", "extended")
+      .maybeSingle()
+    return (data ?? null) as { label: string; price_multiplier: number | string } | null
+  },
+  ["catalog-license-extended"],
+  { revalidate: 3600, tags: [CATALOG_TAG] },
+)
+
 export async function getLicenseOptions(model: CatalogModel) {
   const base = model.price === "free" ? 0 : model.price
   const standard = {
@@ -654,11 +726,7 @@ export async function getLicenseOptions(model: CatalogModel) {
 
   if (model.license === "extended") return [standard]
 
-  const { data } = await supabasePublic
-    .from("licenses")
-    .select("label, price_multiplier")
-    .eq("code", "extended")
-    .maybeSingle()
+  const data = await getExtendedLicense()
 
   const multiplier = Number(data?.price_multiplier ?? 2.5)
   return [
