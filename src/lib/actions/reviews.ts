@@ -1,12 +1,12 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, updateTag } from "next/cache"
 import { getLocale } from "next-intl/server"
 import { z } from "zod"
 
 import { redirect } from "@/i18n/navigation"
 import { withFlash } from "@/lib/flash"
-import { getModel } from "@/lib/data/catalog"
+import { CATALOG_TAG, getModel, REVIEWS_TAG } from "@/lib/data/catalog"
 import { createClient, getCurrentUser } from "@/lib/supabase/server"
 
 /**
@@ -30,6 +30,12 @@ const reviewSchema = z.object({
 const RLS_VIOLATION = "42501"
 
 function refresh(slug: string) {
+  // The cached catalog reads are tag-based, so revalidatePath won't touch them.
+  // updateTag expires them now (not stale-while-revalidate), so the buyer sees
+  // their own review in the list on the redirect. A review also moves the
+  // model's denormalized rating/count, hence CATALOG_TAG as well as REVIEWS_TAG.
+  updateTag(REVIEWS_TAG)
+  updateTag(CATALOG_TAG)
   revalidatePath(`/3d-model/${slug}`)
   // The average and count are denormalized onto models, so anything rendering a
   // card is now stale too.
