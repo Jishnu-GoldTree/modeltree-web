@@ -17,7 +17,6 @@ import {
 
 import { ASSET_CATEGORIES } from "@/lib/data/landing"
 import {
-  allModelSlugs,
   getLicenseOptions,
   getModel,
   getModelImages,
@@ -50,9 +49,12 @@ import { UserText } from "@/components/user-text"
  * slugged "car" from the Car category.
  */
 
-export async function generateStaticParams() {
-  return (await allModelSlugs()).map((slug) => ({ slug }))
-}
+// Rendered per request, never prerendered. The page reads the signed-in viewer
+// (cookies) for the review form and the account-aware header, so a static
+// generation pass throws DYNAMIC_SERVER_USAGE on Vercel's cold-cache render
+// path — which 500'd every product page. `generateStaticParams` used to force
+// that static context; force-dynamic keeps cookies() legal.
+export const dynamic = "force-dynamic"
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/3d-model/[slug]">) {
   const { slug } = await params
