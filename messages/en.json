@@ -411,10 +411,6 @@
         "label": "Commission a piece",
         "description": "A new model built from your brief"
       },
-      "enterprise": {
-        "label": "For workshops",
-        "description": "Team seats, invoicing and extended licensing"
-      },
       "startSelling": {
         "label": "Start selling",
         "description": "Publish your models and earn on every sale"
@@ -430,13 +426,10 @@
     },
     "heroCta": "Explore marketplace",
     "heroFilters": {
-      "engagement": "Engagement rings",
-      "bands": "Wedding bands",
-      "castReady": "Cast-ready",
-      "printReady": "Print-ready",
-      "yellowGold": "Yellow gold",
-      "settings": "Settings",
-      "free": "Free models"
+      "rings": "Rings",
+      "bracelets": "Bracelets",
+      "engagement": "Engagement",
+      "necklaces": "Necklaces"
     },
     "heroStats": {
       "models": "3D models",
@@ -573,17 +566,6 @@
       "projectsBenefit1": "Direct collaboration: talk to the designer",
       "projectsBenefit2": "Flexible iterations: adjust designs as the brief evolves",
       "projectsBenefit3": "Best-fit creative projects: ideal for custom or one-off work"
-    },
-    "business": {
-      "title": "{name} Business Account",
-      "body": "Production-ready assets from verified designers, licensed for your whole team. Review the models you need instantly and move a project from concept to completion without procurement overhead.",
-      "cta": "Apply for a Business Account",
-      "aTitle": "Easy Asset Sharing Across Teams",
-      "aBody": "Share 3D models with your team without the usual hassle. Store an asset once and it's available to everyone who needs it, with no duplicate purchases.",
-      "bTitle": "Streamlined Payments",
-      "bBody": "Make 3D asset purchases simpler with flexible billing options. Consolidate invoicing and stop chasing receipts, whether it's one purchase or a hundred.",
-      "cTitle": "Clear Licensing Terms",
-      "cBody": "We offer a range of flexible licensing options to suit your needs. Whether you need a simple license for personal use or a more comprehensive one for commercial projects, we have you covered."
     },
     "footer": {
       "company": "Company",
@@ -772,8 +754,8 @@
     "metaTitle": "Membership and pricing",
     "metaDescription": "Two jewellery models every month for ₪55, or buy pieces individually. Adjustments and custom models quoted through chat with our modelling team.",
     "eyebrow": "Membership",
-    "title": "Two models a month, every month",
-    "subtitle": "Built for working jewelers. Pick any two pieces from the catalog each month, keep the licences whether or not you stay, and reach our modelling team directly when a piece needs changing.",
+    "title": "Two free models a month for new members",
+    "subtitle": "Two gift models for new members — join us to get a special benefit.",
     "perMonth": "/ month",
     "quoted": "Quoted per job",
     "free": "Free",
@@ -797,7 +779,7 @@
     "memberF6": "Cancel any time",
     "customName": "Custom modelling",
     "customTagline": "A piece that does not exist yet, built to your brief",
-    "customCta": "See how it works",
+    "customCta": "Click here to chat with a modeler and order",
     "customF1": "Ring resizes and small edits from a low fixed fee",
     "customF2": "Fully custom pieces modelled from your brief",
     "customF3": "Work directly with the modeler in chat",
@@ -887,7 +869,7 @@
     "includedBody": "Members take any two models a month. This one counts.",
     "cta": "See membership",
     "headerCta": "Membership",
-    "stripTitle": "Two of these a month, free",
+    "stripTitle": "Two free models a month for new members",
     "stripBody": "₪55 a month, any two pieces in the catalog, licences yours to keep.",
     "stripCta": "See membership",
     "adjustCta": "Request size adjustments"
@@ -946,6 +928,47 @@
     "body": "We use cookies to keep you signed in and to remember your cart, saved models and language. No tracking or advertising cookies.",
     "learnMore": "Learn more",
     "accept": "Got it"
+  },
+  "whyChoose": {
+    "title": "Why choose us?",
+    "subtitle": "A model library built specifically for the jewellery world",
+    "intro": "We're here to give you access to high-quality models, fair prices and a service built from a real understanding of what jewellery designers, goldsmiths and businesses in the field actually need.",
+    "reasonsTitle": "Why use our site?",
+    "reasons": [
+      {
+        "title": "Your models stay yours",
+        "body": "Bought a model? It stays in your library. We believe a model you bought is yours — so the models you purchase are kept in your account and are never deleted."
+      },
+      {
+        "title": "Need a change or adjustment? We're here for you",
+        "body": "The model is almost perfect but needs a small change? Want to resize it, make an adjustment, edit a specific detail or modify an existing model? You can contact our modellers directly and get a professional, fast and convenient response — so you can tailor the model to exactly what you need, easily, quickly and without starting over."
+      },
+      {
+        "title": "Far more affordable prices",
+        "body": "We work to offer models at prices that are significantly more accessible than competing sites and platforms. More models, lower costs — more freedom to create."
+      },
+      {
+        "title": "High quality, no compromises",
+        "body": "Every model is hand-picked and checked to give you high quality suited to professional work in the jewellery industry. Quality you can rely on — with every single model."
+      },
+      {
+        "title": "Fast and convenient",
+        "body": "Find the model you need, buy it and get to work. No complicated processes, no wasted time and no headaches."
+      }
+    ],
+    "premiumTitle": "Want to save even more? Meet Premium ⭐",
+    "premiumIntro": "Instead of paying for each model separately, you can join Premium for:",
+    "price": "Just ₪55 a month",
+    "gift": "🎁 Every Premium membership includes 2 free models each month. Every month you get 2 models at no extra cost, on top of all the benefits of the site. If you use models regularly, the membership can save you hundreds of shekels over time.",
+    "savingsTitle": "💰 How much can you save?",
+    "savingsCost": "Membership cost: ₪55 a month",
+    "savingsGet": "What you get: 2 free models every month",
+    "savingsBody": "If an average model costs over ₪100, two models can be worth ₪200 or more to you — and you pay only ₪55 a month.",
+    "closing": "More models. More savings. More ways to create. Why pay more?",
+    "closingBody": "Whether you're a goldsmith, a jewellery designer, a business owner or simply love to create — our goal is to give you the tools you need, at a fair price and with personal service.",
+    "closingCta": "Join Premium and get 2 free models every month. Start creating. Start saving.",
+    "cta": "Join Premium",
+    "close": "Close"
   },
   "terms": {
     "metaTitle": "Terms of Service — ModelTree",

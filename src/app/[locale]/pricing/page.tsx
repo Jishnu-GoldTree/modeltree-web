@@ -1,6 +1,6 @@
 import { Link } from "@/i18n/navigation"
 import { getLocale, getTranslations } from "next-intl/server"
-import { ArrowRight, Check, Gem, MessagesSquare, ShoppingBag } from "lucide-react"
+import { ArrowRight, Check, Gem, MessagesSquare } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import type { Locale } from "@/i18n/routing"
@@ -37,22 +37,14 @@ export default async function PricingPage() {
 
   const plans = [
     {
-      key: "free",
-      Icon: ShoppingBag,
-      price: t("free"),
-      note: null as string | null,
-      href: "/3d-models",
-      features: ["freeF1", "freeF2", "freeF3", "freeF4"],
-      featured: false,
-    },
-    {
       key: "member",
       Icon: Gem,
       price: memberPrice.primary,
-      note: t("perMonth"),
+      note: t("perMonth") as string | null,
       href: "/signup",
       features: ["memberF1", "memberF2", "memberF3", "memberF4", "memberF5", "memberF6"],
       featured: true,
+      accent: false,
     },
     {
       key: "custom",
@@ -62,6 +54,7 @@ export default async function PricingPage() {
       href: "/custom-work",
       features: ["customF1", "customF2", "customF3", "customF4"],
       featured: false,
+      accent: true,
     },
   ] as const
 
@@ -88,14 +81,16 @@ export default async function PricingPage() {
         </section>
 
         <div className="shell py-14 sm:py-16">
-          <ul className="grid items-start gap-5 lg:grid-cols-3">
+          <ul className="mx-auto grid max-w-4xl items-stretch gap-5 sm:grid-cols-2">
             {plans.map((plan) => (
               <li
                 key={plan.key}
                 className={cn(
                   "relative flex h-full flex-col rounded-2xl border bg-card p-6 sm:p-7",
                   // The membership is the thing being sold; it gets the weight.
-                  plan.featured && "border-brand shadow-lg lg:-mt-4 lg:pb-10",
+                  plan.featured && "border-brand shadow-lg",
+                  // Custom modelling is the client's second commercial path — lift it too.
+                  plan.accent && "border-brand-accent/50 shadow-md",
                 )}
               >
                 {plan.featured && (
@@ -109,7 +104,9 @@ export default async function PricingPage() {
                     "inline-flex size-11 items-center justify-center rounded-xl",
                     plan.featured
                       ? "bg-brand text-brand-foreground"
-                      : "bg-brand/15 text-brand-accent",
+                      : plan.accent
+                        ? "bg-brand-accent text-brand-foreground"
+                        : "bg-brand/15 text-brand-accent",
                   )}
                 >
                   <plan.Icon className="size-5" aria-hidden />
@@ -143,7 +140,9 @@ export default async function PricingPage() {
                         aria-hidden
                         className={cn(
                           "mt-0.5 size-4 shrink-0",
-                          plan.featured ? "text-brand-accent" : "text-muted-foreground",
+                          plan.featured || plan.accent
+                            ? "text-brand-accent"
+                            : "text-muted-foreground",
                         )}
                       />
                       <span className="text-pretty">
@@ -161,9 +160,11 @@ export default async function PricingPage() {
                     "mt-7 h-11",
                     plan.featured
                       ? "bg-brand text-brand-foreground hover:bg-brand/85"
-                      : "",
+                      : plan.accent
+                        ? "bg-brand-accent text-brand-foreground hover:bg-brand-accent/90"
+                        : "",
                   )}
-                  variant={plan.featured ? "default" : "outline"}
+                  variant={plan.featured || plan.accent ? "default" : "outline"}
                 >
                   <Link href={plan.href}>{t(`${plan.key}Cta`)}</Link>
                 </Button>

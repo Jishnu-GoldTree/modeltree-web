@@ -83,7 +83,6 @@ export const PRIMARY_NAV: NavItem[] = [
     children: [
       { key: "adjust", href: "/custom-work/adjust", icon: "sliders" },
       { key: "commission", href: "/custom-work/commission", icon: "pen" },
-      { key: "enterprise", href: "/business", icon: "building" },
     ],
   },
   {
@@ -98,13 +97,10 @@ export const PRIMARY_NAV: NavItem[] = [
 ];
 
 export const HERO_FILTERS = [
+  { key: "rings", href: "/3d-models/rings" },
+  { key: "bracelets", href: "/3d-models/bracelets" },
   { key: "engagement", href: "/3d-models/engagement-rings" },
-  { key: "bands", href: "/3d-models/wedding-bands" },
-  { key: "castReady", href: "/3d-models/cast-ready" },
-  { key: "printReady", href: "/3d-models/print-ready" },
-  { key: "yellowGold", href: "/3d-models?metal=yellow-gold" },
-  { key: "settings", href: "/3d-models/settings" },
-  { key: "free", href: "/3d-models/free" },
+  { key: "necklaces", href: "/3d-models/necklaces" },
 ];
 
 /** Chip rows are translated search terms, so they carry keys, not literals. */
@@ -208,12 +204,6 @@ export const CRAFT_POINTS = [
   { key: "watertight", icon: "scan" },
   { key: "dimensions", icon: "ruler" },
   { key: "production", icon: "gem" },
-] as const;
-
-export const BUSINESS_PERKS = [
-  { key: "a", icon: "users" },
-  { key: "b", icon: "credit-card" },
-  { key: "c", icon: "file-check" },
 ] as const;
 
 export const FOOTER_COLUMNS = [

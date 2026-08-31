@@ -16,7 +16,6 @@ import { TrendingModels } from "@/components/landing/trending-models";
 import { ValueProps } from "@/components/landing/value-props";
 import { CraftStandard } from "@/components/landing/craft-standard";
 import { CustomSolutions } from "@/components/landing/custom-solutions";
-import { BusinessAccount } from "@/components/landing/business-account";
 
 export default async function HomePage() {
   const t = await getTranslations("landing.explore");
@@ -52,7 +51,6 @@ export default async function HomePage() {
         <CraftStandard />
         <ValueProps />
         <CustomSolutions />
-        <BusinessAccount />
       </main>
 
       <SiteFooter />

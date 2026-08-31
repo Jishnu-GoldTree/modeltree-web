@@ -26,6 +26,7 @@ const YEAR = 60 * 60 * 24 * 365
  */
 export const LOCALE_COOKIE = "mt_locale_choice"
 export const COOKIE_NOTICE_COOKIE = "mt_cookie_notice"
+export const WHY_CHOOSE_COOKIE = "mt_why_choose"
 
 function read(name: string) {
   if (typeof document === "undefined") return null
@@ -72,6 +73,16 @@ export function acknowledgeCookieNotice() {
   emit()
 }
 
+/** The "Why choose us?" promo shows once; this records that it has been seen. */
+export function hasSeenWhyChoose() {
+  return read(WHY_CHOOSE_COOKIE) === "1"
+}
+
+export function dismissWhyChoose() {
+  write(WHY_CHOOSE_COOKIE, "1")
+  emit()
+}
+
 /* ─────────────────────────── reading them in React ─────────────────────── */
 
 /**
@@ -96,7 +107,7 @@ function subscribe(listener: () => void) {
 
 /** A primitive snapshot: useSyncExternalStore requires a stable identity. */
 function clientSnapshot() {
-  return `${readLocalePreference() ?? ""}|${hasSeenCookieNotice() ? "1" : "0"}`
+  return `${readLocalePreference() ?? ""}|${hasSeenCookieNotice() ? "1" : "0"}|${hasSeenWhyChoose() ? "1" : "0"}`
 }
 
 const SERVER_SNAPSHOT = "server"
@@ -105,6 +116,7 @@ export type VisitorPrefs = {
   ready: boolean
   locale: Locale | null
   cookieNoticeSeen: boolean
+  whyChooseSeen: boolean
 }
 
 export function useVisitorPrefs(): VisitorPrefs {
@@ -115,13 +127,14 @@ export function useVisitorPrefs(): VisitorPrefs {
   )
 
   if (snapshot === SERVER_SNAPSHOT) {
-    return { ready: false, locale: null, cookieNoticeSeen: true }
+    return { ready: false, locale: null, cookieNoticeSeen: true, whyChooseSeen: true }
   }
 
-  const [locale, seen] = snapshot.split("|")
+  const [locale, cookieSeen, whyChooseSeen] = snapshot.split("|")
   return {
     ready: true,
     locale: (locale || null) as Locale | null,
-    cookieNoticeSeen: seen === "1",
+    cookieNoticeSeen: cookieSeen === "1",
+    whyChooseSeen: whyChooseSeen === "1",
   }
 }
