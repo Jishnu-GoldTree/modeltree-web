@@ -597,7 +597,11 @@
       "bands": "Wedding bands",
       "castReady": "Cast-ready",
       "membership": "Membership",
-      "customWork": "Custom modelling"
+      "customWork": "Custom modelling",
+      "delivery": "Delivery policy",
+      "sellerTerms": "Seller terms",
+      "cookiePolicy": "Cookie policy",
+      "legal": "Legal"
     }
   },
   "site": {
@@ -988,13 +992,17 @@
       {
         "heading": "Membership and payments",
         "body": [
-          "Membership is billed at ₪55 per month and renews automatically until cancelled. Prices are shown in new Israeli shekels and include VAT where applicable.",
-          "You can cancel at any time from your account settings. Cancellation stops future renewals but does not refund the current period unless the law requires otherwise."
+          "Membership is a recurring subscription billed at ₪55 per month. This is a recurring payment: your card is charged automatically every month on the renewal date until you cancel. Prices are shown in new Israeli shekels and include VAT where applicable.",
+          "The recurring nature and the price are shown clearly before you subscribe. You can cancel at any time from your account settings. Cancellation stops future renewals but does not refund the current period unless the law requires otherwise."
         ]
       },
       {
         "heading": "Marketplace purchases and licences",
         "body": "Buying or downloading a model grants you a non-exclusive licence to use it under the terms shown on the model's page. Models remain the intellectual property of their designers or of GoldTree. You may not resell, redistribute, or sub-license a model as a standalone file."
+      },
+      {
+        "heading": "Buying from GoldTree and from independent designers",
+        "body": "The catalogue includes both models produced in-house by GoldTree and models sold by independent third-party designers through the marketplace. Each product page makes clear who the seller is. GoldTree operates the marketplace, takes payment and is the merchant of record; the same delivery, licensing and refund protections apply whether a model is first-party or third-party."
       },
       {
         "heading": "Designer content and obligations",
@@ -1090,5 +1098,312 @@
         "body": "For privacy questions or to exercise your rights, email privacy@goldtree.co.il."
       }
     ]
+  },
+  "refunds": {
+    "metaTitle": "Refund & Cancellation Policy — ModelTree",
+    "metaDescription": "How refunds and cancellations work for digital 3D models and ModelTree membership.",
+    "title": "Refund & Cancellation Policy",
+    "updated": "Last updated {date}",
+    "intro": "ModelTree sells digital products — 3D model files delivered instantly for download. This policy explains when a purchase can be cancelled or refunded, for both one-off model purchases and monthly membership. It applies to models sold directly by GoldTree and, where noted, to models sold by independent designers through our marketplace.",
+    "sections": [
+      {
+        "heading": "Digital products delivered immediately",
+        "body": "All models are digital files. Because they are delivered and can be downloaded the moment payment succeeds, purchases are generally final and non-refundable once a download has started. By completing a purchase you agree that delivery begins immediately and acknowledge that this affects statutory cancellation rights for digital content."
+      },
+      {
+        "heading": "When we do refund a model purchase",
+        "body": [
+          "We will replace the file or refund the purchase where the model is materially faulty — for example the mesh is corrupt, the download is broken, or the files do not match what the product page described.",
+          "We will also refund a clear accidental duplicate purchase of the same model on the same account, provided the file has not been used commercially."
+        ]
+      },
+      {
+        "heading": "What is not refundable",
+        "body": "We cannot refund because you no longer need a model, bought the wrong item by mistake after downloading, lack the software to open the files, or changed your mind after downloading. These are limits of selling digital goods, not exceptions we apply selectively."
+      },
+      {
+        "heading": "Models sold by independent designers",
+        "body": "For models sold by third-party designers through the marketplace, the same faulty-file protection applies and is handled by GoldTree as the platform. We assess the claim, issue the refund where due, and settle any adjustment with the designer — you do not need to contact the designer yourself."
+      },
+      {
+        "heading": "Membership billing and cancellation",
+        "body": [
+          "Membership is a recurring subscription billed at ₪55 per month. It renews automatically on the same date each month until you cancel.",
+          "You can cancel at any time from your account settings. Cancellation stops the next renewal and keeps your access until the end of the period already paid for. We do not refund the current period on cancellation unless the law requires it."
+        ]
+      },
+      {
+        "heading": "Accidental or first renewal charges",
+        "body": "If a renewal was charged in error, or you cancelled but were still billed, contact us within 14 days and we will investigate and refund a charge that should not have been taken."
+      },
+      {
+        "heading": "Your statutory rights",
+        "body": "Nothing in this policy limits rights you have under the Israeli Consumer Protection Law or other applicable law, including the cancellation rights that apply to distance and online transactions. Where the law gives you a stronger right than this policy, the law applies."
+      },
+      {
+        "heading": "How to request a refund",
+        "body": "Email support@goldtree.co.il with your account email and the order reference. We aim to respond within 2 business days. Approved refunds are returned to the original payment method through our payment provider."
+      }
+    ]
+  },
+  "delivery": {
+    "metaTitle": "Digital Product & Delivery Policy — ModelTree",
+    "metaDescription": "How you receive the STL and 3D model files you buy on ModelTree. Digital delivery only — nothing is shipped.",
+    "title": "Digital Product & Delivery Policy",
+    "updated": "Last updated {date}",
+    "intro": "Everything sold on ModelTree is a digital product: 3D model files for jewellery, supplied as STL and the other formats listed on each product page. No physical item is manufactured, packed or shipped. This page explains exactly how you receive your files.",
+    "sections": [
+      {
+        "heading": "Digital products only — nothing is shipped",
+        "body": "Unless a listing explicitly states otherwise, you are buying downloadable files, not a physical object. There is no shipping, no postage and no delivery address. You will not receive anything in the post."
+      },
+      {
+        "heading": "How you receive your files",
+        "body": [
+          "As soon as your payment is confirmed, your files become available to download. You can download them immediately from the order confirmation screen and at any time afterwards from your account, under your purchases.",
+          "We also send an order confirmation email with a link back to your downloads. Delivery is normally instant; at busy times it may take a few minutes for a purchase to appear in your account."
+        ]
+      },
+      {
+        "heading": "What is included",
+        "body": "Each product page lists the exact formats, the license, and what the download contains before you buy. Jewellery models are supplied cast-ready or print-ready as stated on the listing. Check the formats section on the page to confirm the files suit your workflow."
+      },
+      {
+        "heading": "Re-downloading your purchases",
+        "body": "Purchased files stay in your account so you can download them again if you lose the local copy or change computers. We keep them available for as long as you hold an account with us and, where relevant, for the duration of the license."
+      },
+      {
+        "heading": "Software you need",
+        "body": "STL files open in standard slicer and CAD software (for example your 3D-printer slicer, or jewellery CAD such as Matrix, RhinoGold or ZBrush). We do not supply this software. Owning a model does not include design or manufacturing services unless bought separately as custom work."
+      },
+      {
+        "heading": "If a download fails",
+        "body": "If a file will not download or open, contact support@goldtree.co.il with your order reference. We will re-issue the download or replace a faulty file. See our Refund & Cancellation Policy for when a purchase can be refunded."
+      },
+      {
+        "heading": "Membership downloads",
+        "body": "Membership includes a set number of model downloads per billing period, as described on the pricing page. Downloads taken under an active membership are delivered the same way — instantly, to your account."
+      }
+    ]
+  },
+  "cookiePolicy": {
+    "metaTitle": "Cookie Policy — ModelTree",
+    "metaDescription": "The cookies ModelTree uses to keep you signed in and remember your cart and language — and how to control them.",
+    "title": "Cookie Policy",
+    "updated": "Last updated {date}",
+    "intro": "This Cookie Policy explains how ModelTree, operated by GoldTree, uses cookies and similar technologies. We keep this deliberately small: we use cookies to run the site, not to build advertising profiles.",
+    "sections": [
+      {
+        "heading": "What cookies are",
+        "body": "Cookies are small text files a website stores in your browser. They let a site remember things between page loads and visits — such as the fact that you are signed in — so it works as you expect."
+      },
+      {
+        "heading": "Strictly necessary cookies",
+        "body": "These keep you signed in, remember the items in your cart and your saved models, and store your language choice (Hebrew or English). The site cannot function correctly without them, so they are always on and do not require consent."
+      },
+      {
+        "heading": "Preference cookies",
+        "body": "We use a small number of cookies to remember choices you make, such as dismissing a notice or keeping your chosen language, so you are not asked again on every visit."
+      },
+      {
+        "heading": "Performance and analytics",
+        "body": "We use privacy-respecting performance measurement to see how fast pages load and to fix problems. It does not track you across other websites and is not used for advertising."
+      },
+      {
+        "heading": "What we do not use",
+        "body": "We do not use advertising cookies, cross-site tracking, or third-party marketing pixels. We do not sell data collected through cookies."
+      },
+      {
+        "heading": "Managing cookies",
+        "body": "You can delete or block cookies in your browser settings at any time. Blocking strictly necessary cookies will stop you from signing in or checking out. Our cookie notice, shown on your first visit, summarises this policy."
+      },
+      {
+        "heading": "Payment provider cookies",
+        "body": "When you pay, our payment provider may set its own cookies to process the transaction securely and prevent fraud. These are governed by the provider's own policy and are used only to complete your payment."
+      }
+    ]
+  },
+  "licensing": {
+    "metaTitle": "Licensing, Intellectual Property & Copyright — ModelTree",
+    "metaDescription": "What you can and cannot do with the 3D models you buy on ModelTree, and how we handle copyright.",
+    "title": "Licensing, Intellectual Property & Copyright",
+    "updated": "Last updated {date}",
+    "intro": "When you buy a model on ModelTree you are buying a licence to use it, not the copyright in it. This page explains the licence you receive, what you may and may not do with a model, and how to raise a copyright concern. The exact licence for each model is shown on its product page and prevails if it differs from the summary here.",
+    "sections": [
+      {
+        "heading": "The licence you receive",
+        "body": "Unless a product page states otherwise, a purchase grants you a worldwide, non-exclusive, non-transferable licence to use the model to design, manufacture, cast, 3D-print and sell physical jewellery. The licence is granted to the buying account and cannot be shared between businesses."
+      },
+      {
+        "heading": "What you may do",
+        "body": "You may use the files in your own production workflow, modify and adapt them for your own manufacturing, and sell the physical pieces you make from them. You may keep working copies and re-download the files for your own use."
+      },
+      {
+        "heading": "What you may not do",
+        "body": "You may not resell, share, sub-license or redistribute the model file itself — as-is or modified — as a digital product, on another marketplace, or in a bundle. You may not claim authorship of the model, or use it to train a machine-learning model. A single purchase does not cover multiple unrelated businesses."
+      },
+      {
+        "heading": "Ownership",
+        "body": "Copyright and all intellectual-property rights in a model remain with GoldTree, or with the independent designer who created it, as applicable. Nothing you buy transfers ownership of the design unless a listing or a written custom-work agreement expressly says so."
+      },
+      {
+        "heading": "Custom and commissioned work",
+        "body": "Where you commission a bespoke model, ownership and licensing follow the written terms agreed for that commission. Unless agreed otherwise, ownership of a commissioned model transfers to you on full payment."
+      },
+      {
+        "heading": "Our brand",
+        "body": "The MODELTREE and GoldTree names, logos and page designs are our trademarks and may not be used without permission. A model licence does not grant any right to our branding."
+      },
+      {
+        "heading": "Copyright complaints",
+        "body": "We respond to genuine copyright and IP complaints. If you believe a model infringes your rights, email legal@goldtree.co.il with the model URL, proof of your rights and your contact details. We will review, and remove or disable infringing listings where a complaint is substantiated."
+      },
+      {
+        "heading": "Repeat infringement",
+        "body": "Designers who repeatedly upload infringing content have their listings removed and their seller accounts suspended or closed."
+      }
+    ]
+  },
+  "sellerTerms": {
+    "metaTitle": "Seller & Designer Agreement — ModelTree",
+    "metaDescription": "Terms for independent designers selling 3D models through the ModelTree marketplace: content, commission, payouts and responsibilities.",
+    "title": "Seller & Designer Agreement",
+    "updated": "Last updated {date}",
+    "intro": "These terms apply to designers who list and sell 3D models through the ModelTree marketplace. They are additional to our general Terms of Service. ModelTree is operated by GoldTree, which runs the marketplace, takes payment from buyers and pays designers their share. By opening a seller account or uploading a model you accept these terms.",
+    "sections": [
+      {
+        "heading": "Who can sell",
+        "body": "You must have a seller account, be at least 18, and be able to enter a binding contract. You are responsible for everything uploaded and sold under your account and for keeping your login secure."
+      },
+      {
+        "heading": "Your content and rights",
+        "body": "You confirm that you own each model you upload, or are fully licensed to sell it, and that it infringes no one's intellectual-property, trademark or other rights. You are solely responsible for your listings, their descriptions, and the accuracy of what you promise buyers."
+      },
+      {
+        "heading": "Licence you grant us",
+        "body": "You grant GoldTree a non-exclusive, worldwide licence to host, display, market, and distribute your models to buyers through the platform, and to show previews and thumbnails for promotion. You keep ownership of your models; this licence exists so we can operate the marketplace and deliver purchases."
+      },
+      {
+        "heading": "First-party and third-party listings",
+        "body": "The marketplace carries both models produced in-house by GoldTree and models sold by independent designers. Your listings are shown as sold by you through the platform. You are the author and rights-holder of your own models; GoldTree is the platform and the merchant of record for the transaction."
+      },
+      {
+        "heading": "Pricing",
+        "body": "You set the price of your models within the ranges and rules the platform supports. Prices are shown to buyers in new Israeli shekels, inclusive of VAT where applicable. We may run platform-wide promotions with notice; your commission is calculated on the actual amount the buyer pays."
+      },
+      {
+        "heading": "Commission and your share",
+        "body": [
+          "GoldTree retains a commission on each sale and pays you the remainder — your revenue share. The current commission rate is shown in your seller dashboard and may be updated with reasonable notice.",
+          "Your share is calculated on the net sale value after any taxes, refunds, chargebacks and payment-processing fees attributable to the sale."
+        ]
+      },
+      {
+        "heading": "Payouts",
+        "body": [
+          "At launch, payouts are processed manually. We pay out earnings that have cleared and exceed the minimum payout threshold shown in your dashboard, on a regular cycle, to the payout details you provide.",
+          "Earnings from a sale become payable only after the buyer's refund window has passed. Refunds and chargebacks are deducted from your balance. You are responsible for giving us correct payout details."
+        ]
+      },
+      {
+        "heading": "Taxes and invoicing",
+        "body": "You are responsible for your own taxes on the income you earn, and for issuing any tax documentation you are legally required to provide. GoldTree issues tax invoices to buyers for their purchases. Nothing here creates an employment or partnership relationship between us."
+      },
+      {
+        "heading": "Content standards and prohibited content",
+        "body": "Models must meet our published quality and technical standards and must not be infringing, unlawful, stolen, or misrepresented. We may reject, remove, or unpublish any listing that breaches these standards or these terms."
+      },
+      {
+        "heading": "Seller responsibility and moderation",
+        "body": "You are responsible for user-generated content you post, including model files, images, and text. We may review, moderate, and remove content, and we may suspend or close seller accounts that breach these terms, receive substantiated infringement complaints, or harm buyers."
+      },
+      {
+        "heading": "Indemnity",
+        "body": "You agree to indemnify GoldTree against claims, losses and costs arising from your content, your breach of these terms, or your infringement of a third party's rights."
+      },
+      {
+        "heading": "Termination",
+        "body": "Either side may end this agreement at any time. You may remove your listings, subject to honouring licences already sold to buyers, which continue after your account closes. We may withhold payouts where fraud or infringement is being investigated."
+      }
+    ]
+  },
+  "about": {
+    "metaTitle": "About ModelTree — a jewellery-first 3D marketplace",
+    "metaDescription": "ModelTree is a jewellery 3D-model marketplace by GoldTree: cast-ready models, membership and custom modelling for jewelers.",
+    "title": "About ModelTree",
+    "subtitle": "A jewellery-first 3D marketplace, built by a gold-trading company for the people who actually make jewellery.",
+    "intro": "ModelTree is operated by GoldTree, a gold-trading company based in Israel. Over two years, our in-house team of four designers built a library of around 40,000 jewellery models for casting and 3D printing. ModelTree opens that library — and a growing catalogue from independent designers — to jewelers everywhere.",
+    "sections": [
+      {
+        "heading": "What we do",
+        "body": "We sell cast-ready and print-ready 3D models for jewellery — rings, pendants, settings and more — as instant digital downloads. Buy a model outright, or take a monthly membership that includes a set number of downloads. Every file is prepared for real production, not just for rendering."
+      },
+      {
+        "heading": "A marketplace, not just a library",
+        "body": "Alongside models produced in-house by GoldTree, independent designers list and sell their own work through ModelTree. Product pages make clear who you are buying from, and the same delivery, licensing and refund protections apply either way."
+      },
+      {
+        "heading": "Custom modelling",
+        "body": "When a jeweler needs something specific, our modelling team adjusts an existing piece or builds a new one to brief. Custom work is quoted and agreed before any charge, and the conversation happens where Israeli jewelers already work."
+      },
+      {
+        "heading": "Built for this market",
+        "body": "The platform is Hebrew-first and English-ready, priced in new Israeli shekels, and shaped around how jewelers here actually buy and produce. That focus is the whole point: tools that fit the trade rather than a generic asset store."
+      }
+    ],
+    "businessTitle": "Business information"
+  },
+  "contact": {
+    "metaTitle": "Contact ModelTree",
+    "metaDescription": "Get in touch with ModelTree by GoldTree — support, billing, legal and privacy contacts, and business details.",
+    "title": "Contact us",
+    "intro": "We are happy to help with your account, an order, a licensing question or a policy matter. Choose the right address below and we will get back to you.",
+    "supportTitle": "Support & orders",
+    "supportBody": "Questions about your account, a purchase, downloads, membership or a refund. We aim to reply within 2 business days.",
+    "legalTitle": "Legal & copyright",
+    "legalBody": "Terms, licensing and copyright or intellectual-property complaints.",
+    "privacyTitle": "Privacy & data",
+    "privacyBody": "Questions about your personal data or our Privacy Policy.",
+    "whatsappTitle": "Custom modelling",
+    "whatsappBody": "For custom-work requests, our modelling team answers on WhatsApp. Start from a model or the custom-work page and we will pick it up there.",
+    "whatsappCta": "Start a custom-work request",
+    "businessTitle": "Business information",
+    "labels": {
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Registered address",
+      "registration": "Company registration",
+      "legalName": "Legal entity",
+      "country": "Country"
+    }
+  },
+  "checkout": {
+    "metaTitle": "Checkout — ModelTree",
+    "title": "Checkout",
+    "summaryTitle": "Order summary",
+    "subtotal": "Subtotal ({count})",
+    "tax": "VAT",
+    "taxNote": "Included where applicable",
+    "total": "Total",
+    "digitalNote": "You are buying digital files. Nothing is shipped — your models are available to download the moment payment succeeds.",
+    "recurringNote": "Membership is a recurring subscription of ₪55 per month. It renews automatically until you cancel, which you can do at any time from your account.",
+    "agreeLabel": "I have read and agree to the <terms>Terms of Service</terms>, the <refunds>Refund Policy</refunds> and the <privacy>Privacy Policy</privacy>, and I understand these are digital products delivered immediately.",
+    "payNow": "Pay securely",
+    "secureNote": "Payment is processed securely by our payment provider over an encrypted connection. We never see or store your full card details.",
+    "empty": "Your cart is empty",
+    "emptyBody": "Add a model to your cart before checking out.",
+    "emptyAction": "Browse models",
+    "backToCart": "Back to cart",
+    "pendingTitle": "Payment provider not connected yet",
+    "pendingBody": "This store is being prepared for launch. Live card payment will be enabled once our payment provider is approved. No charge is taken.",
+    "successTitle": "Thank you — your order is confirmed",
+    "successBody": "Your payment succeeded and your files are ready. Download them below or any time from your account. A confirmation email and tax invoice are on their way.",
+    "successDownloads": "Go to my downloads",
+    "successKeep": "Keep browsing",
+    "orderRef": "Order reference",
+    "failedTitle": "Payment was not completed",
+    "failedBody": "Your payment did not go through and you have not been charged. You can try again, or contact us if the problem continues.",
+    "failedRetry": "Return to checkout",
+    "failedSupport": "Contact support"
   }
 }

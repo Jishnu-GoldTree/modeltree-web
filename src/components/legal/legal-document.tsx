@@ -6,17 +6,27 @@ import { SiteFooter } from "@/components/layout/site-footer"
 
 type Section = { heading: string; body: string | string[] }
 
+/** Message namespaces that follow the flat title/intro/sections shape. */
+export type LegalNamespace =
+  | "terms"
+  | "privacy"
+  | "refunds"
+  | "delivery"
+  | "cookiePolicy"
+  | "licensing"
+  | "sellerTerms"
+
 /**
- * Shared shell for the flat legal documents (terms, privacy). Each page passes
- * its own message namespace and effective date; the copy — title, intro and the
- * ordered `sections` array — lives in the translation catalogs so both locales
- * stay in sync.
+ * Shared shell for the flat legal documents. Each page passes its own message
+ * namespace and effective date; the copy — title, intro and the ordered
+ * `sections` array — lives in the translation catalogs so both locales stay in
+ * sync.
  */
 export async function LegalDocument({
   namespace,
   effectiveDate,
 }: {
-  namespace: "terms" | "privacy"
+  namespace: LegalNamespace
   /** ISO date (YYYY-MM-DD) the document last changed. */
   effectiveDate: string
 }) {
