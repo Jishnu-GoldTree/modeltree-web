@@ -32,6 +32,7 @@ export default async function CartPage() {
     formatPrice(agorot, locale as Locale, { freeLabel: free("free") }).primary
   const t = await getTranslations("cart")
   const lic = await getTranslations("license")
+  const f = await getTranslations("landing.footer")
   const { lines, subtotal, itemCount, total } = await getCart()
   const optionsBySlug = new Map(
     await Promise.all(
@@ -197,6 +198,17 @@ export default async function CartPage() {
                     <ShieldCheck className="mt-px size-4 shrink-0 text-brand-accent" aria-hidden />
                     Instant download after payment, with an invoice for every
                     purchase.
+                  </p>
+
+                  {/* Refund and Terms links must be visible before payment. */}
+                  <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                    <Link href="/refunds" className="hover:text-foreground hover:underline">
+                      {f("refunds")}
+                    </Link>
+                    <span aria-hidden>·</span>
+                    <Link href="/terms" className="hover:text-foreground hover:underline">
+                      {f("terms")}
+                    </Link>
                   </p>
                 </div>
 

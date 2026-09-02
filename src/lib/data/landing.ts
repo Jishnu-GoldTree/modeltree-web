@@ -211,17 +211,14 @@ export const FOOTER_COLUMNS = [
     key: "company",
     links: [
       { key: "about", href: "/about" },
-      { key: "careers", href: "/careers" },
-      { key: "press", href: "/press" },
-      { key: "blog", href: "/blog" },
       { key: "contact", href: "/contact" },
+      { key: "membership", href: "/pricing" },
+      { key: "customWork", href: "/custom-work" },
     ],
   },
   {
     key: "marketplace",
     links: [
-      { key: "membership", href: "/pricing" },
-      { key: "customWork", href: "/custom-work" },
       { key: "models", href: "/3d-models" },
       { key: "engagement", href: "/3d-models/engagement-rings" },
       { key: "bands", href: "/3d-models/wedding-bands" },
@@ -233,20 +230,21 @@ export const FOOTER_COLUMNS = [
     key: "forDesigners",
     links: [
       { key: "startSelling", href: "/sell" },
-      { key: "royalties", href: "/sell/royalties" },
-      { key: "guidelines", href: "/guidelines" },
-      { key: "forum", href: "/forum" },
-      { key: "challenges", href: "/challenges" },
+      { key: "sellerTerms", href: "/sell/terms" },
     ],
   },
+  // A dedicated legal column: payment-processor reviews (and buyers) expect
+  // every policy one click away from the footer, so they all live here and
+  // point at pages that actually exist.
   {
-    key: "support",
+    key: "legal",
     links: [
-      { key: "help", href: "/help" },
-      { key: "licensing", href: "/licensing" },
+      { key: "terms", href: "/terms" },
+      { key: "privacy", href: "/privacy" },
       { key: "refunds", href: "/refunds" },
-      { key: "report", href: "/report" },
-      { key: "status", href: "/status" },
+      { key: "delivery", href: "/delivery" },
+      { key: "cookiePolicy", href: "/cookies" },
+      { key: "licensing", href: "/licensing" },
     ],
   },
 ] as const;
