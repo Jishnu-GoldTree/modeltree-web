@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server"
 
-import { COMPANY, WHATSAPP_NUMBER, mailto } from "@/lib/data/company"
+import { COMPANY, mailto } from "@/lib/data/company"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 
@@ -21,7 +21,6 @@ export default async function AboutPage() {
   const c = await getTranslations("contact")
   const sections = t.raw("sections") as Section[]
 
-  const phone = COMPANY.phone || (WHATSAPP_NUMBER ? `+${WHATSAPP_NUMBER}` : "")
   const info: { label: string; value: string; href?: string }[] = [
     { label: c("labels.legalName"), value: COMPANY.legalName },
     { label: c("labels.country"), value: COMPANY.country },
@@ -35,7 +34,6 @@ export default async function AboutPage() {
       value: COMPANY.email.support,
       href: mailto(COMPANY.email.support),
     },
-    phone && { label: c("labels.phone"), value: phone },
   ].filter(Boolean) as { label: string; value: string; href?: string }[]
 
   return (

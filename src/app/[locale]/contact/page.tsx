@@ -2,7 +2,7 @@ import { Link } from "@/i18n/navigation"
 import { getTranslations } from "next-intl/server"
 import { LifeBuoy, Mail, MessagesSquare, Scale, ShieldCheck } from "lucide-react"
 
-import { COMPANY, WHATSAPP_NUMBER, mailto } from "@/lib/data/company"
+import { COMPANY, mailto } from "@/lib/data/company"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 
@@ -40,7 +40,6 @@ export default async function ContactPage() {
     },
   ]
 
-  const phone = COMPANY.phone || (WHATSAPP_NUMBER ? `+${WHATSAPP_NUMBER}` : "")
   const info: { label: string; value: string; href?: string }[] = [
     { label: t("labels.legalName"), value: COMPANY.legalName },
     { label: t("labels.country"), value: COMPANY.country },
@@ -54,7 +53,6 @@ export default async function ContactPage() {
       value: COMPANY.email.support,
       href: mailto(COMPANY.email.support),
     },
-    phone && { label: t("labels.phone"), value: phone },
   ].filter(Boolean) as { label: string; value: string; href?: string }[]
 
   return (

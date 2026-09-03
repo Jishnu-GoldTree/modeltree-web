@@ -8,11 +8,10 @@
  * sync — no copy drifts out of date because it was typed into a page by hand.
  *
  * Values marked TODO are the ones only the client can supply (company
- * registration number, registered address, phone). They are intentionally
+ * registration number, registered address). They are intentionally
  * empty rather than invented: the pages read `COMPANY.*` and simply omit any
  * block whose value is blank, so filling them in here makes them appear with
- * no further code change. The phone falls back to the WhatsApp number already
- * configured in the environment.
+ * no further code change.
  */
 export const COMPANY = {
   /** Brand shown in the UI. */
@@ -38,15 +37,7 @@ export const COMPANY = {
    */
   registrationNumber: "", // TODO(client): company / VAT registration number
   address: "", // TODO(client): registered business address
-  /**
-   * Phone falls back to the WhatsApp number the app already uses. Set a
-   * display-formatted number here to override (e.g. "+972 3 000 0000").
-   */
-  phone: "",
 } as const
-
-/** Digits-only WhatsApp number from the environment, or "" when unset. */
-export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? ""
 
 /** `mailto:` helper so pages don't rebuild the string. */
 export function mailto(address: string) {
