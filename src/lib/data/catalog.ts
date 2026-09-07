@@ -316,6 +316,65 @@ function joinedSelect(q: CatalogQuery) {
   `
 }
 
+// Cached across requests via the Data Cache, following the same pattern as the
+// per-model reads below: the listing rows and the ~32-count facet fan-out are
+// identical for every anonymous visitor (the anon client carries no cookies),
+// so a given query+facets combination is safe to share. Keyed by the query and
+// whether facets were requested; expired immediately on any model or review
+// write via CATALOG_TAG (see src/lib/actions/{models,reviews}.ts), with a 1h TTL
+// backstop. The catalog page itself stays dynamic (it reads cookies for
+// favourites) — this only spares it from re-running every Supabase read per hit.
+const queryModelsCached = unstable_cache(
+  async (query: CatalogQuery, withFacets: boolean): Promise<CatalogResult> => {
+    const build = (select: string, count?: "exact") => {
+      let q = supabasePublic
+        .from("models")
+        .select(select, count ? { count } : undefined)
+        .eq("status", "published")
+      q = applyFilters(q as Builder, query) as typeof q
+      return q
+    }
+
+    const page = Math.max(query.page ?? 1, 1)
+    const from = (page - 1) * PAGE_SIZE
+
+    const listQuery = applySort(build(joinedSelect(query), "exact") as Builder, query.sort ?? "trending")
+      .range(from, from + PAGE_SIZE - 1)
+
+    const [{ data, count, error }, facets] = await Promise.all([
+      listQuery as unknown as Promise<{
+        data: ModelRow[] | null
+        count: number | null
+        error: { message: string } | null
+      }>,
+      withFacets
+        ? computeFacets(query)
+        : Promise.resolve({
+            categories: {},
+            formats: {},
+            licenses: {},
+            metals: {},
+            stones: {},
+          } satisfies CatalogResult["facets"]),
+    ])
+
+    if (error) throw new Error(`catalog query failed: ${error.message}`)
+
+    const total = count ?? 0
+    const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE))
+
+    return {
+      items: await Promise.all((data ?? []).map(toModel)),
+      total,
+      page: Math.min(page, pageCount),
+      pageCount,
+      facets,
+    }
+  },
+  ["catalog-list"],
+  { revalidate: 3600, tags: [CATALOG_TAG] },
+)
+
 export async function queryModels(
   query: CatalogQuery,
   options: { facets?: boolean } = {},
@@ -323,52 +382,7 @@ export async function queryModels(
   // Facet counts are ~32 separate count() round trips. Only the catalog route's
   // sidebar renders them; the landing trending row and infinite-scroll pages
   // discard them, so they opt out and skip the queries entirely.
-  const withFacets = options.facets ?? true
-
-  const build = (select: string, count?: "exact") => {
-    let q = supabasePublic
-      .from("models")
-      .select(select, count ? { count } : undefined)
-      .eq("status", "published")
-    q = applyFilters(q as Builder, query) as typeof q
-    return q
-  }
-
-  const page = Math.max(query.page ?? 1, 1)
-  const from = (page - 1) * PAGE_SIZE
-
-  const listQuery = applySort(build(joinedSelect(query), "exact") as Builder, query.sort ?? "trending")
-    .range(from, from + PAGE_SIZE - 1)
-
-  const [{ data, count, error }, facets] = await Promise.all([
-    listQuery as unknown as Promise<{
-      data: ModelRow[] | null
-      count: number | null
-      error: { message: string } | null
-    }>,
-    withFacets
-      ? computeFacets(query)
-      : Promise.resolve({
-          categories: {},
-          formats: {},
-          licenses: {},
-          metals: {},
-          stones: {},
-        } satisfies CatalogResult["facets"]),
-  ])
-
-  if (error) throw new Error(`catalog query failed: ${error.message}`)
-
-  const total = count ?? 0
-  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE))
-
-  return {
-    items: await Promise.all((data ?? []).map(toModel)),
-    total,
-    page: Math.min(page, pageCount),
-    pageCount,
-    facets,
-  }
+  return queryModelsCached(query, options.facets ?? true)
 }
 
 /**
@@ -511,6 +525,26 @@ export async function allModelSlugs(): Promise<string[]> {
     .select("slug")
     .eq("status", "published")
   return (data ?? []).map((m) => m.slug)
+}
+
+/** Published model slugs with their publish timestamp, for `<lastmod>`. */
+export async function allModelSitemapEntries(): Promise<
+  { slug: string; publishedAt: string | null }[]
+> {
+  const { data } = await supabasePublic
+    .from("models")
+    .select("slug, published_at")
+    .eq("status", "published")
+  return (data ?? []).map((m) => ({
+    slug: (m as { slug: string }).slug,
+    publishedAt: (m as { published_at: string | null }).published_at,
+  }))
+}
+
+/** Every category slug — the browseable `/3d-models/[segment]` category pages. */
+export async function allCategorySlugs(): Promise<string[]> {
+  const { data } = await supabasePublic.from("categories").select("slug")
+  return (data ?? []).map((c) => (c as { slug: string }).slug)
 }
 
 /* ──────────────────────────── designer storefront ───────────────────────── */
