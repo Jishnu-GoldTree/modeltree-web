@@ -316,47 +316,41 @@ function joinedSelect(q: CatalogQuery) {
   `
 }
 
-// Cached across requests via the Data Cache, following the same pattern as the
-// per-model reads below: the listing rows and the ~32-count facet fan-out are
-// identical for every anonymous visitor (the anon client carries no cookies),
-// so a given query+facets combination is safe to share. Keyed by the query and
-// whether facets were requested; expired immediately on any model or review
-// write via CATALOG_TAG (see src/lib/actions/{models,reviews}.ts), with a 1h TTL
-// backstop. The catalog page itself stays dynamic (it reads cookies for
-// favourites) — this only spares it from re-running every Supabase read per hit.
-const queryModelsCached = unstable_cache(
-  async (query: CatalogQuery, withFacets: boolean): Promise<CatalogResult> => {
-    const build = (select: string, count?: "exact") => {
-      let q = supabasePublic
-        .from("models")
-        .select(select, count ? { count } : undefined)
-        .eq("status", "published")
-      q = applyFilters(q as Builder, query) as typeof q
-      return q
-    }
+const EMPTY_FACETS: CatalogResult["facets"] = {
+  categories: {},
+  formats: {},
+  licenses: {},
+  metals: {},
+  stones: {},
+}
 
+// The listing rows, cached across requests via the Data Cache and keyed by the
+// full query (page and sort included). Identical for every anonymous visitor
+// (the anon client carries no cookies) and expired on any model or review write
+// via CATALOG_TAG (see src/lib/actions/{models,reviews}.ts), with a 1h TTL
+// backstop. The catalog page itself stays dynamic (it reads cookies for
+// favourites) — this only spares it from re-running the Supabase listing read
+// per hit.
+const listModelsCached = unstable_cache(
+  async (query: CatalogQuery): Promise<Omit<CatalogResult, "facets">> => {
     const page = Math.max(query.page ?? 1, 1)
     const from = (page - 1) * PAGE_SIZE
 
-    const listQuery = applySort(build(joinedSelect(query), "exact") as Builder, query.sort ?? "trending")
-      .range(from, from + PAGE_SIZE - 1)
+    let q = supabasePublic
+      .from("models")
+      .select(joinedSelect(query), { count: "exact" })
+      .eq("status", "published")
+    q = applyFilters(q as Builder, query) as typeof q
+    const listQuery = applySort(q as Builder, query.sort ?? "trending").range(
+      from,
+      from + PAGE_SIZE - 1,
+    )
 
-    const [{ data, count, error }, facets] = await Promise.all([
-      listQuery as unknown as Promise<{
-        data: ModelRow[] | null
-        count: number | null
-        error: { message: string } | null
-      }>,
-      withFacets
-        ? computeFacets(query)
-        : Promise.resolve({
-            categories: {},
-            formats: {},
-            licenses: {},
-            metals: {},
-            stones: {},
-          } satisfies CatalogResult["facets"]),
-    ])
+    const { data, count, error } = await (listQuery as unknown as Promise<{
+      data: ModelRow[] | null
+      count: number | null
+      error: { message: string } | null
+    }>)
 
     if (error) throw new Error(`catalog query failed: ${error.message}`)
 
@@ -368,21 +362,49 @@ const queryModelsCached = unstable_cache(
       total,
       page: Math.min(page, pageCount),
       pageCount,
-      facets,
     }
   },
   ["catalog-list"],
   { revalidate: 3600, tags: [CATALOG_TAG] },
 )
 
+// Facets are the ~30-count fan-out (see computeFacets). They count the whole
+// filtered set, not a page of it — neither computeFacets nor applyFilters ever
+// look at page or sort — so they're cached under their own key built from the
+// filter dimensions alone (see facetQuery). Walking pagination or flipping the
+// sort on the same filters therefore reuses one computation instead of
+// re-running the fan-out per permutation, which is the access pattern a catalog
+// crawler hits hardest. Same TTL and CATALOG_TAG invalidation as the listing.
+const facetsCached = unstable_cache(
+  (query: CatalogQuery): Promise<CatalogResult["facets"]> => computeFacets(query),
+  ["catalog-facets"],
+  { revalidate: 3600, tags: [CATALOG_TAG] },
+)
+
+// The facet-relevant slice of a query: everything except paging and sort, which
+// facets don't depend on. Used as the facet cache key so every page and sort of
+// the same filter set collapses onto one entry.
+function facetQuery(query: CatalogQuery): CatalogQuery {
+  const filters = { ...query }
+  delete filters.page
+  delete filters.sort
+  return filters
+}
+
 export async function queryModels(
   query: CatalogQuery,
   options: { facets?: boolean } = {},
 ): Promise<CatalogResult> {
-  // Facet counts are ~32 separate count() round trips. Only the catalog route's
-  // sidebar renders them; the landing trending row and infinite-scroll pages
-  // discard them, so they opt out and skip the queries entirely.
-  return queryModelsCached(query, options.facets ?? true)
+  // Only the catalog route's sidebar renders facets; the landing trending row
+  // and infinite-scroll pages discard them, so they opt out and skip the fan-out
+  // entirely. Listing rows and facets are cached under different keys and
+  // fetched in parallel.
+  const withFacets = options.facets ?? true
+  const [list, facets] = await Promise.all([
+    listModelsCached(query),
+    withFacets ? facetsCached(facetQuery(query)) : Promise.resolve(EMPTY_FACETS),
+  ])
+  return { ...list, facets }
 }
 
 /**
