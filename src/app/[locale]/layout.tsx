@@ -5,6 +5,7 @@ import { Heebo } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "../globals.css";
 
 import { SITE } from "@/lib/data/landing";
@@ -141,6 +142,7 @@ export default async function LocaleLayout({
             <VisitorPrompts />
           </Providers>
         </NextIntlClientProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
