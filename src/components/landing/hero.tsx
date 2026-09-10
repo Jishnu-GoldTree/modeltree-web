@@ -54,17 +54,118 @@ function HeroBackdrop() {
   )
 }
 
-export async function Hero() {
+/**
+ * The catalog's real figures, presented as the marketplace's scoreboard.
+ *
+ * These were three loose columns of white text sitting on the backdrop. As one
+ * bordered slab they read as a single claim about the library rather than three
+ * decorations, and the "live" tag is honest: every figure is counted from the
+ * database on each render, not written down.
+ *
+ * The gradient is painted on a 1px-padded wrapper with the surface laid on top,
+ * which is how you get a gradient *border* with a radius — `border-image`
+ * takes no radius, so a bordered rounded box squares its corners off.
+ */
+async function LiveNumbers() {
   const stats = await getMarketplaceStats()
   const t = await getTranslations("landing")
-  const site = await getTranslations("site")
+
+  const figures = [
+    { value: formatStat(stats.models), label: t("heroStats.models") },
+    { value: formatStat(stats.designers), label: t("heroStats.designers") },
+    { value: formatStat(stats.downloads), label: t("heroStats.downloads") },
+  ]
+
   return (
-    <section className="relative isolate pt-26">
+    <div
+      className="mt-12 w-full max-w-4xl rounded-2xl p-px shadow-2xl shadow-black/40"
+      style={{
+        backgroundImage:
+          "linear-gradient(100deg, oklch(0.72 0.16 13), oklch(0.55 0.1 30) 35%, oklch(1 0 0 / 0.18) 60%, oklch(0.72 0.16 13))",
+      }}
+    >
+      <div className="rounded-[calc(var(--radius-2xl)-1px)] bg-ink/95 px-5 py-5 backdrop-blur sm:px-7">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm font-semibold text-white sm:text-base">
+            {t.rich("heroStatsTitle", {
+              hl: (chunks) => <span className="text-brand-on-ink">{chunks}</span>,
+            })}
+          </p>
+          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-[11px] font-medium tracking-wide text-white/70 uppercase">
+            {/* Two stacked dots: the ping expands and fades while the solid one
+                stays put, so the tag reads as a feed rather than a label. */}
+            <span className="relative flex size-1.5">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
+            </span>
+            {t("heroStatsLive")}
+          </span>
+        </div>
+
+        {/* border-s on every cell but the first, rather than divide-x: the
+            logical property puts the rule on the correct side in Hebrew too. */}
+        <dl className="mt-5 grid grid-cols-3 text-start">
+          {figures.map((figure) => (
+            <div
+              key={figure.label}
+              className="px-3 first:ps-0 not-first:border-s not-first:border-white/10 sm:px-6"
+            >
+              <dt className="sr-only">{figure.label}</dt>
+              <dd className="text-2xl font-semibold text-white tabular-nums sm:text-3xl">
+                {figure.value}
+              </dd>
+              <p className="mt-1 text-xs text-white/55 sm:text-sm">{figure.label}</p>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  )
+}
+
+export async function Hero() {
+  const t = await getTranslations("landing")
+  const site = await getTranslations("site")
+
+  return (
+    <section className="header-offset relative isolate">
       <HeroBackdrop />
 
-      <div className="shell relative flex flex-col items-center pt-16 pb-14 text-center sm:pt-24 sm:pb-20">
-        <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl">
-          {site("tagline")}
+      {/* The bottom padding is deep on purpose: the membership card that
+          follows lifts itself onto this backdrop, and it has to land on empty
+          gradient rather than on the numbers slab. */}
+      <div className="shell relative flex flex-col items-center pt-12 pb-24 text-center sm:pt-16 sm:pb-32">
+        {/* Eyebrow — what the library *is*, said before the headline says what
+            it is for. It links to the cast-ready cut of the catalog, since
+            that is the claim it makes. */}
+        <Link
+          href="/3d-models/cast-ready"
+          className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 py-1 pe-3 ps-1 text-xs backdrop-blur transition-colors hover:border-white/30 hover:bg-white/10"
+        >
+          <span className="rounded-full bg-brand px-2 py-0.5 font-semibold text-brand-foreground">
+            {t("heroEyebrowTag")}
+          </span>
+          <span className="text-white/75 group-hover:text-white">
+            {t("heroEyebrow")}
+          </span>
+          <ArrowRight
+            className="size-3 text-white/40 transition-transform ltr:group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5"
+            aria-hidden
+          />
+        </Link>
+
+        {/* The headline carries its own markup so the phrase the business turns
+            on — cast-ready — is underlined in the brand colour instead of
+            sitting flat in the middle of the sentence. `site.tagline` remains
+            the plain-text version the tab title and share cards use. */}
+        <h1 className="mt-6 max-w-4xl text-3xl font-semibold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl">
+          {t.rich("heroTitle", {
+            hl: (chunks) => (
+              <span className="underline decoration-brand decoration-[3px] underline-offset-[6px] sm:decoration-4 sm:underline-offset-8">
+                {chunks}
+              </span>
+            ),
+          })}
         </h1>
         <p className="mt-4 max-w-xl text-sm text-pretty text-white/70 sm:text-base">
           {site("description")}
@@ -100,23 +201,7 @@ export async function Hero() {
           </Link>
         </Button>
 
-        <dl className="mt-10 grid grid-cols-3 gap-6 text-white sm:gap-12">
-          {[
-            { value: formatStat(stats.models), label: t("heroStats.models") },
-            { value: formatStat(stats.designers), label: t("heroStats.designers") },
-            { value: formatStat(stats.downloads), label: t("heroStats.downloads") },
-          ].map((stat) => (
-            <div key={stat.label}>
-              <dt className="sr-only">{stat.label}</dt>
-              <dd className="text-2xl font-semibold sm:text-3xl">
-                {stat.value}
-              </dd>
-              <p className="mt-1 text-xs text-white/60 sm:text-sm">
-                {stat.label}
-              </p>
-            </div>
-          ))}
-        </dl>
+        <LiveNumbers />
       </div>
     </section>
   )

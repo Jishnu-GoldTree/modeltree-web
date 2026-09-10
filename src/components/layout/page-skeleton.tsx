@@ -22,7 +22,7 @@ export async function PageSkeleton({ children }: { children: React.ReactNode }) 
   return (
     <>
       <SiteHeader />
-      <main className="flex-1 pt-26">
+      <main className="header-offset flex-1">
         {/* One live region for the whole fallback. Screen readers announce
             "Loading" once; the shapes below are decorative and stay silent. */}
         <p role="status" className="sr-only">

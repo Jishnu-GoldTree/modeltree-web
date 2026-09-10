@@ -50,7 +50,7 @@ export default async function FavoritesPage() {
     <>
       <SiteHeader />
 
-      <main id="main-content" className="flex-1 pt-26">
+      <main id="main-content" className="header-offset flex-1">
         <div className="shell py-10">
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <div>

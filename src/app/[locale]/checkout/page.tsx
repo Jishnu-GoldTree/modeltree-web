@@ -32,7 +32,7 @@ export default async function CheckoutPage() {
     <>
       <SiteHeader />
 
-      <main id="main-content" className="flex-1 pt-26">
+      <main id="main-content" className="header-offset flex-1">
         <div className="shell py-10">
           <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
 

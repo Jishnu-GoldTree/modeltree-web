@@ -311,7 +311,8 @@
     "commission": "Custom modelling",
     "priceLabel": "Monthly membership",
     "perMonth": "/ month",
-    "included": "2 models included every month"
+    "included": "2 models included every month",
+    "highlight": "Best value"
   },
   "jewellery": {
     "badge": "In-house jewellery library",
@@ -602,6 +603,19 @@
       "sellerTerms": "Seller terms",
       "cookiePolicy": "Cookie policy",
       "legal": "Legal"
+    },
+    "heroEyebrowTag": "Cast-ready",
+    "heroEyebrow": "Modelled in-house by the GoldTree studio",
+    "heroTitle": "Your number one destination for <hl>cast-ready</hl> jewellery models",
+    "heroStatsTitle": "The GoldTree library, <hl>in numbers</hl>",
+    "heroStatsLive": "Live numbers",
+    "ribbon": {
+      "tag": "GoldTree",
+      "studio": "Jewellery modelled in-house, cast-ready and print-ready",
+      "contact": "Talk to the studio",
+      "castReady": "Cast-ready models",
+      "custom": "Custom modelling",
+      "sell": "Sell your models"
     }
   },
   "site": {
@@ -876,7 +890,8 @@
     "stripTitle": "Two free models a month for new members",
     "stripBody": "₪55 a month, any two pieces in the catalog, licences yours to keep.",
     "stripCta": "See membership",
-    "adjustCta": "Request size adjustments"
+    "adjustCta": "Request size adjustments",
+    "stripPrice": "₪55 / month"
   },
   "requests": {
     "metaTitle": "Custom work requests",
