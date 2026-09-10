@@ -40,7 +40,7 @@ export default async function RequestsPage() {
     <>
       <SiteHeader />
 
-      <main id="main-content" className="flex-1 pt-26">
+      <main id="main-content" className="header-offset flex-1">
         <div className="shell max-w-4xl py-10">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
