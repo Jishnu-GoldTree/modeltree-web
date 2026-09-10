@@ -195,6 +195,17 @@
     @apply mx-auto w-full max-w-400 px-4 sm:px-6 lg:px-8;
   }
 
+  /* Clearance for the fixed header, which is a stack — utility ribbon, nav
+     bar, membership ribbon — not a single bar. Its height is therefore not
+     something a page should re-derive by counting rows: every route clears it
+     with this one class, and adding or resizing a ribbon is a one-line change
+     here. The utility ribbon (h-9) is dropped below sm, so the offset is the
+     bar plus the membership ribbon (6.5rem) there and the full stack (8.75rem)
+     from sm up. */
+  .header-offset {
+    @apply pt-26 sm:pt-35;
+  }
+
   /* ── Section rhythm ──────────────────────────────────────────────────
      Two classes, one scale. Sections never set their own vertical spacing.
 

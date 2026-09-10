@@ -30,7 +30,7 @@ export default async function ModelsPage({
     <>
       <SiteHeader />
 
-      <main id="main-content" className="flex-1 pt-26">
+      <main id="main-content" className="header-offset flex-1">
         <CatalogView
           base="/3d-models"
           params={params}

@@ -31,7 +31,7 @@ export default async function CheckoutSuccessPage({
     <>
       <SiteHeader />
 
-      <main id="main-content" className="flex-1 pt-26">
+      <main id="main-content" className="header-offset flex-1">
         <div className="shell py-16">
           <div className="mx-auto max-w-lg rounded-2xl border p-8 text-center">
             <CheckCircle2
