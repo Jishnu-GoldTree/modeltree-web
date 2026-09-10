@@ -16,6 +16,7 @@ import {
   LayoutGrid,
   Link2,
   Menu,
+  MessagesSquare,
   PenTool,
   Printer,
   Sliders,
@@ -51,16 +52,6 @@ import { LocaleSwitcher } from "@/components/layout/locale-switcher"
 import { SearchForm } from "@/components/forms/search-form"
 
 /**
- * Solid white marketplace header — a 3D-asset store's chrome, not a boutique's.
- *
- * A slim promo strip sits on top; below it a white nav bar carries the logo, a
- * prominent search that stays visible on every page (the store's primary action),
- * then the category nav and account actions clustered on the trailing edge.
- *
- * The bar no longer floats over the hero or recolours on scroll. The fixed stack
- * is 104px tall (h-10 strip + h-16 bar); pages clear it with `pt-26`.
- */
-/**
  * Top-level nav labels come from PRIMARY_NAV, which is data rather than copy.
  * Mapping by href keeps the translation next to the routing instead of
  * duplicating the menu structure into the message catalogs. Dropdown children
@@ -93,6 +84,120 @@ const NAV_ICONS: Record<NavChildIcon, LucideIcon> = {
   book: BookOpen,
 }
 
+/**
+ * The utility ribbon's standing links. Deliberately not PRIMARY_NAV: this row
+ * is for what a returning buyer or a designer goes looking for, not the catalog
+ * taxonomy the nav below already covers.
+ */
+const RIBBON_LINKS = [
+  { key: "castReady", href: "/3d-models/cast-ready" },
+  { key: "custom", href: "/custom-work" },
+  { key: "sell", href: "/sell" },
+] as const
+
+/**
+ * Row 1. Dropped below sm, where the bar and the membership ribbon already own
+ * more of a phone screen than chrome should — `.header-offset` matches.
+ *
+ * Three grid columns rather than a flex row with `mx-auto`: the centre column
+ * has to sit on the page's centre line, and under flex it would only sit
+ * midway between two side clusters of unequal width.
+ */
+function UtilityRibbon() {
+  const t = useTranslations("landing.ribbon")
+
+  return (
+    <div className="hidden bg-ink text-xs text-white/60 sm:block">
+      {/* minmax(0,1fr) on the side tracks, not 1fr: a bare 1fr is
+          minmax(auto,1fr) and grows past its share to fit its content, which
+          drags the "centred" middle column off the page's centre line by half
+          of whatever the links overrun by.
+
+          overflow-hidden and a min-0 centre track are load-bearing, not tidying:
+          the row is a fixed h-9 that `.header-offset` has measured, so a long
+          translation has to be clipped rather than allowed to wrap the strip
+          onto a second line and push the whole page down behind the nav. */}
+      <div className="shell grid h-9 grid-cols-[minmax(0,1fr)_minmax(0,auto)_minmax(0,1fr)] items-center gap-4 overflow-hidden">
+        {/* Only from xl: at lg the strip is already carrying the tag, the
+            studio line and the contact link. */}
+        <nav className="hidden items-center gap-4 overflow-hidden xl:flex">
+          {RIBBON_LINKS.map((link) => (
+            <Link
+              key={link.key}
+              href={link.href}
+              className="whitespace-nowrap transition-colors hover:text-white"
+            >
+              {t(link.key)}
+            </Link>
+          ))}
+        </nav>
+
+        <p className="col-start-2 flex min-w-0 items-center justify-center gap-2">
+          <span className="shrink-0 rounded-full bg-white/10 px-2 py-0.5 font-medium text-white">
+            {t("tag")}
+          </span>
+          <span className="hidden truncate md:inline">{t("studio")}</span>
+        </p>
+
+        <Link
+          href="/custom-work"
+          className="col-start-3 hidden items-center justify-self-end gap-1.5 whitespace-nowrap transition-colors hover:text-white lg:flex"
+        >
+          <MessagesSquare className="size-3.5 shrink-0" aria-hidden />
+          {t("contact")}
+        </Link>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Row 3. The subscription is the client's headline offer, so it rides under the
+ * nav on every page the way a marketplace runs its house banner. The price chip
+ * is the point of it: it turns "membership" from a word into an amount without
+ * making the visitor open the pricing page to find out.
+ */
+function MembershipRibbon() {
+  const member = useTranslations("membership")
+
+  return (
+    <Link
+      href="/pricing"
+      className="flex h-10 items-center justify-center gap-2 bg-brand px-4 text-center text-xs text-white/90 transition-colors hover:bg-brand/90 sm:text-sm"
+    >
+      <Sparkles className="hidden size-3.5 shrink-0 sm:block" aria-hidden />
+      <span className="truncate font-medium">{member("stripTitle")}</span>
+      <span className="hidden shrink-0 rounded-full bg-white/20 px-2 py-0.5 text-xs font-semibold text-white tabular-nums sm:inline">
+        {member("stripPrice")}
+      </span>
+      <span aria-hidden className="hidden text-white/40 sm:inline">·</span>
+      <span className="hidden shrink-0 items-center gap-1 font-medium text-white sm:inline-flex">
+        {member("cta")}
+        <ArrowRight className="size-3.5 rtl:-scale-x-100" aria-hidden />
+      </span>
+    </Link>
+  )
+}
+
+/**
+ * Solid white marketplace header — a 3D-asset store's chrome, not a boutique's.
+ *
+ * Three stacked rows, the way a high-traffic marketplace layers its chrome:
+ *
+ *   1. a dark utility ribbon — standing links on the leading edge, the studio's
+ *      one-line identity centred, a way to reach us on the trailing edge;
+ *   2. the white nav bar — logo, a search that stays visible on every page (the
+ *      store's primary action), category nav and account actions;
+ *   3. the raspberry membership ribbon — the client's headline offer.
+ *
+ * The membership ribbon used to sit on top. It reads louder *under* the bar:
+ * the eye lands on the logo and search first, then the offer, rather than
+ * meeting a full-bleed sales strip before it knows what the site is.
+ *
+ * Nothing here floats over the hero or recolours on scroll. The stack is
+ * 6.5rem tall on mobile (the utility ribbon is dropped) and 8.75rem from sm up;
+ * pages clear it with `.header-offset` rather than counting the rows again.
+ */
 export function SiteHeader() {
   const t = useTranslations("nav")
   const nav = useTranslations("landing.navChildren")
@@ -100,21 +205,9 @@ export function SiteHeader() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      {/* Promo strip — the subscription is the client's headline offer, so it
-          rides above every page the way a marketplace runs its house banner. */}
-      <Link
-        href="/pricing"
-        className="flex h-10 items-center justify-center gap-2 bg-brand px-4 text-center text-xs text-white/90 transition-colors hover:bg-brand/90 sm:text-sm"
-      >
-        <span className="truncate font-medium">{member("stripTitle")}</span>
-        <span aria-hidden className="hidden text-white/40 sm:inline">·</span>
-        <span className="hidden shrink-0 items-center gap-1 font-medium text-white sm:inline-flex">
-          {member("cta")}
-          <ArrowRight className="size-3.5 rtl:-scale-x-100" aria-hidden />
-        </span>
-      </Link>
+      <UtilityRibbon />
 
-      <div className="border-b bg-background">
+      <div className="bg-background">
         <div className="shell flex h-16 items-center gap-4">
           <Logo tone="dark" />
 
@@ -205,6 +298,8 @@ export function SiteHeader() {
           </div>
         </div>
       </div>
+
+      <MembershipRibbon />
     </header>
   )
 }

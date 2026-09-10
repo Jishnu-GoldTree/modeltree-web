@@ -34,7 +34,7 @@ export default async function UploadPage() {
     <>
       <SiteHeader />
 
-      <main id="main-content" className="flex-1 pt-26">
+      <main id="main-content" className="header-offset flex-1">
         <div className="shell max-w-3xl py-10">
           <Link
             href="/dashboard"

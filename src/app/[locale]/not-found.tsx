@@ -27,8 +27,8 @@ export default async function NotFound() {
     <>
       <SiteHeader />
 
-      {/* pt-26 clears the fixed header (announcement strip + nav), matching the other routes. */}
-      <main id="main-content" className="flex-1 bg-ink pt-26">
+      {/* .header-offset clears the fixed header stack, matching the other routes. */}
+      <main id="main-content" className="header-offset flex-1 bg-ink">
         <section className="shell flex flex-col items-center py-20 text-center md:py-28">
           <p className="font-mono text-xs tracking-[0.3em] text-brand uppercase">
             {t("eyebrow")}

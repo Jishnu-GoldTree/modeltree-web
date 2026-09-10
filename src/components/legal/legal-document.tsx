@@ -33,7 +33,7 @@ export async function LegalDocument({
     <>
       <SiteHeader />
 
-      <main id="main-content" className="flex-1 pt-26">
+      <main id="main-content" className="header-offset flex-1">
         <section className="border-b bg-ink text-ink-foreground">
           <div className="shell py-16 md:py-20">
             <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
