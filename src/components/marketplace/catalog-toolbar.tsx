@@ -38,6 +38,19 @@ function href(base: string, params: Params, patch: Params) {
   return qs ? `${base}?${qs}` : base
 }
 
+/**
+ * Filter links are not prefetched.
+ *
+ * Each one points at another query-string permutation of the catalogue, and a
+ * prefetch renders that route in full — listing rows and facet counts — for a
+ * filter the visitor may never choose. There are around thirty of them on
+ * screen, so the default prefetch turned opening the filter menu into thirty
+ * catalogue renders. `robots.ts` already refuses crawlers these URLs for the
+ * same reason; this is the same rule applied to our own prefetcher.
+ *
+ * The cost is a beat of latency on the click, which is the right trade for a
+ * filter: the visitor is choosing, not navigating a path they already know.
+ */
 function Pill({
   href: to,
   active,
@@ -50,6 +63,7 @@ function Pill({
   return (
     <Link
       href={to}
+      prefetch={false}
       aria-current={active ? "true" : undefined}
       className={cn(
         "inline-flex shrink-0 items-center rounded-lg border px-3.5 py-1.5 text-sm whitespace-nowrap outline-none transition-colors",
@@ -76,6 +90,7 @@ function MenuLink({
   return (
     <Link
       href={to}
+      prefetch={false}
       aria-current={active ? "true" : undefined}
       title={label}
       className={cn(
