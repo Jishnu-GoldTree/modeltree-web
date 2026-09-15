@@ -246,8 +246,12 @@ function applyFilters<T extends Builder>(query: T, q: CatalogQuery): T {
   if (q.production === "cast") out = out.in("production", ["cast", "both"]) as T
   if (q.production === "print") out = out.in("production", ["print", "both"]) as T
   if (q.format) {
-    const label = FORMATS.find((f) => f.value === q.format)?.label
-    if (label) out = out.contains("formats", [label]) as T
+    // Matched on the display label ("STL") until now, but the column stores the
+    // extension as written in the URL ("stl"). Every `?format=` filter returned
+    // an empty catalogue and every format facet counted 0. Validated against
+    // FORMATS so only a known extension reaches PostgREST.
+    const format = FORMATS.find((f) => f.value === q.format)?.value
+    if (format) out = out.contains("formats", [format]) as T
   }
   // Exact-tag browse filter (?tag=engagement). Stored tags are lowercased, so a
   // hand-typed uppercase value is folded to match rather than silently missing.
@@ -412,62 +416,118 @@ export async function queryModels(
  * show what you would get by switching to that value rather than always
  * reading zero.
  */
+/**
+ * Every facet count, from one query per distinct filter set rather than one
+ * query per offered value.
+ *
+ * This used to issue a HEAD count per value — roughly 37 round trips for a
+ * single sidebar. That is bad enough per render, and the sidebar links multiply
+ * it: each one is a `<Link>` to another filter combination, so Next prefetching
+ * them renders each of those routes too, at 37 queries apiece. A single visitor
+ * scrolling the filter menu could ask Supabase for a four-figure number of
+ * counts. It was the largest source of API traffic on the project by an order
+ * of magnitude.
+ *
+ * The counts are the same. For a dimension the visitor is filtering on, the
+ * offered counts replace that filter rather than narrow it, so the rows to
+ * count are "everything matching the other filters" — fetch those once, tally
+ * the dimension's column in JS. Dimensions the visitor is not filtering on all
+ * share the same row set, which is the common case and the one crawlers hit:
+ * one query for the whole sidebar.
+ *
+ * Tallying in JS rather than grouping in Postgres because this project's
+ * PostgREST rejects aggregate functions (PGRST123) — the same constraint
+ * `lib/data/stats.ts` documents. That puts a ceiling on this: FACET_ROW_CAP
+ * rows are fetched and no more, so counts stay exact only while the published
+ * catalogue is smaller than that. Past it the numbers quietly understate, so
+ * that is the point to move this to a `facet_counts()` RPC. At 30 published
+ * models there is roughly 30x headroom.
+ */
+const FACET_ROW_CAP = 1000
+
+/** The dimensions the sidebar offers counts for, and their row columns. */
+const FACET_DIMENSIONS = ["category", "format", "license", "metal", "stone"] as const
+type FacetDimension = (typeof FACET_DIMENSIONS)[number]
+
+type FacetRow = {
+  metal: string | null
+  stone: string | null
+  formats: string[] | null
+  license_code: string | null
+  categories: { slug: string } | null
+}
+
+/** The facet-bearing columns of every published row matching `query`. */
+async function facetRows(query: CatalogQuery): Promise<FacetRow[]> {
+  // Same rule as joinedSelect: a category filter compares a child column, which
+  // needs an inner join or it matches rows with no category at all.
+  const join = query.category ? "categories!inner ( slug )" : "categories ( slug )"
+  let q = supabasePublic
+    .from("models")
+    .select(`metal, stone, formats, license_code, ${join}`)
+    .eq("status", "published")
+  q = applyFilters(q as unknown as Builder, query) as unknown as typeof q
+
+  const { data, error } = await q.range(0, FACET_ROW_CAP - 1)
+  if (error) throw new Error(`facet query failed: ${error.message}`)
+  return (data ?? []) as unknown as FacetRow[]
+}
+
+function tally(rows: FacetRow[], read: (row: FacetRow) => string[]) {
+  const counts: Record<string, number> = {}
+  for (const row of rows) {
+    for (const value of read(row)) counts[value] = (counts[value] ?? 0) + 1
+  }
+  return counts
+}
+
 async function computeFacets(query: CatalogQuery): Promise<CatalogResult["facets"]> {
-  const countFor = async (patch: CatalogQuery) => {
-    const merged = { ...query, ...patch }
-    let q = supabasePublic
-      .from("models")
-      .select(
-        `id, ${merged.category ? "categories!inner ( slug )" : "categories ( slug )"}`,
-        { count: "exact", head: true },
-      )
-      .eq("status", "published")
-    q = applyFilters(q as unknown as Builder, merged) as unknown as typeof q
-    const { count } = await q
-    return count ?? 0
+  // Group the dimensions by the query they need counted, so dimensions the
+  // visitor has not filtered on collapse onto a single round trip.
+  const groups = new Map<string, { query: CatalogQuery; dimensions: FacetDimension[] }>()
+  for (const dimension of FACET_DIMENSIONS) {
+    const reduced = { ...query }
+    delete reduced[dimension]
+    delete reduced.page
+    delete reduced.sort
+    const key = JSON.stringify(reduced, Object.keys(reduced).sort())
+    const group = groups.get(key)
+    if (group) group.dimensions.push(dimension)
+    else groups.set(key, { query: reduced, dimensions: [dimension] })
   }
 
-  const [categories, formats, licenses, metals, stones] = await Promise.all([
-    (async () => {
-      const { data } = await supabasePublic.from("categories").select("slug")
-      const entries = await Promise.all(
-        (data ?? []).map(async (c) => [c.slug, await countFor({ category: c.slug })] as const),
-      )
-      return Object.fromEntries(entries)
-    })(),
-    (async () => {
-      const entries = await Promise.all(
-        FORMATS.map(async (f) => [f.value, await countFor({ format: f.value })] as const),
-      )
-      return Object.fromEntries(entries)
-    })(),
-    (async () => {
-      const codes: License[] = ["standard", "extended"]
-      const entries = await Promise.all(
-        codes.map(async (code) => [code, await countFor({ license: code })] as const),
-      )
-      return Object.fromEntries(entries)
-    })(),
-    (async () => {
-      // "unspecified" is a storage default, not something to offer as a filter.
-      const entries = await Promise.all(
-        METALS.filter((m) => m !== "unspecified").map(
-          async (metal) => [metal, await countFor({ metal })] as const,
-        ),
-      )
-      return Object.fromEntries(entries)
-    })(),
-    (async () => {
-      const entries = await Promise.all(
-        STONES.filter((s) => s !== "none").map(
-          async (stone) => [stone, await countFor({ stone })] as const,
-        ),
-      )
-      return Object.fromEntries(entries)
-    })(),
-  ])
+  // Seeded with every value the sidebar offers, so a facet with no matches
+  // reads "0" rather than going blank — a filter that would empty the results
+  // is worth showing as such.
+  const categorySlugs = await allCategorySlugs()
+  const facets: CatalogResult["facets"] = {
+    categories: Object.fromEntries(categorySlugs.map((slug) => [slug, 0])),
+    formats: Object.fromEntries(FORMATS.map((f) => [f.value, 0])),
+    licenses: { standard: 0, extended: 0 },
+    metals: Object.fromEntries(METALS.filter((m) => m !== "unspecified").map((m) => [m, 0])),
+    stones: Object.fromEntries(STONES.filter((s) => s !== "none").map((s) => [s, 0])),
+  }
 
-  return { categories, formats, licenses, metals, stones }
+  const READ: Record<FacetDimension, [keyof CatalogResult["facets"], (row: FacetRow) => string[]]> = {
+    category: ["categories", (row) => (row.categories?.slug ? [row.categories.slug] : [])],
+    // A model counts once per format it ships, so these exceed the model count.
+    format: ["formats", (row) => row.formats ?? []],
+    license: ["licenses", (row) => (row.license_code ? [row.license_code] : [])],
+    metal: ["metals", (row) => (row.metal ? [row.metal] : [])],
+    stone: ["stones", (row) => (row.stone ? [row.stone] : [])],
+  }
+
+  await Promise.all(
+    [...groups.values()].map(async ({ query: reduced, dimensions }) => {
+      const rows = await facetRows(reduced)
+      for (const dimension of dimensions) {
+        const [key, read] = READ[dimension]
+        Object.assign(facets[key], tally(rows, read))
+      }
+    }),
+  )
+
+  return facets
 }
 
 // Cached across requests: the product route is force-dynamic (it reads the
