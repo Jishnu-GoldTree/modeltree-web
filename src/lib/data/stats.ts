@@ -1,22 +1,21 @@
-import { unstable_cache } from "next/cache"
-
-import { CATALOG_TAG } from "@/lib/data/catalog"
-import { supabasePublic } from "@/lib/supabase/public"
-
 /**
- * Marketplace figures, counted from the database.
+ * Landing-page figures, as a static snapshot.
  *
- * These replaced hardcoded copy ("1.9M+ assets from 200,000+ designers") that
- * was placeholder invented while building — the catalog held 72 models at the
- * time. Numbers a visitor could check must be true by construction, so they are
- * queried rather than written down, and they grow on their own.
+ * These were live Supabase reads. The landing page is dynamic like every other
+ * route, so every hit — crawlers included — cost five round trips to render
+ * numbers that change a few times a week, and caching them still left the reads
+ * on the critical path of every cold render. They are now constants, taken from
+ * a real query on the date below rather than invented: the original figures
+ * ("890K models") were placeholder, and a visitor who counts the catalog must
+ * not catch us out.
  *
- * Both reads below are cached. They were the last uncached Supabase reads on
- * the landing page, which is dynamic like every other route — so each hit cost
- * five round trips (three here, plus `getFacetCounts` once for `browse-by` and
- * again for `browse-by-catalog`) to render numbers that change a few times a
- * week. Same TTL and CATALOG_TAG invalidation as the catalog reads, so a
- * publish refreshes the figures rather than waiting out the hour.
+ * They do go stale. Refresh them by hand when the catalog moves — the snapshot
+ * query is a single read against `models`/`profiles` filtered to
+ * `status = 'published'` / `account_type = 'designer'`, matching what the
+ * removed `getMarketplaceStats`/`getFacetCounts` ran (see git history of this
+ * file for the exact queries).
+ *
+ * Snapshot taken: 2026-09-15.
  */
 
 export type MarketplaceStats = {
@@ -25,89 +24,54 @@ export type MarketplaceStats = {
   downloads: number
 }
 
-/** Rounds down to a "+" figure once the number is large enough to warrant it. */
+/**
+ * Formats a stat for display. Thousands separators, no abbreviation — "1,204"
+ * reads as a real count where "1.2K" reads as marketing.
+ */
 export function formatStat(value: number) {
-  if (value >= 1_000_000) return `${Math.floor(value / 100_000) / 10}M+`
-  if (value >= 1_000) return `${Math.floor(value / 100) / 10}K+`
   return value.toLocaleString("en-US")
 }
 
-/**
- * The download tally sums in JS rather than in Postgres because this project's
- * PostgREST rejects aggregate functions (`PGRST123`), so `download_count.sum()`
- * is not available without an RPC. At the catalog's size that is a few dozen
- * integers over the wire once an hour; revisit with a `marketplace_stats()`
- * function if the published count reaches the thousands.
- */
-export const getMarketplaceStats = unstable_cache(
-  async (): Promise<MarketplaceStats> => {
-    const [models, designers, downloads] = await Promise.all([
-      supabasePublic
-        .from("models")
-        .select("id", { count: "exact", head: true })
-        .eq("status", "published"),
-      supabasePublic
-        .from("profiles")
-        .select("id", { count: "exact", head: true })
-        .eq("account_type", "designer"),
-      supabasePublic.from("models").select("download_count").eq("status", "published"),
-    ])
-
-    return {
-      models: models.count ?? 0,
-      designers: designers.count ?? 0,
-      downloads: (downloads.data ?? []).reduce(
-        (sum, m) => sum + ((m as { download_count: number }).download_count ?? 0),
-        0,
-      ),
-    }
-  },
-  ["marketplace-stats"],
-  // The designer count moves on profile writes, which do not carry CATALOG_TAG;
-  // the TTL is what covers those.
-  { revalidate: 3600, tags: [CATALOG_TAG] },
-)
+export const MARKETPLACE_STATS: MarketplaceStats = {
+  models: 30,
+  designers: 33,
+  downloads: 8015,
+}
 
 /**
- * Live counts per metal, stone, category and format, for the landing page's
- * browse lists.
+ * Per-facet tallies for the landing page's browse lists.
  *
- * One query, grouped in memory: a per-value `head: true` count would be dozens
- * of round trips to render these cards. `formats` is an array column, so a
- * model counts once per format it ships; the values are stored uppercase
- * (STL, 3DM), matching the catalog's `?format=` filter.
+ * Keys are the stored values, lowercase — `formats` especially: the rows hold
+ * "stl"/"3dm", not "STL"/"3DM". The live version was keyed off the uppercase
+ * display label, so every format row rendered 0; `browse-by-catalog` now looks
+ * these up by `format.value`.
  *
- * Two components call this in the same render (`browse-by` and
- * `browse-by-catalog`). The cache collapses that to one read as well as
- * sparing the repeat across requests.
+ * A model counts once per format it ships, so the `formats` totals exceed the
+ * model count. Facets with no published models are absent; callers already
+ * default a missing key to 0, which is the honest answer for an empty facet.
  */
-export const getFacetCounts = unstable_cache(
-  async () => {
-    const { data } = await supabasePublic
-      .from("models")
-      .select("metal, stone, formats, categories ( slug )")
-      .eq("status", "published")
-
-    const metals: Record<string, number> = {}
-    const stones: Record<string, number> = {}
-    const formats: Record<string, number> = {}
-    const categories: Record<string, number> = {}
-    for (const row of (data ?? []) as unknown as {
-      metal: string
-      stone: string
-      formats: string[] | null
-      categories: { slug: string } | null
-    }[]) {
-      metals[row.metal] = (metals[row.metal] ?? 0) + 1
-      stones[row.stone] = (stones[row.stone] ?? 0) + 1
-      for (const format of row.formats ?? []) {
-        formats[format] = (formats[format] ?? 0) + 1
-      }
-      const slug = row.categories?.slug
-      if (slug) categories[slug] = (categories[slug] ?? 0) + 1
-    }
-    return { metals, stones, formats, categories }
-  },
-  ["landing-facet-counts"],
-  { revalidate: 3600, tags: [CATALOG_TAG] },
-)
+export const FACET_COUNTS = {
+  metals: {
+    "yellow-gold": 15,
+    "white-gold": 7,
+    "rose-gold": 7,
+    platinum: 1,
+  } as Record<string, number>,
+  stones: {
+    round: 24,
+    oval: 1,
+    marquise: 1,
+    none: 4,
+  } as Record<string, number>,
+  formats: {
+    stl: 30,
+    "3dm": 29,
+    obj: 23,
+    "3mf": 4,
+  } as Record<string, number>,
+  categories: {
+    "engagement-rings": 15,
+    rings: 9,
+    "wedding-bands": 6,
+  } as Record<string, number>,
+}

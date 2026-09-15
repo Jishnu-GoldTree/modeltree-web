@@ -5,7 +5,7 @@ import { ArrowRight, ChevronRight, Download, Gem, Gift } from "lucide-react"
 import { getTranslations } from "next-intl/server"
 
 import { BROWSE_BY_METAL, BROWSE_BY_STONE } from "@/lib/data/landing"
-import { getFacetCounts } from "@/lib/data/stats"
+import { FACET_COUNTS } from "@/lib/data/stats"
 import { MetalIcon, StoneIcon } from "@/components/landing/browse-icons"
 
 export function BrowseList({
@@ -84,13 +84,13 @@ function FreeCard({
 /**
  * Metal and stone are the two axes a jeweler narrows by, so they replaced the
  * old "by type / by format" lists (animated, rigged, Unreal) that meant nothing
- * here. Counts are live: the previous ones were invented and a catalog this
+ * here. Counts are a static snapshot of the real catalog, refreshed by hand in
+ * `lib/data/stats.ts` — the previous ones were invented and a catalog this
  * size can never back up "890K".
  */
 export async function BrowseBy() {
   const t = await getTranslations("landing.browse")
   const facet = await getTranslations("facet")
-  const counts = await getFacetCounts()
 
   return (
     <section className="shell">
@@ -101,7 +101,7 @@ export async function BrowseBy() {
           items={BROWSE_BY_METAL.map((m) => ({
             href: m.href,
             label: facet(`metal.${m.key}`),
-            count: counts.metals[m.key] ?? 0,
+            count: FACET_COUNTS.metals[m.key] ?? 0,
             icon: <MetalIcon metal={m.key} className="size-6 shrink-0" />,
           }))}
         />
@@ -111,7 +111,7 @@ export async function BrowseBy() {
           items={BROWSE_BY_STONE.map((s) => ({
             href: s.href,
             label: facet(`stone.${s.key}`),
-            count: counts.stones[s.key] ?? 0,
+            count: FACET_COUNTS.stones[s.key] ?? 0,
             icon: (
               <StoneIcon
                 cut={s.key}
