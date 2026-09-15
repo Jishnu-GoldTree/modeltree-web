@@ -5,6 +5,7 @@ import { Heart } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { toggleFavorite } from "@/lib/actions/favorites"
+import { useSavedSlugs } from "@/lib/queries/counts"
 
 /**
  * The heart on a model card.
@@ -20,17 +21,25 @@ import { toggleFavorite } from "@/lib/actions/favorites"
  * this component appears on all 144 prerendered model pages. Without JS the
  * field stays empty and the action falls back to /favorites, which is a fine
  * place to land.
+ *
+ * `favorited` is optional for the same reason. Pages that already render per
+ * request (the visitor's own saved list, their profile) know the answer and
+ * pass it. Prerendered pages cannot — reading the cookie during their render is
+ * precisely what used to make them dynamic — so the heart resolves itself from
+ * the shared cookie query the header is already making.
  */
 export function FavoriteButton({
   slug,
   title,
-  favorited,
+  favorited: favoritedProp,
 }: {
   slug: string
   title: string
-  favorited: boolean
+  favorited?: boolean
 }) {
   const returnTo = useRef<HTMLInputElement>(null)
+  const saved = useSavedSlugs()
+  const favorited = favoritedProp ?? saved?.has(slug) ?? false
 
   return (
     <form

@@ -12,7 +12,7 @@ const MAX_VISIBLE_FORMATS = 3
 export function ModelCard({
   model,
   className,
-  favorited = false,
+  favorited,
 }: {
   model: ModelCardData
   className?: string
@@ -20,7 +20,8 @@ export function ModelCard({
    * Whether this model is saved. Passed in rather than read here: the card
    * renders on statically prerendered pages, and reading the cookie would make
    * them all dynamic. Pages that already render dynamically pass the real
-   * value; the rest show an unsaved heart that still saves on click.
+   * value; on the rest it is left undefined and the heart fills itself in from
+   * the client's copy of the saved list.
    */
   favorited?: boolean
 }) {

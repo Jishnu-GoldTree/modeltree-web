@@ -1,7 +1,6 @@
 import { getTranslations } from "next-intl/server"
 
 import { queryModels } from "@/lib/data/catalog"
-import { getFavoriteSet } from "@/lib/favorites"
 import { ModelCard } from "@/components/marketplace/model-card"
 import { SectionHeading } from "@/components/landing/section-heading"
 
@@ -12,10 +11,7 @@ import { SectionHeading } from "@/components/landing/section-heading"
  */
 export async function TrendingModels() {
   const t = await getTranslations("landing.trending")
-  const [{ items }, favorites] = await Promise.all([
-    queryModels({ sort: "trending", page: 1 }, { facets: false }),
-    getFavoriteSet(),
-  ])
+  const { items } = await queryModels({ sort: "trending", page: 1 }, { facets: false })
 
   const top = items.slice(0, 8)
   if (top.length === 0) return null
@@ -30,7 +26,7 @@ export async function TrendingModels() {
       <ul className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
         {top.map((model) => (
           <li key={model.slug}>
-            <ModelCard model={model} favorited={favorites.has(model.slug)} />
+            <ModelCard model={model} />
           </li>
         ))}
       </ul>

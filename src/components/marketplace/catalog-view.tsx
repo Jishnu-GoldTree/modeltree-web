@@ -28,7 +28,6 @@ export async function CatalogView({
   patch = {},
   result,
   lockedCategory,
-  favorites,
   title,
   description,
 }: {
@@ -39,7 +38,6 @@ export async function CatalogView({
   patch?: Partial<CatalogQuery>
   result: CatalogResult
   lockedCategory?: string
-  favorites: Set<string>
   title: string
   description: string
 }) {
@@ -160,9 +158,6 @@ export async function CatalogView({
             // the previous query's results.
             key={JSON.stringify({ base, params, patch })}
             initialItems={items}
-            initialFavoritedSlugs={items
-              .filter((model) => favorites.has(model.slug))
-              .map((model) => model.slug)}
             params={params}
             patch={patch}
             initialPage={page}

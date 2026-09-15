@@ -1,4 +1,6 @@
-import { getTranslations } from "next-intl/server"
+"use client"
+
+import { useTranslations } from "next-intl"
 
 import { SiteHeader } from "@/components/layout/site-header"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -15,9 +17,15 @@ import { Skeleton } from "@/components/ui/skeleton"
  * The footer is deliberately left out — its height varies with content, and
  * anchoring it under a short skeleton only to push it down a moment later is
  * worse than not drawing it at all.
+ *
+ * A client component for one word. `loading.tsx` fallbacks render in the client
+ * prerender pass, where `next/root-params` is unavailable — so a server-side
+ * `getTranslations` here fell back to reading the locale from headers, and that
+ * one call made every route under `[locale]` dynamic. `useTranslations` takes
+ * the string from the messages the provider already holds.
  */
-export async function PageSkeleton({ children }: { children: React.ReactNode }) {
-  const t = await getTranslations("common")
+export function PageSkeleton({ children }: { children: React.ReactNode }) {
+  const t = useTranslations("common")
 
   return (
     <>

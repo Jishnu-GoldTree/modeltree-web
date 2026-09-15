@@ -9,7 +9,7 @@ import { COUNTRY_COOKIE, COUNTRY_HEADER } from "@/lib/geo"
  * Three jobs on every request:
  *
  *   1. next-intl resolves the locale and may redirect or rewrite the URL.
- *   2. Supabase refreshes the session cookie.
+ *   2. Supabase refreshes the session cookie, when there is one to refresh.
  *   3. The visitor's country is mirrored from Vercel's edge into a cookie.
  *
  * They share one response object. next-intl decides the final URL, so it runs
@@ -48,6 +48,32 @@ function isMetadataImage(pathname: string) {
   return /\/(opengraph-image|twitter-image)(\/|$)/.test(pathname)
 }
 
+/**
+ * Whether the request carries a Supabase session at all.
+ *
+ * Supabase stores the session in cookies named `sb-<ref>-auth-token` (chunked
+ * into `.0`, `.1` suffixes once it outgrows one cookie). No such cookie means
+ * an anonymous visitor — a crawler, or anyone not signed in — and there is
+ * nothing to refresh. Every one of those requests used to build a Supabase
+ * client and call into auth to be told exactly that.
+ */
+function hasSessionCookie(request: NextRequest) {
+  return request.cookies
+    .getAll()
+    .some((c) => c.name.startsWith("sb-") && c.name.includes("-auth-token"))
+}
+
+/**
+ * Prefetches are speculative: the browser may never navigate, and Next fires
+ * one per `<Link>` that scrolls into view — two dozen on a catalog page. Letting
+ * them refresh the session rotates the token for links nobody clicked, and the
+ * `Set-Cookie` from a prefetch races the real navigation. The refresh happens
+ * on the navigation that follows.
+ */
+function isPrefetch(request: NextRequest) {
+  return request.headers.get("next-router-prefetch") === "1"
+}
+
 export async function proxy(request: NextRequest) {
   const skipIntl = isNonLocalisedRoute(request.nextUrl.pathname)
   const start = () => (skipIntl ? NextResponse.next({ request }) : intlProxy(request))
@@ -77,6 +103,9 @@ export async function proxy(request: NextRequest) {
   // browser comes back and the refresh happens on that request.
   if (!skipIntl && response.headers.get("location")) return withCountry(response)
 
+  // Nothing to refresh, or nothing worth refreshing yet.
+  if (!hasSessionCookie(request) || isPrefetch(request)) return withCountry(response)
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -102,8 +131,14 @@ export async function proxy(request: NextRequest) {
   )
 
   // Do not remove: this call performs the refresh. Anything between
-  // createServerClient and getUser risks the session silently expiring.
-  await supabase.auth.getUser()
+  // createServerClient and it risks the session silently expiring.
+  //
+  // getClaims rather than getUser. getUser posts the JWT to Supabase Auth to be
+  // validated — a network round trip on every request through here. This
+  // project signs with ES256, so getClaims verifies the signature locally
+  // against the project's public key and reaches the network only when the
+  // token is near expiry, which is where the refresh happens anyway.
+  await supabase.auth.getClaims()
 
   // Last, because `setAll` above rebuilds `response` from scratch.
   return withCountry(response)

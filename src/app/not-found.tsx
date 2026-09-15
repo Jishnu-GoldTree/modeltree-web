@@ -1,9 +1,15 @@
-import { Link } from "@/i18n/navigation"
+import Link from "next/link"
 
 /**
  * Root 404 for URLs that never matched a locale segment. The rich, branded 404
  * lives at `[locale]/not-found.tsx`; this one only catches requests that fall
  * outside the locale tree entirely, so it must render its own <html>.
+ *
+ * Plain `next/link`, not next-intl's. next-intl's Link resolves the current
+ * locale to decide whether to prefix the href, and this page renders where
+ * there is no `[locale]` segment to resolve — the lookup has nothing to read
+ * and the page cannot prerender. The destination is the unprefixed root either
+ * way, which is the Hebrew default.
  */
 export default function RootNotFound() {
   return (

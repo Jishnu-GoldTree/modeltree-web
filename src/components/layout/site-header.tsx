@@ -1,5 +1,6 @@
 "use client"
 
+import { Suspense } from "react"
 import { useTranslations } from "next-intl"
 import { Link } from "@/i18n/navigation"
 import {
@@ -281,7 +282,12 @@ export function SiteHeader() {
             </Button>
 
             <HeaderBadges />
-            <LocaleSwitcher />
+            {/* Reads the current path to build the other locale's URL — request
+                data, so it needs its own boundary rather than blocking the
+                header's shell. */}
+            <Suspense fallback={null}>
+              <LocaleSwitcher />
+            </Suspense>
 
             {/* data-vertical:self-center, not self-center: the base separator
                 style sets data-vertical:self-stretch, which wins on specificity
