@@ -1,4 +1,4 @@
-import { formatStat, getMarketplaceStats } from "@/lib/data/stats"
+import { MARKETPLACE_STATS, formatStat } from "@/lib/data/stats"
 import { getTranslations } from "next-intl/server"
 import Image from "next/image"
 import { Link } from "@/i18n/navigation"
@@ -39,7 +39,6 @@ export default async function LoginPage({ searchParams }: PageProps<"/[locale]/l
   const t = await getTranslations("auth")
   const aside = await getTranslations("authAside")
   const land = await getTranslations("landing")
-  const stats = await getMarketplaceStats()
   const { error, next } = await searchParams
 
   // Only same-site relative paths. Accepting an arbitrary `next` would make the
@@ -90,9 +89,9 @@ export default async function LoginPage({ searchParams }: PageProps<"/[locale]/l
 
         <dl className="relative flex gap-10">
           {[
-            { value: formatStat(stats.models), label: land("heroStats.models") },
-            { value: formatStat(stats.designers), label: land("heroStats.designers") },
-            { value: formatStat(stats.downloads), label: land("heroStats.downloads") },
+            { value: formatStat(MARKETPLACE_STATS.models), label: land("heroStats.models") },
+            { value: formatStat(MARKETPLACE_STATS.designers), label: land("heroStats.designers") },
+            { value: formatStat(MARKETPLACE_STATS.downloads), label: land("heroStats.downloads") },
           ].map((stat) => (
             <div key={stat.label}>
               <dt className="text-2xl font-semibold">{stat.value}</dt>

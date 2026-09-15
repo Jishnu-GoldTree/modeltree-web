@@ -2,19 +2,19 @@ import { getTranslations } from "next-intl/server"
 
 import { BROWSE_BY_TYPE } from "@/lib/data/landing"
 import { FORMATS } from "@/lib/data/catalog-facets"
-import { getFacetCounts } from "@/lib/data/stats"
+import { FACET_COUNTS } from "@/lib/data/stats"
 import { BrowseList } from "@/components/landing/browse-by"
 
 /**
  * The other two axes a jeweler narrows by: the piece they're making (category)
- * and the file their pipeline takes (format). Counts are live, from the same
- * grouped query as the metal/stone lists above — a format counts a model once
- * per extension it ships, so a multi-format model appears in several rows.
+ * and the file their pipeline takes (format). Counts come from the same static
+ * snapshot as the metal/stone lists above — a format counts a model once per
+ * extension it ships, so a multi-format model appears in several rows. Formats
+ * are looked up by stored value ("stl"), not display label ("STL").
  */
 export async function BrowseByCatalog() {
   const t = await getTranslations("landing.browse")
   const categories = await getTranslations("landing.categories")
-  const counts = await getFacetCounts()
 
   return (
     <section className="shell">
@@ -25,7 +25,7 @@ export async function BrowseByCatalog() {
           items={BROWSE_BY_TYPE.map((type) => ({
             href: type.href,
             label: categories(type.key),
-            count: counts.categories[type.key] ?? 0,
+            count: FACET_COUNTS.categories[type.key] ?? 0,
           }))}
         />
         <BrowseList
@@ -34,7 +34,7 @@ export async function BrowseByCatalog() {
           items={FORMATS.map((format) => ({
             href: `/3d-models?format=${format.value}`,
             label: format.label,
-            count: counts.formats[format.label] ?? 0,
+            count: FACET_COUNTS.formats[format.value] ?? 0,
           }))}
         />
       </div>

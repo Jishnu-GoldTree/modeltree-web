@@ -1,4 +1,4 @@
-import { formatStat, getMarketplaceStats } from "@/lib/data/stats"
+import { MARKETPLACE_STATS, formatStat } from "@/lib/data/stats"
 import { Link } from "@/i18n/navigation"
 import { ArrowRight, Search } from "lucide-react"
 
@@ -59,21 +59,22 @@ function HeroBackdrop() {
  *
  * These were three loose columns of white text sitting on the backdrop. As one
  * bordered slab they read as a single claim about the library rather than three
- * decorations, and the "live" tag is honest: every figure is counted from the
- * database on each render, not written down.
+ * decorations. The figures are a real snapshot of the catalog, refreshed by hand
+ * in `lib/data/stats.ts`; they were counted per render until the reads proved
+ * too expensive, so the badge says "snapshot" and no longer pulses like a feed.
+ * Restore the live tag only alongside a live source.
  *
  * The gradient is painted on a 1px-padded wrapper with the surface laid on top,
  * which is how you get a gradient *border* with a radius — `border-image`
  * takes no radius, so a bordered rounded box squares its corners off.
  */
-async function LiveNumbers() {
-  const stats = await getMarketplaceStats()
+async function CatalogNumbers() {
   const t = await getTranslations("landing")
 
   const figures = [
-    { value: formatStat(stats.models), label: t("heroStats.models") },
-    { value: formatStat(stats.designers), label: t("heroStats.designers") },
-    { value: formatStat(stats.downloads), label: t("heroStats.downloads") },
+    { value: formatStat(MARKETPLACE_STATS.models), label: t("heroStats.models") },
+    { value: formatStat(MARKETPLACE_STATS.designers), label: t("heroStats.designers") },
+    { value: formatStat(MARKETPLACE_STATS.downloads), label: t("heroStats.downloads") },
   ]
 
   return (
@@ -92,12 +93,9 @@ async function LiveNumbers() {
             })}
           </p>
           <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-[11px] font-medium tracking-wide text-white/70 uppercase">
-            {/* Two stacked dots: the ping expands and fades while the solid one
-                stays put, so the tag reads as a feed rather than a label. */}
-            <span className="relative flex size-1.5">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
-            </span>
+            {/* A plain dot, not the old ping: the figures are a hand-refreshed
+                snapshot, and an animated pulse would sell them as a feed. */}
+            <span className="inline-flex size-1.5 rounded-full bg-emerald-400" />
             {t("heroStatsLive")}
           </span>
         </div>
@@ -201,7 +199,7 @@ export async function Hero() {
           </Link>
         </Button>
 
-        <LiveNumbers />
+        <CatalogNumbers />
       </div>
     </section>
   )

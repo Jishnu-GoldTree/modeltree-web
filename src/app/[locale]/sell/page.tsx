@@ -1,4 +1,4 @@
-import { formatStat, getMarketplaceStats } from "@/lib/data/stats"
+import { MARKETPLACE_STATS, formatStat } from "@/lib/data/stats"
 import { getTranslations } from "next-intl/server"
 import { Link } from "@/i18n/navigation"
 import { Check, Coins, Globe, Upload } from "lucide-react"
@@ -33,7 +33,7 @@ const TERMS = [
 
 export default async function SellPage() {
   const t = await getTranslations("sell")
-  const [user, stats] = await Promise.all([getCurrentUser(), getMarketplaceStats()])
+  const user = await getCurrentUser()
 
   const steps = [
     { Icon: Upload, title: t("step1Title"), body: t("step1Body") },
@@ -74,8 +74,8 @@ export default async function SellPage() {
 
             <dl className="mt-12 flex flex-wrap gap-x-12 gap-y-6">
               {[
-                { value: formatStat(stats.models), label: t("modelsStat") },
-                { value: formatStat(stats.designers), label: t("designersStat") },
+                { value: formatStat(MARKETPLACE_STATS.models), label: t("modelsStat") },
+                { value: formatStat(MARKETPLACE_STATS.designers), label: t("designersStat") },
                 { value: "$0", label: t("listStat") },
               ].map((stat) => (
                 <div key={stat.label}>
