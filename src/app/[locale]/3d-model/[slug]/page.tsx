@@ -49,12 +49,16 @@ import { UserText } from "@/components/user-text"
  * slugged "car" from the Car category.
  */
 
-// Rendered per request, never prerendered. The page reads the signed-in viewer
-// (cookies) for the review form and the account-aware header, so a static
-// generation pass throws DYNAMIC_SERVER_USAGE on Vercel's cold-cache render
-// path — which 500'd every product page. `generateStaticParams` used to force
-// that static context; force-dynamic keeps cookies() legal.
-export const dynamic = "force-dynamic"
+// This route used to be `force-dynamic`. It reads the signed-in viewer (cookies)
+// for the download panel and the review form, and without Cache Components a
+// single cookie read anywhere in the tree bailed the entire route out of static
+// generation — which threw DYNAMIC_SERVER_USAGE on Vercel's cold-cache path and
+// 500'd every product page. Opting the whole route into per-request rendering
+// was the only way to make that legal.
+//
+// With Cache Components the boundary is per component: the listing prerenders
+// and the viewer-specific panels stream in behind Suspense. Crawlers, who are
+// the bulk of the traffic here and are never signed in, get the static shell.
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/3d-model/[slug]">) {
   const { slug } = await params
@@ -69,6 +73,19 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/3d-model
 
 const number = (value: number) => value.toLocaleString("en-US")
 
+/**
+ * A missing resource here answers 200, not 404, and that is a property of the
+ * rendering model rather than an oversight.
+ *
+ * With Cache Components every route streams its static shell first, so the
+ * status line is committed before this page's own render decides anything —
+ * `notFound()` can change the body and not the code. Next's documented answer
+ * is the `noindex` on the not-found page (see `[locale]/not-found.tsx`), which
+ * keeps these URLs out of search results; a real 404 would mean checking the
+ * resource in `proxy` before the response starts, which would put a database
+ * lookup on the edge path of every request to save a status code on the rare
+ * one that is wrong.
+ */
 export default async function ModelPage({ params }: PageProps<"/[locale]/3d-model/[slug]">) {
   const { slug } = await params
   const model = await getModel(slug)

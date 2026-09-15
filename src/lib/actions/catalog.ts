@@ -6,13 +6,9 @@ import {
   type CatalogQuery,
 } from "@/lib/data/catalog"
 import { toQuery } from "@/lib/data/catalog-params"
-import { getFavoriteSet } from "@/lib/favorites"
 
 export type CatalogPageResult = {
   items: CatalogModel[]
-  /** Slugs among `items` the current visitor has saved, so appended cards mount
-   *  with the correct heart state. */
-  favoritedSlugs: string[]
   pageCount: number
 }
 
@@ -34,13 +30,9 @@ export async function loadCatalogPage(
   // Infinite scroll only appends cards; the facet sidebar is rendered once by
   // the route and never re-read here, so skip the ~32 count queries per page.
   const result = await queryModels({ ...toQuery(params), ...patch, page }, { facets: false })
-  const favorites = await getFavoriteSet()
 
   return {
     items: result.items,
-    favoritedSlugs: result.items
-      .filter((model) => favorites.has(model.slug))
-      .map((model) => model.slug),
     pageCount: result.pageCount,
   }
 }

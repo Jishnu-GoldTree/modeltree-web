@@ -16,6 +16,18 @@ import { Button } from "@/components/ui/button"
  *
  * A dead end is a bad place to leave a shopper, so the page doubles as a way
  * back in: search first, then the top categories.
+ *
+ * `noindex` is load-bearing. Cache Components streams every route's static
+ * shell before the render decides anything, so the response has already
+ * committed 200 by the time `notFound()` runs — these pages are soft 404s.
+ * The robots tag is what keeps them out of search results, and it is the
+ * mitigation Next documents for exactly this case. If it is ever removed,
+ * missing models and stale URLs start getting indexed as real pages.
+ */
+export const metadata = { robots: { index: false, follow: false } }
+
+/**
+ * @see metadata above — this page must stay noindex.
  */
 
 const SUGGESTED = ASSET_CATEGORIES.slice(0, 4)

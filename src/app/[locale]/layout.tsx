@@ -136,10 +136,17 @@ export default async function LocaleLayout({
             <SkipLink />
             {children}
             <Toaster />
-            <FlashToast />
-            <NewListingFab />
-            <WhatsAppFab />
-            <VisitorPrompts />
+            {/* All four read the current URL, which is request data — under
+                Cache Components that has to sit behind a Suspense boundary or
+                it blocks the page's static shell. They are overlays that have
+                nothing to show until they have a URL to judge, so the fallback
+                is nothing at all. */}
+            <Suspense fallback={null}>
+              <FlashToast />
+              <NewListingFab />
+              <WhatsAppFab />
+              <VisitorPrompts />
+            </Suspense>
           </Providers>
         </NextIntlClientProvider>
         <SpeedInsights />

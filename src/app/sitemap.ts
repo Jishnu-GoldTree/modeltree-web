@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next"
+import { cacheLife } from "next/cache"
 
 import {
   COLLECTION_SEGMENTS,
@@ -11,9 +12,8 @@ import {
 // catalog crawlers used to walk. That trap is closed, but it also removed the
 // path crawlers discovered clean product/category/designer pages through — so
 // this sitemap hands them the canonical set directly. Kept in sync with
-// published content by regenerating hourly (see `revalidate`), which also caps
-// the cost: the DB reads below run at most once an hour, not per request.
-export const revalidate = 3600
+// published content by regenerating hourly (see the `use cache` below), which
+// also caps the cost: the DB reads run at most once an hour, not per request.
 
 const ORIGIN = "https://modeltree.vercel.app"
 
@@ -62,6 +62,9 @@ const STATIC_PATHS: { path: string; changeFrequency: MetadataRoute.Sitemap[numbe
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  "use cache"
+  cacheLife("hours")
+
   const [models, categories, designers] = await Promise.all([
     allModelSitemapEntries(),
     allCategorySlugs(),

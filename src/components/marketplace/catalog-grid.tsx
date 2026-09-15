@@ -26,7 +26,6 @@ import type { CatalogModel, CatalogQuery } from "@/lib/data/catalog"
  */
 export function CatalogGrid({
   initialItems,
-  initialFavoritedSlugs,
   params,
   patch,
   initialPage,
@@ -36,7 +35,6 @@ export function CatalogGrid({
   errorLabel,
 }: {
   initialItems: CatalogModel[]
-  initialFavoritedSlugs: string[]
   params: Record<string, string | undefined>
   patch: Partial<CatalogQuery>
   initialPage: number
@@ -48,7 +46,6 @@ export function CatalogGrid({
   errorLabel: string
 }) {
   const [items, setItems] = useState(initialItems)
-  const [favorited, setFavorited] = useState(() => new Set(initialFavoritedSlugs))
   const [page, setPage] = useState(initialPage)
   const [error, setError] = useState(false)
   const [pending, startTransition] = useTransition()
@@ -64,11 +61,6 @@ export function CatalogGrid({
       try {
         const result = await loadCatalogPage(params, patch, next)
         setItems((prev) => [...prev, ...result.items])
-        setFavorited((prev) => {
-          const merged = new Set(prev)
-          for (const slug of result.favoritedSlugs) merged.add(slug)
-          return merged
-        })
         setPage(next)
       } catch {
         setError(true)
@@ -97,7 +89,7 @@ export function CatalogGrid({
         {items.map((model, index) => (
           <Fragment key={model.slug}>
             <li>
-              <ModelCard model={model} favorited={favorited.has(model.slug)} />
+              <ModelCard model={model} />
             </li>
             {/* After the first full row rather than above the grid: it reaches
                 someone already comparing pieces. Index 4 matches exactly one

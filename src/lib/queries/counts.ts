@@ -2,27 +2,29 @@
 
 import { useQuery } from "@tanstack/react-query"
 
-export type Counts = { cart: number; favorites: number }
+export type Counts = { cart: number; favorites: number; saved: string[] }
 
 export const countsKey = ["counts"] as const
 
+const EMPTY: Counts = { cart: 0, favorites: 0, saved: [] }
+
 /**
- * Cart and saved counts for the header.
+ * Per-visitor cookie state for the header and the model cards.
  *
- * These live in httpOnly cookies the browser cannot read, so the header has to
- * ask the server — and it cannot be server-rendered without making every
- * prerendered page dynamic. Both badges share one query, so this costs one
- * request regardless of how many badges render.
+ * These live in httpOnly cookies the browser cannot read, so the client has to
+ * ask the server — and reading them during render would make every prerendered
+ * page dynamic. Everything that needs them shares this one query, so it costs
+ * one request per navigation no matter how many hearts and badges are on screen.
  *
  * Inherits the app-wide 30s staleTime rather than forcing `staleTime: 0`. The
  * old zero meant every navigation refetched /api/counts (SiteHeader remounts
- * per page), which was pure waste — the count only moves when the user adds or
+ * per page), which was pure waste — the values only move when the user adds or
  * removes something. Those actions redirect with a `?flash=` marker, and
  * FlashToast invalidates this query on that signal, so the badge still updates
  * the instant it changes. Window-focus refetch (a Providers default) covers a
  * change made in another tab.
  */
-export function useCounts() {
+export function useCounts(): Counts {
   const query = useQuery<Counts>({
     queryKey: countsKey,
     queryFn: async () => {
@@ -31,8 +33,21 @@ export function useCounts() {
       return res.json()
     },
     // A failed count must not blank the links; fall back to what we had.
-    placeholderData: (previous) => previous ?? { cart: 0, favorites: 0 },
+    placeholderData: (previous) => previous ?? EMPTY,
   })
 
-  return query.data ?? { cart: 0, favorites: 0 }
+  return query.data ?? EMPTY
+}
+
+/**
+ * Which models the visitor has saved, as a set for per-card lookup.
+ *
+ * Undefined until the query first resolves, which is the difference that
+ * matters to the heart: "not saved" and "not known yet" should not look the
+ * same, or every card would flash an empty heart on a prerendered page before
+ * correcting itself.
+ */
+export function useSavedSlugs(): Set<string> | undefined {
+  const { saved } = useCounts()
+  return saved.length === 0 ? undefined : new Set(saved)
 }

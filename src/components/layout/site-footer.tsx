@@ -1,12 +1,27 @@
 import { Link } from "@/i18n/navigation"
 import { getTranslations } from "next-intl/server"
+import { cacheLife } from "next/cache"
 
 import { FOOTER_COLUMNS } from "@/lib/data/landing"
 import { Logo } from "@/components/layout/logo"
 import { NewsletterForm } from "@/components/forms/newsletter-form"
 import { Separator } from "@/components/ui/separator"
 
+/**
+ * Cached, because of the copyright year.
+ *
+ * `new Date()` is non-deterministic, and Cache Components refuses to bake one
+ * into a prerendered shell — reasonably, since the shell can outlive the value.
+ * The footer renders on every page, so left alone it would have blocked the
+ * whole site from prerendering. Caching it is the honest resolution: everyone
+ * sees the same year, and it is re-derived daily rather than per request. The
+ * rest of the footer is translated constants, which is exactly what a cached
+ * component should hold.
+ */
 export async function SiteFooter() {
+  "use cache"
+  cacheLife("days")
+
   const t = await getTranslations("footer")
   const f = await getTranslations("landing.footer")
 

@@ -4,7 +4,6 @@ import { CatalogView } from "@/components/marketplace/catalog-view"
 import { queryModels } from "@/lib/data/catalog"
 import { toParams, toQuery } from "@/lib/data/catalog-params"
 import { getTranslations, setRequestLocale } from "next-intl/server"
-import { getFavoriteSet } from "@/lib/favorites"
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/3d-models">) {
   const { locale } = await params
@@ -24,7 +23,6 @@ export default async function ModelsPage({
 
   const params = toParams(await searchParams)
   const result = await queryModels(toQuery(params))
-  const favorites = await getFavoriteSet()
 
   return (
     <>
@@ -35,7 +33,6 @@ export default async function ModelsPage({
           base="/3d-models"
           params={params}
           result={result}
-          favorites={favorites}
           title={t("title")}
           description={t("description")}
         />
