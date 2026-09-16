@@ -10,6 +10,28 @@ const { AsyncLocalStorage } = require('node:async_hooks')
 const ts = require('typescript')
 const root = path.resolve(__dirname, '..')
 
+test('crawler metadata bypasses locale routing while catalog and auth routes retain the proxy', () => {
+  // Next normally installs this global during server startup.
+  globalThis.AsyncLocalStorage ??= AsyncLocalStorage
+  const { unstable_doesMiddlewareMatch } = require('next/experimental/testing/server')
+  const h = harness(0, {
+    'next-intl/middleware': { default: () => () => { throw Error('Locale middleware must not run for metadata') } },
+    'next-intl/routing': { defineRouting: config => config },
+  })
+  // Only the matcher is evaluated; constructing the locale handler is harmless.
+  // The mock returns a function so accidental invocation still fails.
+  const { config } = h.load(path.join(root, 'src/proxy.ts'))
+  const matches = url => unstable_doesMiddlewareMatch({ config, nextConfig: {}, url })
+  for (const url of ['/robots.txt', '/sitemap.xml', '/robots.txt?check=1', '/sitemap.xml?check=1']) {
+    assert.equal(matches(url), false, url)
+  }
+  for (const url of ['/', '/en', '/3d-models?q=סוליטר', '/en/3d-models', '/3d-models/findings', '/api/viewer', '/auth/callback', '/designers/jane.doe']) {
+    assert.equal(matches(url), true, url)
+  }
+  const robots = h.load(path.join(root, 'src/app/robots.ts')).default()
+  assert.ok(robots.rules.disallow.includes('/*?'))
+})
+
 function harness(size = 1205, extraMocks = {}) {
   const rows = Array.from({ length: size }, (_, i) => ({
     id: String(i), status: 'published', title: `ring ${i}`, tags: i % 3 ? ['ring'] : [],

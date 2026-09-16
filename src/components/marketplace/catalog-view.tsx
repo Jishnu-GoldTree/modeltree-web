@@ -118,6 +118,7 @@ export async function CatalogView({
           {params.q && (
             <Link
               href={catalogHref(base, params, { q: undefined })}
+              rel="nofollow"
               className="inline-flex min-w-0 items-center gap-1.5 rounded-md border border-brand bg-brand-muted py-1 ps-3 pe-2 text-xs font-medium text-brand-accent outline-none hover:bg-brand-muted/70 focus-visible:ring-3 focus-visible:ring-brand/50"
             >
               <span className="truncate">{t("searchedFor", { query: params.q })}</span>
@@ -131,6 +132,7 @@ export async function CatalogView({
           {params.tag && (
             <Link
               href={catalogHref(base, params, { tag: undefined })}
+              rel="nofollow"
               className="inline-flex min-w-0 items-center gap-1.5 rounded-md border border-brand bg-brand-muted py-1 ps-3 pe-2 text-xs font-medium text-brand-accent outline-none hover:bg-brand-muted/70 focus-visible:ring-3 focus-visible:ring-brand/50"
             >
               <span className="truncate" dir="auto">{t("taggedWith", { tag: params.tag })}</span>

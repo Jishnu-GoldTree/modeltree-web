@@ -64,6 +64,7 @@ function Pill({
     <Link
       href={to}
       prefetch={false}
+      rel={to.includes("?") ? "nofollow" : undefined}
       aria-current={active ? "true" : undefined}
       className={cn(
         "inline-flex shrink-0 items-center rounded-lg border px-3.5 py-1.5 text-sm whitespace-nowrap outline-none transition-colors",
@@ -91,6 +92,7 @@ function MenuLink({
     <Link
       href={to}
       prefetch={false}
+      rel={to.includes("?") ? "nofollow" : undefined}
       aria-current={active ? "true" : undefined}
       title={label}
       className={cn(
@@ -280,6 +282,7 @@ export async function CatalogToolbar({
         {activeCount > 0 && (
           <Link
             href={href(base, {}, { sort: params.sort, q: params.q })}
+            rel={params.sort || params.q ? "nofollow" : undefined}
             className="inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-brand/50"
           >
             <RotateCcw className="size-3.5" aria-hidden />
