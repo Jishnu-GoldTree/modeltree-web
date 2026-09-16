@@ -1,3 +1,4 @@
+import { createElement, type ComponentProps } from "react"
 import { createNavigation } from "next-intl/navigation"
 
 import { routing } from "@/i18n/routing"
@@ -7,5 +8,11 @@ import { routing } from "@/i18n/routing"
  * instead of the next/navigation originals so links keep the visitor's locale
  * instead of silently dropping them back to English.
  */
-export const { Link, redirect, usePathname, useRouter, getPathname } =
-  createNavigation(routing)
+const navigation = createNavigation(routing)
+export const { redirect, usePathname, useRouter, getPathname } = navigation
+
+// Catalog menus and grids contain dozens of destinations. Fetch on navigation
+// instead of making every visible link render another database-backed page.
+export function Link(props: ComponentProps<typeof navigation.Link>) {
+  return createElement(navigation.Link, { prefetch: false, ...props })
+}

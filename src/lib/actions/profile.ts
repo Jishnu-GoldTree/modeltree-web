@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, updateTag } from "next/cache"
 import { getLocale } from "next-intl/server"
 
 import { redirect } from "@/i18n/navigation"
@@ -68,6 +68,8 @@ export async function updateProfile(
     }
     return { error: "Could not save your profile. Try again." }
   }
+
+  updateTag("catalog")
 
   // The header avatar and the public storefront both read this.
   revalidatePath("/profile")

@@ -1,5 +1,7 @@
 "use client"
 
+import { useViewerAuthSync } from "@/lib/queries/viewer"
+
 import { useState } from "react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
@@ -16,6 +18,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
  * singleton is shared across requests on the server, so one user's cache could
  * be served to another.
  */
+function ViewerAuthSync() {
+  useViewerAuthSync()
+  return null
+}
+
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
     () =>
@@ -32,5 +39,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
       }),
   )
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ViewerAuthSync />
+      {children}
+    </QueryClientProvider>
+  )
 }
