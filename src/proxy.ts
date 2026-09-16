@@ -151,6 +151,8 @@ export const config = {
      * none carry a session or need a locale, and running this on them would
      * just burn invocations.
      */
-    "/((?!_next/static|_next/image|favicon.ico|icon|apple-icon|opengraph-image|twitter-image|.*\\.(?:svg|png|jpg|jpeg|gif|webp|webm|mp4)$).*)",
+    // These root metadata routes must reach their handlers verbatim. Rewriting
+    // robots.txt to /he/robots.txt hides the rules blocking faceted crawl URLs.
+    "/((?!robots\\.txt$|sitemap\\.xml$|_next/static|_next/image|favicon.ico|icon|apple-icon|opengraph-image|twitter-image|.*\\.(?:svg|png|jpg|jpeg|gif|webp|webm|mp4)$).*)",
   ],
 }

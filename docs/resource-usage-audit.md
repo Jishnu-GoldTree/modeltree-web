@@ -43,3 +43,46 @@ for an idle tab, opening filter menus, actual filter navigation and scrolling.
 The first request after deployment/invalidation warms caches. Multiple server
 instances can each issue a cold request. Production traffic and bot behavior
 must be checked in hosting/Supabase logs to verify the overall reduction.
+
+## Follow-up: filtered listing traffic and metadata routing
+
+The follow-up screenshot contains 174 gateway requests in its selected minute,
+versus 709 in the first screenshot. This is about 75% fewer requests, but the
+traffic windows are not a controlled comparison. The supplied event at
+2026-09-16T11:21:59.694Z is a public, server-side catalog listing read with
+category `findings`, free price, standard license, rose-gold metal, pear stone,
+print/both production, and the search term `סוליטר`. `offset=0&limit=24` identifies
+page one. This matches `listModelsCached`, not a product-detail or facet-count
+read. The `node` user agent identifies the database caller, not the original
+website visitor. It does not prove the visitor was a crawler.
+
+A concrete routing bug was reproduced using the installed Next.js matcher and
+next-intl proxy: `/robots.txt` matched the proxy and rewrote to `/he/robots.txt`;
+`/sitemap.xml` similarly rewrote to `/he/sitemap.xml`. Neither locale destination
+exists. The root metadata handlers therefore could not serve their intended
+responses through that routing configuration. This can expose a faceted crawl
+space to crawlers that would otherwise obey the query-string restriction.
+The catalog toolbar emits links that retain existing filters while changing
+one dimension, so following those links can generate many unique combinations.
+The cache is shared between locales, but each distinct filter combination
+still requires a cold listing read.
+
+The proxy now excludes both root metadata routes. Query-bearing toolbar links
+and filter-removal links also carry `nofollow` hints; these supplement robots
+rules and are not enforcement against crawlers that ignore them. Clean category
+and product links remain discoverable.
+
+Validation: all eight offline resource tests pass, including the actual Next
+matcher for metadata URLs with and without query strings, both catalog locales,
+API/auth callbacks and dotted designer handles. A separate execution using the
+real next-intl handler confirms the metadata exclusions while Hebrew catalog
+rewrites and English routing remain intact. A live `robots.txt` probe returned
+Vercel's 429 Security Checkpoint, so it did not verify the deployed app response.
+
+Deploy the storefront change, verify a 200 text/plain robots response and a 200
+XML sitemap response, and correlate hosting requests around 11:21:59 UTC with
+the supplied event. Adjacent full database query URLs distinguish new filter
+combinations from repeated identical cache misses. Hosting user agents and
+request paths are needed to establish the traffic source. This follow-up does
+not establish that a crawler caused the particular burst or that production
+request volume has dropped further.
