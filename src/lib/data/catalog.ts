@@ -1,4 +1,7 @@
-import { unstable_cache } from "next/cache"
+import { cache } from "react"
+import { accumulateFacets, emptyFacets, type FacetRow } from "./facet-counts"
+import { getCategories } from "./categories"
+import { publicCache } from "./public-cache"
 
 import type { ModelCard } from "@/lib/data/landing"
 import { supabasePublic } from "@/lib/supabase/public"
@@ -246,10 +249,7 @@ function applyFilters<T extends Builder>(query: T, q: CatalogQuery): T {
   if (q.production === "cast") out = out.in("production", ["cast", "both"]) as T
   if (q.production === "print") out = out.in("production", ["print", "both"]) as T
   if (q.format) {
-    // Matched on the display label ("STL") until now, but the column stores the
-    // extension as written in the URL ("stl"). Every `?format=` filter returned
-    // an empty catalogue and every format facet counted 0. Validated against
-    // FORMATS so only a known extension reaches PostgREST.
+    // Stored extensions are lowercase; FORMATS.label is display-only.
     const format = FORMATS.find((f) => f.value === q.format)?.value
     if (format) out = out.contains("formats", [format]) as T
   }
@@ -332,10 +332,9 @@ const EMPTY_FACETS: CatalogResult["facets"] = {
 // full query (page and sort included). Identical for every anonymous visitor
 // (the anon client carries no cookies) and expired on any model or review write
 // via CATALOG_TAG (see src/lib/actions/{models,reviews}.ts), with a 1h TTL
-// backstop. The catalog page itself stays dynamic (it reads cookies for
-// favourites) — this only spares it from re-running the Supabase listing read
-// per hit.
-const listModelsCached = unstable_cache(
+// backstop. Filtered views still render on demand, so cache their public
+// data independently of the route shell.
+const listModelsCached = publicCache(
   async (query: CatalogQuery): Promise<Omit<CatalogResult, "facets">> => {
     const page = Math.max(query.page ?? 1, 1)
     const from = (page - 1) * PAGE_SIZE
@@ -372,171 +371,77 @@ const listModelsCached = unstable_cache(
   { revalidate: 3600, tags: [CATALOG_TAG] },
 )
 
-// Facets are the ~30-count fan-out (see computeFacets). They count the whole
-// filtered set, not a page of it — neither computeFacets nor applyFilters ever
-// look at page or sort — so they're cached under their own key built from the
-// filter dimensions alone (see facetQuery). Walking pagination or flipping the
-// sort on the same filters therefore reuses one computation instead of
-// re-running the fan-out per permutation, which is the access pattern a catalog
-// crawler hits hardest. Same TTL and CATALOG_TAG invalidation as the listing.
-const facetsCached = unstable_cache(
-  (query: CatalogQuery): Promise<CatalogResult["facets"]> => computeFacets(query),
-  ["catalog-facets"],
-  { revalidate: 3600, tags: [CATALOG_TAG] },
-)
-
-// The facet-relevant slice of a query: everything except paging and sort, which
-// facets don't depend on. Used as the facet cache key so every page and sort of
-// the same filter set collapses onto one entry.
-function facetQuery(query: CatalogQuery): CatalogQuery {
-  const filters = { ...query }
-  delete filters.page
-  delete filters.sort
-  return filters
-}
-
 export async function queryModels(
   query: CatalogQuery,
   options: { facets?: boolean } = {},
 ): Promise<CatalogResult> {
-  // Only the catalog route's sidebar renders facets; the landing trending row
-  // and infinite-scroll pages discard them, so they opt out and skip the fan-out
-  // entirely. Listing rows and facets are cached under different keys and
-  // fetched in parallel.
+  // Only the catalog toolbar needs facet counts. Card-only callers skip them.
+  query = normalizeQuery(query)
   const withFacets = options.facets ?? true
   const [list, facets] = await Promise.all([
     listModelsCached(query),
-    withFacets ? facetsCached(facetQuery(query)) : Promise.resolve(EMPTY_FACETS),
+    withFacets ? computeFacets(query) : Promise.resolve(EMPTY_FACETS),
   ])
   return { ...list, facets }
 }
 
-/**
- * Facet counts, each computed with its own dimension dropped so the numbers
- * show what you would get by switching to that value rather than always
- * reading zero.
- */
-/**
- * Every facet count, from one query per distinct filter set rather than one
- * query per offered value.
- *
- * This used to issue a HEAD count per value — roughly 37 round trips for a
- * single sidebar. That is bad enough per render, and the sidebar links multiply
- * it: each one is a `<Link>` to another filter combination, so Next prefetching
- * them renders each of those routes too, at 37 queries apiece. A single visitor
- * scrolling the filter menu could ask Supabase for a four-figure number of
- * counts. It was the largest source of API traffic on the project by an order
- * of magnitude.
- *
- * The counts are the same. For a dimension the visitor is filtering on, the
- * offered counts replace that filter rather than narrow it, so the rows to
- * count are "everything matching the other filters" — fetch those once, tally
- * the dimension's column in JS. Dimensions the visitor is not filtering on all
- * share the same row set, which is the common case and the one crawlers hit:
- * one query for the whole sidebar.
- *
- * Tallying in JS rather than grouping in Postgres because this project's
- * PostgREST rejects aggregate functions (PGRST123) — the same constraint
- * `lib/data/stats.ts` documents. That puts a ceiling on this: FACET_ROW_CAP
- * rows are fetched and no more, so counts stay exact only while the published
- * catalogue is smaller than that. Past it the numbers quietly understate, so
- * that is the point to move this to a `facet_counts()` RPC. At 30 published
- * models there is roughly 30x headroom.
- */
-const FACET_ROW_CAP = 1000
-
-/** The dimensions the sidebar offers counts for, and their row columns. */
-const FACET_DIMENSIONS = ["category", "format", "license", "metal", "stone"] as const
-type FacetDimension = (typeof FACET_DIMENSIONS)[number]
-
-type FacetRow = {
-  metal: string | null
-  stone: string | null
-  formats: string[] | null
-  license_code: string | null
-  categories: { slug: string } | null
-}
-
-/** The facet-bearing columns of every published row matching `query`. */
-async function facetRows(query: CatalogQuery): Promise<FacetRow[]> {
-  // Same rule as joinedSelect: a category filter compares a child column, which
-  // needs an inner join or it matches rows with no category at all.
-  const join = query.category ? "categories!inner ( slug )" : "categories ( slug )"
-  let q = supabasePublic
-    .from("models")
-    .select(`metal, stone, formats, license_code, ${join}`)
-    .eq("status", "published")
-  q = applyFilters(q as unknown as Builder, query) as unknown as typeof q
-
-  const { data, error } = await q.range(0, FACET_ROW_CAP - 1)
-  if (error) throw new Error(`facet query failed: ${error.message}`)
-  return (data ?? []) as unknown as FacetRow[]
-}
-
-function tally(rows: FacetRow[], read: (row: FacetRow) => string[]) {
-  const counts: Record<string, number> = {}
-  for (const row of rows) {
-    for (const value of read(row)) counts[value] = (counts[value] ?? 0) + 1
-  }
-  return counts
-}
+// Cache bounded pages of narrow public rows, shared by every category, format,
+// metal, stone and license combination. No images, descriptions or file keys.
+// Pagination avoids silently truncating counts at PostgREST's row limit.
+const facetPageCached = publicCache(
+  async (query: CatalogQuery, offset: number) => {
+    let q = supabasePublic.from("models")
+      .select("metal, stone, formats, license_code, categories ( slug )", { count: "exact" })
+      .eq("status", "published")
+    q = applyFilters(q as unknown as Builder, query) as unknown as typeof q
+    const { data, count, error } = await q.order("id").range(offset, offset + 499)
+    if (error) throw new Error(`facet query failed: ${error.message}`)
+    return { rows: (data ?? []) as unknown as FacetRow[], total: count ?? 0 }
+  },
+  ["catalog-facet-page-v1"],
+  { revalidate: 3600, tags: [CATALOG_TAG] },
+)
 
 async function computeFacets(query: CatalogQuery): Promise<CatalogResult["facets"]> {
-  // Group the dimensions by the query they need counted, so dimensions the
-  // visitor has not filtered on collapse onto a single round trip.
-  const groups = new Map<string, { query: CatalogQuery; dimensions: FacetDimension[] }>()
-  for (const dimension of FACET_DIMENSIONS) {
-    const reduced = { ...query }
-    delete reduced[dimension]
-    delete reduced.page
-    delete reduced.sort
-    const key = JSON.stringify(reduced, Object.keys(reduced).sort())
-    const group = groups.get(key)
-    if (group) group.dimensions.push(dimension)
-    else groups.set(key, { query: reduced, dimensions: [dimension] })
+  // These filters apply to every dimension; the other five are counted below
+  // with their own dimension dropped, preserving the toolbar's semantics.
+  const base = { price: query.price, production: query.production, tag: query.tag, q: query.q }
+  const categories = await getCategories()
+  const facets = emptyFacets(categories.map((c) => c.slug))
+  let offset = 0
+  for (;;) {
+    const { rows, total } = await facetPageCached(base, offset)
+    accumulateFacets(facets, rows, query)
+    offset += rows.length
+    if (offset >= total) break
+    if (!rows.length) throw new Error("Incomplete catalog facet page")
   }
-
-  // Seeded with every value the sidebar offers, so a facet with no matches
-  // reads "0" rather than going blank — a filter that would empty the results
-  // is worth showing as such.
-  const categorySlugs = await allCategorySlugs()
-  const facets: CatalogResult["facets"] = {
-    categories: Object.fromEntries(categorySlugs.map((slug) => [slug, 0])),
-    formats: Object.fromEntries(FORMATS.map((f) => [f.value, 0])),
-    licenses: { standard: 0, extended: 0 },
-    metals: Object.fromEntries(METALS.filter((m) => m !== "unspecified").map((m) => [m, 0])),
-    stones: Object.fromEntries(STONES.filter((s) => s !== "none").map((s) => [s, 0])),
-  }
-
-  const READ: Record<FacetDimension, [keyof CatalogResult["facets"], (row: FacetRow) => string[]]> = {
-    category: ["categories", (row) => (row.categories?.slug ? [row.categories.slug] : [])],
-    // A model counts once per format it ships, so these exceed the model count.
-    format: ["formats", (row) => row.formats ?? []],
-    license: ["licenses", (row) => (row.license_code ? [row.license_code] : [])],
-    metal: ["metals", (row) => (row.metal ? [row.metal] : [])],
-    stone: ["stones", (row) => (row.stone ? [row.stone] : [])],
-  }
-
-  await Promise.all(
-    [...groups.values()].map(async ({ query: reduced, dimensions }) => {
-      const rows = await facetRows(reduced)
-      for (const dimension of dimensions) {
-        const [key, read] = READ[dimension]
-        Object.assign(facets[key], tally(rows, read))
-      }
-    }),
-  )
-
   return facets
 }
 
-// Cached across requests: the product route is force-dynamic (it reads the
-// signed-in viewer per request), so without this every view would re-run all
-// these public Supabase reads. The anon client carries no cookies, so the
+// Stable property order and defaults prevent equivalent URLs from creating
+// separate cache entries (including invalid formats and differently cased search).
+function normalizeQuery(q: CatalogQuery): CatalogQuery {
+  return {
+    category: q.category || undefined,
+    format: FORMATS.some((f) => f.value === q.format) ? q.format : undefined,
+    price: q.price,
+    license: q.license,
+    metal: q.metal,
+    stone: q.stone,
+    production: q.production,
+    tag: q.tag?.trim().toLowerCase() || undefined,
+    q: q.q ? searchTerm(q.q).slice(0, 200) || undefined : undefined,
+    sort: q.sort ?? "trending",
+    page: Number.isSafeInteger(q.page) && q.page! > 0 ? q.page : 1,
+  }
+}
+
+// Cache public product data independently of the viewer-specific panels. The anon client carries no cookies, so the
 // result is identical for every visitor and safe to share. Keyed by slug;
 // expired on model writes via CATALOG_TAG, with a 1h TTL as a backstop for any
 // out-of-band change (e.g. the worker bumping download_count).
-export const getModel = unstable_cache(
+export const getModel = publicCache(
   async (slug: string): Promise<CatalogModel | undefined> => {
     const { data } = await supabasePublic
       .from("models")
@@ -553,14 +458,14 @@ export const getModel = unstable_cache(
 // Keyed by the primitives it actually queries on (slug, category, limit) rather
 // than the whole model, so the cache key stays stable when unrelated fields on
 // the source model change.
-const getRelatedCached = unstable_cache(
-  async (slug: string, category: string, limit: number): Promise<CatalogModel[]> => {
+const getRelatedCached = publicCache(
+  async (slug: string, categoryId: string | null, limit: number): Promise<CatalogModel[]> => {
     const { data } = await supabasePublic
       .from("models")
       .select(`${SELECT}`)
       .eq("status", "published")
       .neq("slug", slug)
-      .eq("category_id", await categoryIdFor(category))
+      .eq("category_id", categoryId)
       .order("download_count", { ascending: false })
       .limit(limit)
     return Promise.all(((data ?? []) as unknown as ModelRow[]).map(toModel))
@@ -570,23 +475,18 @@ const getRelatedCached = unstable_cache(
 )
 
 export async function getRelated(model: CatalogModel, limit = 4): Promise<CatalogModel[]> {
-  return getRelatedCached(model.slug, model.category, limit)
+  return getRelatedCached(model.slug, await categoryIdFor(model.category), limit)
 }
 
 async function categoryIdFor(slug: string) {
-  const { data } = await supabasePublic
-    .from("categories")
-    .select("id")
-    .eq("slug", slug)
-    .maybeSingle()
-  return data?.id ?? null
+  return (await getCategories()).find((category) => category.slug === slug)?.id ?? null
 }
 
 /**
  * Public URLs for every preview image on this model, in gallery order.
  * The product page falls back to placeholder art when this returns [].
  */
-export const getModelImages = unstable_cache(
+export const getModelImages = publicCache(
   async (modelId: string): Promise<string[]> => {
     const { data } = await supabasePublic
       .from("model_images")
@@ -625,8 +525,7 @@ export async function allModelSitemapEntries(): Promise<
 
 /** Every category slug — the browseable `/3d-models/[segment]` category pages. */
 export async function allCategorySlugs(): Promise<string[]> {
-  const { data } = await supabasePublic.from("categories").select("slug")
-  return (data ?? []).map((c) => (c as { slug: string }).slug)
+  return (await getCategories()).map((c) => c.slug)
 }
 
 /* ──────────────────────────── designer storefront ───────────────────────── */
@@ -654,7 +553,7 @@ export type Designer = {
  * limits it to the same rows a signed-out visitor sees. Returns undefined for
  * an unknown handle, which the page turns into a 404.
  */
-export async function getDesigner(handle: string): Promise<Designer | undefined> {
+export const getDesigner = cache(publicCache(async (handle: string): Promise<Designer | undefined> => {
   const { data: profile } = await supabasePublic
     .from("profiles")
     .select("id, handle, full_name, bio, location, created_at")
@@ -696,7 +595,7 @@ export async function getDesigner(handle: string): Promise<Designer | undefined>
     models,
     stats: { published: models.length, downloads, reviews, rating },
   }
-}
+}, ["catalog-designer"], { revalidate: 3600, tags: [CATALOG_TAG] }))
 
 /** Handles of designers with at least one published model — the storefronts
  *  worth prerendering. */
@@ -725,7 +624,7 @@ export type Review = {
 // via REVIEWS_TAG). `daysAgo` is derived from the cached `createdAt` at read
 // time, so the relative label stays correct on a cache hit rather than freezing
 // at whatever it was when the entry was written.
-const getReviewRowsCached = unstable_cache(
+const getReviewRowsCached = publicCache(
   async (modelId: string) => {
     const { data } = await supabasePublic
       .from("reviews")
@@ -774,11 +673,11 @@ export async function getReviews(model: CatalogModel): Promise<Review[]> {
  * model_files — a visitor deciding whether to buy has to see what is included,
  * but must not be able to read storage keys.
  */
-export async function getFiles(model: CatalogModel) {
+const getFilesCached = publicCache(async (modelId: string) => {
   const { data } = await supabasePublic
     .from("models")
     .select("file_summary")
-    .eq("id", model.id)
+    .eq("id", modelId)
     .maybeSingle()
 
   const summary = (data?.file_summary ?? []) as { format: string; size_bytes: number }[]
@@ -786,6 +685,10 @@ export async function getFiles(model: CatalogModel) {
     format: f.format,
     size: `${(f.size_bytes / 1_048_576).toFixed(1)} MB`,
   }))
+}, ["catalog-files"], { revalidate: 3600, tags: [CATALOG_TAG] })
+
+export async function getFiles(model: CatalogModel) {
+  return getFilesCached(model.id)
 }
 
 /**
@@ -819,7 +722,7 @@ export async function getDownloadableFormats(modelId: string): Promise<Set<strin
  */
 // The one DB read here is the extended-tier row, which is pricing config shared
 // by every model — cache it once under a static key rather than per model.
-const getExtendedLicense = unstable_cache(
+const getExtendedLicense = publicCache(
   async () => {
     const { data } = await supabasePublic
       .from("licenses")

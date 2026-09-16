@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 
-import { supabasePublic } from "@/lib/supabase/public"
+import { cache } from "react"
+import { getCategories } from "@/lib/data/categories"
 import {
   COLLECTION_SEGMENTS,
   queryModels,
@@ -22,17 +23,13 @@ import { CatalogView } from "@/components/marketplace/catalog-view"
  * the Car category and a model slugged "car".
  */
 
-async function resolve(segment: string) {
+const resolve = cache(async (segment: string) => {
   const t = await getTranslations("segment")
   const cat = await getTranslations("landing")
   // Categories come from the database, not the hardcoded ASSET_CATEGORIES list:
   // that list held only asset categories, so /3d-models/jewelry 404'd even
   // though the category exists — and jewellery is the client's core inventory.
-  const { data: category } = await supabasePublic
-    .from("categories")
-    .select("slug, label")
-    .eq("slug", segment)
-    .maybeSingle()
+  const category = (await getCategories()).find((c) => c.slug === segment)
 
   if (category) {
     return {
@@ -59,10 +56,10 @@ async function resolve(segment: string) {
   }
 
   return null
-}
+})
 
 export async function generateStaticParams() {
-  const { data } = await supabasePublic.from("categories").select("slug")
+  const data = await getCategories()
   return [
     ...(data ?? []).map((c) => ({ segment: c.slug })),
     ...Object.keys(COLLECTION_SEGMENTS).map((segment) => ({ segment })),

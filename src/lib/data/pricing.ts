@@ -1,3 +1,4 @@
+import { publicCache } from "./public-cache"
 import { supabasePublic } from "@/lib/supabase/public"
 
 /**
@@ -22,17 +23,19 @@ export const MEMBERSHIP = {
  * median models cost less than the membership, this returns that lower number
  * and the comparison quietly stops flattering us — which is the point.
  */
-export async function getTypicalTwoModelCost(): Promise<number | null> {
-  const { data } = await supabasePublic
+export const getTypicalTwoModelCost = publicCache(async (): Promise<number | null> => {
+  const { data, error } = await supabasePublic
     .from("models")
     .select("price_cents")
     .eq("status", "published")
     .gt("price_cents", 0)
     .order("price_cents", { ascending: true })
 
+  if (error) throw new Error(`pricing query failed: ${error.message}`)
+
   const prices = (data ?? []).map((r) => r.price_cents as number)
   if (prices.length === 0) return null
 
   const median = prices[Math.floor(prices.length / 2)]
   return median * MEMBERSHIP.modelsPerMonth
-}
+}, ["getTypicalTwoModelCost"], { revalidate: 3600, tags: ["catalog"] })

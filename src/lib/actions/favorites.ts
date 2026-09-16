@@ -19,7 +19,8 @@ import { readFavorites, writeFavorites } from "@/lib/favorites"
 function refresh() {
   revalidatePath("/favorites")
   revalidatePath("/profile")
-  revalidatePath("/3d-models")
+  // Saving changes a cookie, not public catalog data. Cookie writes already
+  // refresh the Router Cache; do not expire the shared catalog Data Cache.
 }
 
 /** Only same-site relative paths; anything else would be an open redirect. */

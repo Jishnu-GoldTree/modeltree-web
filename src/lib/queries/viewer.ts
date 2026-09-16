@@ -32,17 +32,35 @@ export const viewerKey = ["viewer"] as const
  * until it expired. It also keeps things right when a session starts or ends
  * in another tab.
  */
-export function useViewer() {
+// Mounted once by Providers, rather than once per header/FAB consumer.
+export function useViewerAuthSync() {
   const queryClient = useQueryClient()
-
   useEffect(() => {
-    const supabase = createClient()
-    const { data } = supabase.auth.onAuthStateChange(() => {
-      queryClient.invalidateQueries({ queryKey: viewerKey })
+    let userId: string | null | undefined
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const { data } = createClient().auth.onAuthStateChange((event, session) => {
+      const nextId = session?.user.id ?? null
+      if (event === "INITIAL_SESSION") {
+        userId = nextId
+        return
+      }
+      const changed = nextId !== userId
+      userId = nextId
+      if (!changed && event !== "USER_UPDATED") return
+      // Leave Supabase's auth callback before starting another auth operation.
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        void queryClient.invalidateQueries({ queryKey: viewerKey })
+      }, 0)
     })
-    return () => data.subscription.unsubscribe()
+    return () => {
+      clearTimeout(timer)
+      data.subscription.unsubscribe()
+    }
   }, [queryClient])
+}
 
+export function useViewer() {
   return useQuery<Viewer>({
     queryKey: viewerKey,
     queryFn: async () => {

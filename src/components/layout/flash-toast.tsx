@@ -4,11 +4,11 @@ import { Suspense, useEffect, useRef } from "react"
 import { useSearchParams } from "next/navigation"
 import { useQueryClient } from "@tanstack/react-query"
 
-import { usePathname, useRouter } from "@/i18n/navigation"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 
 import { affectsCounts, isFlashKey } from "@/lib/flash"
+import { viewerKey } from "@/lib/queries/viewer"
 import { countsKey } from "@/lib/queries/counts"
 
 /**
@@ -18,8 +18,6 @@ import { countsKey } from "@/lib/queries/counts"
 function FlashToastReader() {
   const t = useTranslations("toast")
   const params = useSearchParams()
-  const pathname = usePathname()
-  const router = useRouter()
   const queryClient = useQueryClient()
   const shown = useRef<string | null>(null)
 
@@ -37,12 +35,15 @@ function FlashToastReader() {
       queryClient.invalidateQueries({ queryKey: countsKey })
     }
 
-    // Drop the param without adding a history entry.
-    const next = new URLSearchParams(params)
-    next.delete("flash")
-    const query = next.toString()
-    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false })
-  }, [flash, params, pathname, router, t, queryClient])
+    if (flash === "profileSaved") {
+      void queryClient.invalidateQueries({ queryKey: viewerKey })
+    }
+
+    // Removing a toast marker needs no new server render or database reads.
+    const next = new URL(window.location.href)
+    next.searchParams.delete("flash")
+    window.history.replaceState(null, "", next.pathname + next.search + next.hash)
+  }, [flash, t, queryClient])
 
   return null
 }

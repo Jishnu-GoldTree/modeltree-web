@@ -50,11 +50,14 @@ export function CatalogGrid({
   const [error, setError] = useState(false)
   const [pending, startTransition] = useTransition()
 
-  const hasMore = page < pageCount
+  const [lastPage, setLastPage] = useState(pageCount)
+  const inFlight = useRef(false)
+  const hasMore = page < lastPage
   const sentinelRef = useRef<HTMLDivElement | null>(null)
 
   const loadMore = useCallback(() => {
-    if (pending || !hasMore) return
+    if (inFlight.current || !hasMore) return
+    inFlight.current = true
     const next = page + 1
     setError(false)
     startTransition(async () => {
@@ -62,17 +65,20 @@ export function CatalogGrid({
         const result = await loadCatalogPage(params, patch, next)
         setItems((prev) => [...prev, ...result.items])
         setPage(next)
+        setLastPage(result.items.length === 0 ? next : result.pageCount)
       } catch {
         setError(true)
+      } finally {
+        inFlight.current = false
       }
     })
-  }, [pending, hasMore, page, params, patch])
+  }, [hasMore, page, params, patch])
 
   // Prefetch the next page a little before the sentinel is on screen so the grid
   // stays ahead of a fast scroll. Skipped once every page is loaded.
   useEffect(() => {
     const el = sentinelRef.current
-    if (!el || !hasMore) return
+    if (!el || !hasMore || error || pending) return
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) loadMore()
@@ -81,7 +87,7 @@ export function CatalogGrid({
     )
     observer.observe(el)
     return () => observer.disconnect()
-  }, [hasMore, loadMore])
+  }, [hasMore, error, pending, loadMore])
 
   return (
     <>
