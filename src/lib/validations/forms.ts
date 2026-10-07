@@ -68,7 +68,6 @@ export const signupSchema = z.object({
     const failed = PASSWORD_RULES.find((rule) => !rule.test(value))
     if (failed) ctx.addIssue({ code: "custom", message: failed.message })
   }),
-  accountType: z.enum(ACCOUNT_TYPES),
   terms: z.boolean().refine((value) => value, "Accept the terms to continue"),
 })
 
@@ -124,7 +123,6 @@ export const profileSchema = z.object({
     .min(2, "Enter your name")
     .max(60, "Keep your name under 60 characters"),
   handle: handleField,
-  accountType: z.enum(ACCOUNT_TYPES),
   bio: z.string().trim().max(500, "Keep your bio under 500 characters").optional(),
   location: z.string().trim().max(80, "Keep the location under 80 characters").optional(),
 });

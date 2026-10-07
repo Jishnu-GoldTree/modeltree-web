@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react"
 import { Link, redirect } from "@/i18n/navigation"
 
 import { getCurrentUser } from "@/lib/supabase/server"
+import { viewerIsDesigner } from "@/lib/data/profile"
 import { getCategoryOptions, getLicenseOptionsForForm } from "@/lib/data/designer"
 import { getTranslations } from "next-intl/server"
 import { SiteHeader } from "@/components/layout/site-header"
@@ -24,6 +25,9 @@ export default async function UploadPage() {
   const locale = await getLocale()
   const user = await getCurrentUser()
   if (!user) return redirect({ href: "/login?next=/dashboard/upload", locale })
+  // Seller accounts are granted, not chosen; RLS refuses a buyer's listing
+  // anyway, so don't let them fill in the form first.
+  if (!(await viewerIsDesigner())) return redirect({ href: "/sell", locale })
 
   const [categories, licenses] = await Promise.all([
     getCategoryOptions(),

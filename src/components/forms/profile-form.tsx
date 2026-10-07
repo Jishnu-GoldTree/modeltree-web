@@ -6,7 +6,6 @@ import { Check, Loader2, X } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { toast } from "sonner"
 
-import { cn } from "@/lib/utils"
 import { updateProfile, type ProfileState } from "@/lib/actions/profile"
 import type { HandleStatus } from "@/app/api/handle/route"
 import type { Profile } from "@/lib/data/profile"
@@ -162,35 +161,6 @@ export function ProfileForm({ profile }: { profile: Profile }) {
         </p>
         <FieldError message={state.fieldErrors?.handle} />
       </div>
-
-      <fieldset className="flex flex-col gap-1.5">
-        <legend className="text-sm font-medium">{f("accountType")}</legend>
-        <div className="mt-1 grid grid-cols-2 gap-2">
-          {[
-            { value: "buyer", label: f("buyer"), hint: f("buyerHint") },
-            { value: "designer", label: f("designer"), hint: f("designerHint") },
-          ].map((option) => (
-            <label
-              key={option.value}
-              className={cn(
-                "flex cursor-pointer flex-col gap-1 rounded-lg border p-3 transition-colors",
-                "hover:bg-accent has-checked:border-brand has-checked:bg-brand-muted",
-                "has-focus-visible:ring-3 has-focus-visible:ring-brand/50",
-              )}
-            >
-              <input
-                type="radio"
-                name="accountType"
-                value={option.value}
-                defaultChecked={profile.accountType === option.value}
-                className="sr-only"
-              />
-              <span className="text-sm font-medium">{option.label}</span>
-              <span className="text-xs text-muted-foreground">{option.hint}</span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
 
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="location">{f("location")}</Label>

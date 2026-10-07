@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server"
 import { Link } from "@/i18n/navigation"
 import { Check, Coins, Globe, Upload } from "lucide-react"
 
-import { getCurrentUser } from "@/lib/supabase/server"
+import { viewerIsDesigner } from "@/lib/data/profile"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { Thumb } from "@/components/marketplace/thumb"
@@ -33,7 +33,7 @@ const TERMS = [
 
 export default async function SellPage() {
   const t = await getTranslations("sell")
-  const user = await getCurrentUser()
+  const isDesigner = await viewerIsDesigner()
 
   const steps = [
     { Icon: Upload, title: t("step1Title"), body: t("step1Body") },
@@ -57,10 +57,11 @@ export default async function SellPage() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild className="h-11 bg-brand px-6 text-brand-foreground hover:bg-brand/85">
-                {/* Sends you where you can actually act: the upload form if you
-                    already have an account, signup if you don't. */}
-                <Link href={user ? "/dashboard/upload" : "/signup"}>
-                  {user ? t("uploadModel") : t("startSelling")}
+                {/* Seller accounts are granted by GoldTree (phase 1), so anyone
+                    without one is sent to ask for it rather than to a sign-up
+                    that can only make a buyer. */}
+                <Link href={isDesigner ? "/dashboard/upload" : "/contact"}>
+                  {isDesigner ? t("uploadModel") : t("startSelling")}
                 </Link>
               </Button>
               <Button
@@ -144,8 +145,8 @@ export default async function SellPage() {
                 {t("payoutNote")}
               </p>
               <Button asChild className="mt-6 h-10 w-full bg-brand text-brand-foreground hover:bg-brand/85">
-                <Link href={user ? "/dashboard/upload" : "/signup"}>
-                  {user ? t("uploadModel") : t("createDesigner")}
+                <Link href={isDesigner ? "/dashboard/upload" : "/contact"}>
+                  {isDesigner ? t("uploadModel") : t("createDesigner")}
                 </Link>
               </Button>
             </div>

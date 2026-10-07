@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { z } from "zod"
 
 import { getCurrentUser } from "@/lib/supabase/server"
+import { viewerIsDesigner } from "@/lib/data/profile"
 import { FORMATS } from "@/lib/data/catalog"
 import { modelFileKey, modelImageKey, presignPut } from "@/lib/r2/presign"
 
@@ -54,6 +55,10 @@ export async function POST(request: Request) {
   const user = await getCurrentUser()
   if (!user) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 })
+  }
+  // Only seller accounts can list, so only they get somewhere to put files.
+  if (!(await viewerIsDesigner())) {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 })
   }
 
   const body = await request.json().catch(() => null)

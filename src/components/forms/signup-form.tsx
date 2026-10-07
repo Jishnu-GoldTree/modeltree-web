@@ -12,8 +12,6 @@ import {
   EyeOff,
   Info,
   Loader2,
-  ShoppingBag,
-  Upload,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -36,11 +34,6 @@ import {
 import { SocialAuthButtons } from "@/components/forms/social-auth-buttons"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "@/i18n/navigation";
-
-const ACCOUNT_OPTIONS = [
-  { value: "buyer", labelKey: "buying", hintKey: "buyingHint", Icon: ShoppingBag },
-  { value: "designer", labelKey: "selling", hintKey: "sellingHint", Icon: Upload },
-] as const;
 
 export function SignupForm({
   enabledProviders,
@@ -69,7 +62,6 @@ export function SignupForm({
       name: "",
       email: "",
       password: "",
-      accountType: "buyer",
       terms: false,
     },
   });
@@ -88,7 +80,9 @@ export function SignupForm({
       options: {
         // Lands on auth.users.raw_user_meta_data; a trigger copies it into the
         // profiles table so the app never reads the auth schema directly.
-        data: { full_name: values.name, account_type: values.accountType },
+        // No account_type: every sign-up is a buyer. Seller accounts are
+        // granted by an administrator (see guard_account_type).
+        data: { full_name: values.name },
       },
     });
 
@@ -142,51 +136,6 @@ export function SignupForm({
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-4"
         >
-          <FormField
-            control={form.control}
-            name="accountType"
-            render={({ field }) => (
-              <FormItem className="gap-1.5">
-                <FormLabel>{t("accountType")}</FormLabel>
-                <FormControl>
-                  <div role="radiogroup" className="grid grid-cols-2 gap-2">
-                    {ACCOUNT_OPTIONS.map((option) => (
-                      <label
-                        key={option.value}
-                        className={cn(
-                          "flex cursor-pointer flex-col gap-1 rounded-lg border p-3 transition-colors",
-                          "hover:bg-accent has-checked:border-brand has-checked:bg-brand-muted",
-                          "has-focus-visible:ring-3 has-focus-visible:ring-brand/50",
-                        )}
-                      >
-                        <input
-                          type="radio"
-                          name={field.name}
-                          value={option.value}
-                          checked={field.value === option.value}
-                          onChange={() => field.onChange(option.value)}
-                          onBlur={field.onBlur}
-                          className="sr-only"
-                        />
-                        <option.Icon
-                          className="size-4 text-brand-accent"
-                          aria-hidden
-                        />
-                        <span className="text-sm font-medium">
-                          {t(option.labelKey)}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {t(option.hintKey)}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-
           <FormField
             control={form.control}
             name="name"

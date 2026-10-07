@@ -1,6 +1,8 @@
 import "server-only"
 
-import { createClient } from "@/lib/supabase/server"
+import { cache } from "react"
+
+import { createClient, getCurrentUser } from "@/lib/supabase/server"
 
 /**
  * Profile and purchase-history reads.
@@ -138,3 +140,20 @@ export async function getDesignerStats(profileId: string) {
     earnedCents: rows.reduce((sum, r) => sum + r.designer_share_cents, 0),
   }
 }
+
+/**
+ * Whether the signed-in viewer holds a seller account. Read from `profiles`,
+ * which only an administrator can change (guard_account_type), so this is safe
+ * to gate seller tooling on. RLS still has the final word on every write.
+ */
+export const viewerIsDesigner = cache(async (): Promise<boolean> => {
+  const user = await getCurrentUser()
+  if (!user) return false
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from("profiles")
+    .select("account_type")
+    .eq("id", user.id)
+    .maybeSingle()
+  return data?.account_type === "designer"
+})

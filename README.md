@@ -15,15 +15,17 @@ built yet.
 | Styling     | Tailwind CSS v4 (`@theme` tokens)     |
 | Components  | shadcn/ui (`new-york`, Radix UI base) |
 | Forms       | React Hook Form + Zod                 |
-| Package mgr | Yarn                                  |
+| Package mgr | pnpm (workspace at the repo root)     |
 
 ## Getting started
 
+From the repo root:
+
 ```bash
-yarn install
-yarn dev          # http://localhost:3000
-yarn build        # production build + typecheck
-yarn lint
+pnpm install
+pnpm dev:web      # http://localhost:3000
+pnpm --filter modeltree build
+pnpm --filter modeltree lint
 ```
 
 ## Layout
@@ -103,6 +105,60 @@ so a signed-in designer cannot target another designer's namespace. The
 `<uploadId>` is a UUID minted by the listing form, so a whole draft cleans up
 as a single prefix delete. Stale `dev/` objects auto-expire after 7 days
 via the lifecycle rule so local iteration doesn't accrete storage.
+
+## Checkout and payments
+
+Buyers pay in shekels through **PayPlus**'s hosted payment page, so card
+data never touches this app. Flow:
+
+1. `startCheckout` (`lib/actions/checkout.ts`) re-prices the cart from the
+   database, creates a `pending` order with snapshotted lines
+   (`lib/orders.ts`, service role) and redirects to the PayPlus page.
+2. PayPlus calls `/api/payments/payplus/callback` (HMAC-signed) and returns
+   the buyer to `/checkout/success?order=…`.
+3. Both paths call PayPlus's `/PaymentPages/ipn` to check the charge, and only
+   then flip the order to `paid` — idempotently, and only if the captured
+   amount equals the order total. The `model_files_read` RLS policy admits the
+   buyer to downloads the moment the order is `paid`.
+
+A zero-total cart settles immediately without a payment page.
+
+| Var                        | Meaning                                                           |
+| -------------------------- | ----------------------------------------------------------------- |
+| `PAYPLUS_API_KEY`          | PayPlus dashboard → Settings → API.                               |
+| `PAYPLUS_SECRET_KEY`       | Same place. Also verifies callback signatures.                    |
+| `PAYPLUS_PAYMENT_PAGE_UID` | The payment page to charge through (enable Bit / Apple Pay there). |
+| `PAYPLUS_ENV`              | `production` for live; anything else uses the PayPlus sandbox.    |
+| `NEXT_PUBLIC_SITE_URL`     | Public origin for return/callback URLs, e.g. `https://modeltree.co.il`. |
+| `PAYMENTS_ALLOW_MOCK`      | `false` disables the mock provider outside production.            |
+
+**Without PayPlus keys** checkout uses a mock provider: the "payment page" is
+`/checkout/mock`, with approve/decline buttons. The mock is refused on Vercel
+production (`VERCEL_ENV=production`), where checkout shows the "not connected
+yet" notice instead of handing out files for free.
+
+**Tax invoices** are issued by PayPlus when invoicing is enabled on the
+terminal (Israel Tax Authority allocation numbers included); prices are sent as
+VAT-inclusive (`vat_type: 0`).
+
+PayPlus can't reach `localhost`, so in local development the order settles when
+the buyer returns to the success page. Use the sandbox keys and a tunnel
+(`cloudflared tunnel --url http://localhost:3000`, then set
+`NEXT_PUBLIC_SITE_URL`) to exercise the callback itself.
+
+## Sellers (phase 1)
+
+GoldTree is the only seller. Every sign-up is a buyer; `account_type` can only
+be changed by the service role (migration `…_designer_role_granted_only.sql`),
+and only designers can create listings or get upload URLs. Grant a seller
+account to a GoldTree staff member with:
+
+```bash
+node --env-file=.env.local scripts/grant-designer.mjs name@goldtree.co.il
+```
+
+Orders book the whole price as the seller's share (`platform_fee_cents = 0`)
+until a commission is agreed for outside designers.
 
 ## Next up
 

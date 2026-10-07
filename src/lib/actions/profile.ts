@@ -31,7 +31,6 @@ export async function updateProfile(
   const parsed = profileSchema.safeParse({
     fullName: formData.get("fullName") ?? "",
     handle: formData.get("handle") ?? "",
-    accountType: formData.get("accountType") ?? "buyer",
     bio: formData.get("bio") ?? undefined,
     location: formData.get("location") ?? undefined,
   })
@@ -53,7 +52,6 @@ export async function updateProfile(
     .update({
       full_name: v.fullName,
       handle: v.handle,
-      account_type: v.accountType,
       bio: v.bio || null,
       location: v.location || null,
     })
