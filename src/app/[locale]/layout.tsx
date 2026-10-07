@@ -18,6 +18,7 @@ import { FlashToast } from "@/components/layout/flash-toast";
 import { NewListingFab } from "@/components/layout/new-listing-fab";
 import { WhatsAppFab } from "@/components/layout/whatsapp-fab";
 import { VisitorPrompts } from "@/components/layout/visitor-prompts";
+import { SITE_ORIGIN } from "@/lib/site-url";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,7 +47,7 @@ export function generateStaticParams() {
 async function buildMetadata(locale: string): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "site" });
   return {
-  metadataBase: new URL("https://modeltree.vercel.app"),
+  metadataBase: new URL(SITE_ORIGIN),
   title: {
     default: `${SITE.name} | ${t("tagline")}`,
     template: `%s | ${SITE.name}`,

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next"
+import { SITE_ORIGIN } from "@/lib/site-url"
 
 // Crawlers were walking the faceted catalog's query-string permutations
 // (?category=&metal=&page=&sort=…). Public reads are cached, but every new
@@ -25,6 +26,6 @@ export default function robots(): MetadataRoute.Robots {
       ],
       crawlDelay: 10,
     },
-    sitemap: "https://modeltree.vercel.app/sitemap.xml",
+    sitemap: `${SITE_ORIGIN}/sitemap.xml`,
   }
 }

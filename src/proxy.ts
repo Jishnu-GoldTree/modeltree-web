@@ -153,6 +153,9 @@ export const config = {
      */
     // These root metadata routes must reach their handlers verbatim. Rewriting
     // robots.txt to /he/robots.txt hides the rules blocking faceted crawl URLs.
-    "/((?!robots\\.txt$|sitemap\\.xml$|_next/static|_next/image|favicon.ico|icon|apple-icon|opengraph-image|twitter-image|.*\\.(?:svg|png|jpg|jpeg|gif|webp|webm|mp4)$).*)",
+    // The share cards also live under a locale (`/en/opengraph-image/default`),
+    // which the bare `opengraph-image` alternative never matched, so crawlers
+    // fetching og:image ran the proxy on every hit for nothing.
+    "/((?!robots\\.txt$|sitemap\\.xml$|_next/static|_next/image|favicon.ico|icon|apple-icon|opengraph-image|twitter-image|(?:he|en)/(?:opengraph-image|twitter-image)|.*\\.(?:svg|png|jpg|jpeg|gif|webp|webm|mp4)$).*)",
   ],
 }

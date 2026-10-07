@@ -7,6 +7,7 @@ import {
   allDesignerHandles,
   allModelSitemapEntries,
 } from "@/lib/data/catalog"
+import { SITE_ORIGIN } from "@/lib/site-url"
 
 // robots.ts disallows every query-string URL, which is the whole faceted
 // catalog crawlers used to walk. That trap is closed, but it also removed the
@@ -15,7 +16,7 @@ import {
 // published content by regenerating hourly (see the `use cache` below), which
 // also caps the cost: the DB reads run at most once an hour, not per request.
 
-const ORIGIN = "https://modeltree.vercel.app"
+const ORIGIN = SITE_ORIGIN
 
 // Hebrew is the default locale and lives at the root; English is prefixed
 // (`localePrefix: "as-needed"`). Each entry is canonicalised to the Hebrew URL

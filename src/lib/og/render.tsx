@@ -17,10 +17,17 @@ import { routing, type Locale } from "@/i18n/routing"
  * is a common recipe but throws "not implemented" in Node — file: URLs are not
  * fetchable. readFile from process.cwd() is what the Next docs prescribe, and
  * it is what the build traces into the deployed function.
+ *
+ * Awaited here, at module scope, not inside `renderShareCard`. With Cache
+ * Components an await on file IO during the render counts as uncached IO: the
+ * build tolerated it, but every runtime revalidation of the card failed with
+ * DYNAMIC_SERVER_USAGE, left it permanently stale, and re-ran the function on
+ * every crawler hit. A top-level await finishes before rendering starts, which
+ * is the pattern the Next docs prescribe for fonts.
  */
 const FONT_DIR = join(process.cwd(), "assets")
 
-const fonts = Promise.all([
+const [regular, bold] = await Promise.all([
   readFile(join(FONT_DIR, "Heebo-Regular.ttf")),
   readFile(join(FONT_DIR, "Heebo-Bold.ttf")),
 ])
@@ -32,8 +39,6 @@ export function toLocale(value: string): Locale {
 }
 
 export async function renderShareCard(locale: Locale) {
-  const [regular, bold] = await fonts
-
   return new ImageResponse(<BrandFrame locale={locale} />, {
     ...ogSize,
     fonts: [
