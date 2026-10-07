@@ -1418,6 +1418,17 @@
     "failedTitle": "Payment was not completed",
     "failedBody": "Your payment did not go through and you have not been charged. You can try again, or contact us if the problem continues.",
     "failedRetry": "Return to checkout",
-    "failedSupport": "Contact support"
+    "failedSupport": "Contact support",
+    "errorConsent": "Please accept the terms to continue.",
+    "errorUnavailable": "Card payment isn't available right now. No charge was taken — please try again later or contact us.",
+    "errorEmpty": "Your cart is empty.",
+    "errorAlreadyOwned": "You already own everything in your cart. Find the files under My downloads.",
+    "errorFailed": "We couldn't start the payment. No charge was taken — please try again.",
+    "signInToPay": "You'll be asked to sign in before paying, so your files are saved to your account.",
+    "processingTitle": "Confirming your payment",
+    "processingBody": "We're waiting for the payment provider to confirm. This usually takes a few seconds — refresh this page shortly. You won't be charged twice.",
+    "processingRefresh": "Refresh",
+    "unknownOrderTitle": "Order not found",
+    "unknownOrderBody": "We couldn't find this order on your account. If you were charged, contact us with your receipt and we'll sort it out."
   }
 }

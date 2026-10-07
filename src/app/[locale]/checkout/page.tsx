@@ -4,6 +4,7 @@ import { FileDown, ShoppingCart } from "lucide-react"
 
 import { getCart } from "@/lib/cart"
 import { formatPrice } from "@/lib/money"
+import { getCurrentUser } from "@/lib/supabase/server"
 import type { Locale } from "@/i18n/routing"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
@@ -23,7 +24,10 @@ export default async function CheckoutPage() {
   const t = await getTranslations("checkout")
   const lic = await getTranslations("license")
   const free = await getTranslations("catalog")
-  const { lines, subtotal, itemCount, total } = await getCart()
+  const [{ lines, subtotal, itemCount, total }, user] = await Promise.all([
+    getCart(),
+    getCurrentUser(),
+  ])
 
   const money = (agorot: number) =>
     formatPrice(agorot, locale, { freeLabel: free("free") }).primary
@@ -106,7 +110,7 @@ export default async function CheckoutPage() {
                     </span>
                   </div>
 
-                  <CheckoutConsent />
+                  <CheckoutConsent signedIn={user !== null} />
                 </div>
 
                 <Button asChild variant="outline" className="mt-3 h-10 w-full">
