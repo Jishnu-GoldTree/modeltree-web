@@ -1,0 +1,1423 @@
+{
+  "nav": {
+    "logIn": "Log in",
+    "signUp": "Sign up",
+    "cart": "Cart",
+    "saved": "Saved models",
+    "openMenu": "Open menu",
+    "search": "Search 3D models",
+    "backToMarketplace": "Back to marketplace",
+    "browseModels": "Browse 3D models",
+    "models": "Jewellery",
+    "custom": "Custom work",
+    "designers": "For Designers",
+    "sell": "Start selling",
+    "dashboard": "Designer dashboard",
+    "profile": "Your profile",
+    "purchases": "Purchases",
+    "logOut": "Log out",
+    "account": "Account",
+    "menu": "Menu",
+    "production": "Production",
+    "requests": "Requests",
+    "skipToContent": "Skip to main content",
+    "signingOut": "Signing out…"
+  },
+  "locale": {
+    "label": "Language",
+    "switchTo": "Switch to {language}"
+  },
+  "catalog": {
+    "title": "Jewellery models",
+    "description": "Cast-ready and print-ready jewellery from GoldTree and independent designers. Filter by piece, metal, stone and licence.",
+    "count": "{count, plural, =0 {No models} one {# model} other {# models}}",
+    "filters": "Filters",
+    "clearAll": "Clear all",
+    "searchedFor": "Search: “{query}”",
+    "clearSearch": "Clear search",
+    "taggedWith": "Tag: {tag}",
+    "clearTag": "Clear tag",
+    "emptyTitle": "No models match those filters",
+    "emptyBody": "Try removing a filter. Combining a narrow category with a rare file format usually comes up empty.",
+    "price": "Price",
+    "category": "Category",
+    "fileFormat": "File format",
+    "licenseGroup": "License",
+    "free": "Free",
+    "paid": "Paid",
+    "metal": "Metal",
+    "stone": "Stone",
+    "production": "Production",
+    "allCategories": "All",
+    "home": "Home",
+    "browseByType": "Browse by type",
+    "scrollLeft": "Scroll categories left",
+    "scrollRight": "Scroll categories right",
+    "loadMore": "Load more",
+    "loadError": "Couldn’t load more models."
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty",
+    "emptyBody": "Models you add will stay here for 30 days, whether or not you're signed in.",
+    "emptyAction": "Browse 3D models",
+    "clear": "Empty cart",
+    "summary": "Order summary",
+    "subtotal": "Subtotal ({count, plural, one {# item} other {# items}})",
+    "tax": "Tax",
+    "taxNote": "Calculated at checkout",
+    "total": "Total",
+    "checkout": "Checkout",
+    "keepBrowsing": "Keep browsing",
+    "remove": "Remove",
+    "license": "License",
+    "update": "Update",
+    "free": "Free"
+  },
+  "favorites": {
+    "title": "Saved models",
+    "empty": "Nothing saved yet",
+    "emptyBody": "Tap the heart on any model to keep it here while you compare options. Saved models stay for six months, signed in or not.",
+    "clear": "Clear all",
+    "addToCart": "Add for {price}",
+    "getFree": "Get for free",
+    "summary": "{count} saved · {free} free · {total} to buy the rest",
+    "emptyAction": "Browse 3D models"
+  },
+  "notFound": {
+    "eyebrow": "Error 404",
+    "title": "This model isn't in the catalog",
+    "body": "The page you were looking for was moved, renamed, or never existed. Search the catalog instead, or pick up from one of the categories below.",
+    "home": "Back to home",
+    "browse": "Browse 3D models",
+    "popular": "Popular categories"
+  },
+  "auth": {
+    "login": "Log in",
+    "logInTitle": "Welcome back",
+    "logInSubtitle": "Log in to reach your purchases, licenses and designer dashboard.",
+    "signUpTitle": "Create your account",
+    "signUpSubtitle": "One account to buy, license and sell 3D models.",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "forgot": "Forgot password?",
+    "remember": "Keep me signed in for 30 days",
+    "orEmail": "or continue with email",
+    "orSignUpEmail": "or sign up with email",
+    "createAccount": "Create account",
+    "newHere": "New to MODELTREE?",
+    "createOne": "Create an account",
+    "haveAccount": "Already have an account?",
+    "backToMarket": "Back to marketplace",
+    "accountType": "What brings you here?",
+    "buying": "I'm buying",
+    "selling": "I'm selling",
+    "buyingHint": "Browse and license models",
+    "sellingHint": "Publish and earn royalties",
+    "agree": "I agree to the",
+    "terms": "Terms of Service",
+    "and": "and",
+    "privacy": "Privacy Policy",
+    "badCredentials": "That email and password don't match an account.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "ruleLength": "At least 8 characters",
+    "ruleLetter": "One letter",
+    "ruleNumber": "One number",
+    "ruleMet": "met",
+    "ruleNotMet": "not met",
+    "legal": "By logging in you agree to our",
+    "forgotTitle": "Reset your password",
+    "forgotSubtitle": "Enter your email and we'll send a link to set a new password.",
+    "sendResetLink": "Send reset link",
+    "forgotSent": "If an account exists for {email}, a reset link is on its way. Check your inbox and spam folder.",
+    "backToLogin": "Back to log in",
+    "rememberedPassword": "Remembered your password?",
+    "resetTitle": "Choose a new password",
+    "resetSubtitle": "Set a new password for your account.",
+    "newPassword": "New password",
+    "updatePassword": "Update password",
+    "resetExpired": "This reset link has expired or was already used. Request a new one.",
+    "resetError": "Could not update your password. Try again."
+  },
+  "product": {
+    "back": "Back",
+    "by": "by",
+    "reviews": "reviews",
+    "downloads": "downloads",
+    "specifications": "Specifications",
+    "whatYouGet": "What you get",
+    "createdBy": "Created by",
+    "fileFormats": "File formats",
+    "tags": "Tags",
+    "relatedTags": "Related tags",
+    "published": "Published",
+    "download": "Download",
+    "reviewsTitle": "Reviews",
+    "outOf5": "out of 5",
+    "moreIn": "More in {category}",
+    "addToCart": "Add to cart",
+    "getModel": "Get this model",
+    "save": "Save for later",
+    "viewStorefront": "View storefront",
+    "vertices": "Vertices",
+    "formats": "Formats",
+    "license": "License",
+    "yes": "Yes",
+    "no": "No",
+    "free": "Free",
+    "included": "{count} file formats included",
+    "updates": "Free lifetime updates",
+    "invoice": "Invoice issued on purchase",
+    "checked": "Every model is checked against our publishing guidelines before it goes on sale.",
+    "commercial": "{license} license, commercial use included.",
+    "daysAgo": "{days} days ago",
+    "moreInGeneric": "More in this category",
+    "reviewsCount": "({count} reviews)",
+    "downloadsCount": "{count} downloads",
+    "ratingLine": "out of 5 · {count} reviews",
+    "ratingDownloads": "{rating} · {count} downloads",
+    "chooseLicense": "Choose a license",
+    "formatsIncluded": "{count} file formats included",
+    "metal": "Metal",
+    "stone": "Stone",
+    "production": "Production",
+    "weight": "Metal weight",
+    "size": "Size",
+    "grams": "{value} g",
+    "mm": "{value} mm"
+  },
+  "review": {
+    "title": "Write a review",
+    "editTitle": "Edit your review",
+    "rating": "Your rating",
+    "starLabel": "{count, plural, one {# star} other {# stars}}",
+    "body": "Your review",
+    "bodyPlaceholder": "How did it cast or print? Was the geometry clean and correctly scaled?",
+    "submit": "Post review",
+    "update": "Update review",
+    "remove": "Remove review",
+    "needsPurchase": "You can review this model once you have bought it.",
+    "empty": "No reviews yet. Buyers can leave one after purchasing.",
+    "today": "Today",
+    "yesterday": "Yesterday"
+  },
+  "profile": {
+    "editProfile": "Edit profile",
+    "buyer": "Buyer",
+    "designer": "Designer",
+    "memberSince": "Member since {date}",
+    "purchases": "Purchases",
+    "totalSpent": "Total spent",
+    "filesAvailable": "Files available",
+    "savedModels": "Saved models",
+    "browseModels": "Browse models",
+    "seeAll": "See all",
+    "nothingPurchased": "Nothing purchased yet.",
+    "nothingSaved": "Nothing saved yet.",
+    "files": "Files",
+    "selling": "Selling",
+    "published": "Models published",
+    "totalSales": "Total sales",
+    "earned": "Earned",
+    "settings": "Profile settings",
+    "backToProfile": "Back to profile",
+    "emailManaged": "your email is managed by your sign-in method and can't be changed here.",
+    "handle": "Handle",
+    "handleHint": "Your public storefront address. Changing it breaks existing links.",
+    "location": "Location",
+    "bio": "Bio",
+    "bioHint": "Shown on your public storefront. Up to 500 characters.",
+    "accountType": "Account type",
+    "saveChanges": "Save changes",
+    "saved": "Profile saved.",
+    "dashboard": "Designer dashboard",
+    "yourProfile": "Your profile"
+  },
+  "designer": {
+    "designer": "Designer",
+    "memberSince": "Member since {date}",
+    "published": "Models published",
+    "downloads": "Total downloads",
+    "reviews": "Reviews",
+    "ratingLine": "{rating} · {count} reviews",
+    "modelsHeading": "Models by {name}",
+    "empty": "This designer hasn't published any models yet.",
+    "browseModels": "Browse all models"
+  },
+  "sell": {
+    "title": "Turn the models you've already made into income",
+    "subtitle": "Publish once and sell as many times as you like. ModelTree handles licensing, invoicing and payouts so you can stay in your DCC.",
+    "startSelling": "Start selling",
+    "uploadModel": "Upload a model",
+    "seeWhatSells": "See what sells",
+    "shareStat": "Your share of each sale",
+    "buyersStat": "Buyers on the platform",
+    "listStat": "To list a model",
+    "howItWorks": "How it works",
+    "termsTitle": "The terms, plainly",
+    "saleTitle": "What a sale looks like",
+    "buyerPays": "Buyer pays",
+    "commission": "Platform commission",
+    "youReceive": "You receive",
+    "payoutNote": "Paid out monthly. Every sale carries an invoice you can download.",
+    "createDesigner": "Create a designer account",
+    "step1Title": "Upload your files",
+    "step1Body": "Drop in the formats you already export. We generate previews and check the mesh before it goes live.",
+    "step2Title": "Reach buyers who are looking",
+    "step2Body": "Studios, architects and product teams browse the catalog. Your listing appears the moment it passes review.",
+    "step3Title": "Get paid monthly",
+    "step3Body": "Licensing, invoicing and payouts are handled for you.",
+    "modelsStat": "Models in the catalog",
+    "designersStat": "Designers selling",
+    "term1": "Keep publishing elsewhere; nothing here is exclusive",
+    "term2": "Set your own price, or give a model away to build an audience",
+    "term3": "Withdraw once your balance clears the payout minimum",
+    "term0": "No listing fees to join — you earn a commission only when a member licenses your model",
+    "metaTitle": "Sell your 3D models",
+    "metaDescription": "Publish your 3D models on ModelTree. No listing fees to join — earn a commission every time a member licenses your work."
+  },
+  "dashboard": {
+    "title": "Designer dashboard",
+    "newListing": "New listing",
+    "listings": "Listings",
+    "publishedCount": "Published",
+    "downloads": "Downloads",
+    "earned30": "Earned (30 days)",
+    "yourListings": "Your listings",
+    "nothingYet": "Upload your first model",
+    "nothingYetBody": "Upload your first model to start selling. You can save it as a draft and finish later.",
+    "uploadFirst": "Upload a model",
+    "created": "Listing saved. It appears in the catalog as soon as you publish it.",
+    "earnedAcross": "{amount} earned across {count, plural, one {# sale} other {# sales}}",
+    "noFiles": "No files yet",
+    "editListing": "Edit {title}"
+  },
+  "footer": {
+    "tagline": "Royalty-free 3D models for games, film and product design. Buy, sell and commission production-ready assets.",
+    "newsletter": "Weekly drops in your inbox",
+    "newsletterHint": "New collections, free assets and designer spotlights.",
+    "subscribe": "Subscribe",
+    "rights": "© {year} MODELTREE. All rights reserved.",
+    "subscribed": "You're subscribed. Watch your inbox for weekly drops.",
+    "emailLabel": "Email address"
+  },
+  "promo": {
+    "badge": "Monthly membership",
+    "title": "Two models a month, every month",
+    "body": "₪55 a month for any two pieces in the catalog, licences yours to keep. Members also reach our modelling team directly — a ring resize costs a fraction of a new model.",
+    "cta": "See membership",
+    "commission": "Custom modelling",
+    "priceLabel": "Monthly membership",
+    "perMonth": "/ month",
+    "included": "2 models included every month",
+    "highlight": "Best value"
+  },
+  "jewellery": {
+    "badge": "In-house jewellery library",
+    "title": "40,000 jewellery models, modelled in-house",
+    "body": "Four designers spent two years building GoldTree's jewellery library of rings, pendants, settings and bands, modelled for casting and direct print. Licence a piece as it is, or ask for it adjusted to your stone and metal.",
+    "models": "Jewellery models",
+    "designers": "In-house designers",
+    "years": "Years in the making",
+    "browse": "Browse jewellery",
+    "commission": "Commission a piece",
+    "cast": "Cast-ready geometry: watertight, correctly scaled, no manifold errors",
+    "sizes": "Ring sizes and stone settings adjusted on request",
+    "inhouse": "Modelled in-house by GoldTree, not resold from third parties"
+  },
+  "showreel": {
+    "badge": "In-house renders, in motion",
+    "title": "See the library turn",
+    "description": "Every piece here was modelled and rendered in-house by GoldTree. Watch the cast-ready geometry from every angle before you licence it."
+  },
+  "toast": {
+    "profileSaved": "Profile saved",
+    "profileFailed": "Could not save your profile",
+    "addedToCart": "Added to cart",
+    "removedFromCart": "Removed from cart",
+    "cartCleared": "Cart emptied",
+    "saved": "Saved",
+    "unsaved": "Removed from saved",
+    "savedCleared": "Saved models cleared",
+    "listingCreated": "Listing saved",
+    "listingPublished": "Listing published. It is live in the catalog",
+    "listingUpdated": "Changes saved",
+    "listingFailed": "Could not save the listing",
+    "licenseUpdated": "License updated",
+    "reviewSaved": "Thanks. Your review is live",
+    "reviewRemoved": "Your review was removed",
+    "accountCreated": "Account created. Opening your profile",
+    "confirmEmail": "Almost there. Confirm your email address",
+    "emailTaken": "That email already has an account",
+    "signUpFailed": "Could not create the account",
+    "signedIn": "Signed in. Taking you through",
+    "signInFailed": "Check your email and password",
+    "signedOut": "Signed out",
+    "subscribed": "You're subscribed",
+    "requestOpened": "Request sent to the modelling team",
+    "resetLinkSent": "Reset link sent",
+    "resetFailed": "Could not send the reset link",
+    "passwordUpdated": "Password updated",
+    "passwordUpdateFailed": "Could not update your password"
+  },
+  "landing": {
+    "navChildren": {
+      "allModels": {
+        "label": "All jewellery models",
+        "description": "Browse the full catalog"
+      },
+      "engagement": {
+        "label": "Engagement rings",
+        "description": "Solitaires, halos and three-stone settings"
+      },
+      "bands": {
+        "label": "Wedding bands",
+        "description": "Eternity, pavé, milgrain and plain profiles"
+      },
+      "pendants": {
+        "label": "Pendants",
+        "description": "Bezel, halo and drop pendants"
+      },
+      "earrings": {
+        "label": "Earrings",
+        "description": "Studs, hoops, drops and climbers"
+      },
+      "settings": {
+        "label": "Settings & mounts",
+        "description": "Heads, galleries and bezel mounts"
+      },
+      "castReady": {
+        "label": "Cast-ready",
+        "description": "Watertight, correct metal thickness"
+      },
+      "printReady": {
+        "label": "Print-ready",
+        "description": "Sized and supported for resin printing"
+      },
+      "findings": {
+        "label": "Findings & components",
+        "description": "Clasps, jump rings and backs"
+      },
+      "freeModels": {
+        "label": "Free models",
+        "description": "Zero-cost pieces with commercial licensing"
+      },
+      "adjust": {
+        "label": "Adjust a model",
+        "description": "Resize or tweak a piece you already bought"
+      },
+      "commission": {
+        "label": "Commission a piece",
+        "description": "A new model built from your brief"
+      },
+      "startSelling": {
+        "label": "Start selling",
+        "description": "Publish your models and earn on every sale"
+      },
+      "dashboard": {
+        "label": "Designer dashboard",
+        "description": "Track sales, payouts and buyer messages"
+      },
+      "guidelines": {
+        "label": "Publishing guidelines",
+        "description": "Quality bar, licensing and file requirements"
+      }
+    },
+    "heroCta": "Explore marketplace",
+    "heroFilters": {
+      "rings": "Rings",
+      "bracelets": "Bracelets",
+      "engagement": "Engagement",
+      "necklaces": "Necklaces"
+    },
+    "heroStats": {
+      "models": "3D models",
+      "designers": "Designers",
+      "downloads": "Downloads"
+    },
+    "explore": {
+      "assetsTitle": "Browse jewellery by piece",
+      "assetsDescription": "Rings, pendants, earrings and the components that go with them.",
+      "assetsAction": "Browse all jewellery",
+      "showAll": "Show all categories"
+    },
+    "assetTabs": {
+      "solitaire": "Solitaire",
+      "halo": "Halo",
+      "eternity": "Eternity",
+      "signet": "Signet",
+      "hamsa": "Hamsa",
+      "tennis": "Tennis",
+      "cuban": "Cuban link",
+      "milgrain": "Milgrain"
+    },
+    "categories": {
+      "rings": "Rings",
+      "engagement-rings": "Engagement rings",
+      "wedding-bands": "Wedding bands",
+      "pendants": "Pendants",
+      "earrings": "Earrings",
+      "bracelets": "Bracelets",
+      "necklaces": "Necklaces & chains",
+      "settings": "Settings & mounts",
+      "charms": "Charms & pendantry",
+      "brooches": "Brooches & pins",
+      "findings": "Findings & components"
+    },
+    "collections": {
+      "viewAll": "View all",
+      "cta": "Go to collection",
+      "modelsKicker": "Engagement rings, ready to cast",
+      "modelsBlurb": "Solitaires, halos and three-stone settings with correct stone seats and metal thickness.",
+      "modelsTitle": "Solitaire and halo settings",
+      "modelsDescription": "A curated set of engagement ring models with standard stone seats, sized for the centre stones jewelers order most.",
+      "printKicker": "Wedding bands for every profile",
+      "printBlurb": "Eternity, pavé, milgrain and plain profiles in every metal.",
+      "printTitle": "Eternity and pavé bands",
+      "printDescription": "Channel-set, shared-prong and milgrain bands, modelled at standard ring sizes and adjustable on request."
+    },
+    "designer": {
+      "section": "Featured Designer",
+      "browseAll": "Browse all designers",
+      "bio": "Character and creature specialists producing game-ready, fully rigged assets with consistent topology and PBR texture sets.",
+      "models": "Models",
+      "since": "Selling since",
+      "reviews": "({count} reviews)",
+      "viewStorefront": "View storefront",
+      "tagCharacters": "Characters",
+      "tagRigged": "Rigged",
+      "tagGameReady": "Game-ready",
+      "tagPbr": "PBR",
+      "work1": "Sci-fi Squad Pack",
+      "work2": "Medieval Villagers",
+      "work3": "Stylized Heroes Vol. 2",
+      "work4": "Creature Anatomy Kit"
+    },
+    "browse": {
+      "saleTitle": "On sale",
+      "saleBody": "Discounted assets from designers running promotions this week.",
+      "saleCta": "Browse deals",
+      "freeTitle": "Free models",
+      "freeBody": "Thousands of royalty-free assets you can download right now.",
+      "freeCta": "Get free models",
+      "metalHeading": "Browse by metal",
+      "metalBlurb": "Narrow the catalog to the metal you cast in.",
+      "stoneHeading": "Browse by stone",
+      "stoneBlurb": "Find pieces cut for the shape you set.",
+      "typeHeading": "Browse by type",
+      "typeBlurb": "Jump straight to the kind of piece you're making.",
+      "formatHeading": "Browse by format",
+      "formatBlurb": "Filter to the file your CAD or printer takes."
+    },
+    "trending": {
+      "title": "Trending 3D models",
+      "description": "Discover the most popular 3D models and assets trending right now.",
+      "action": "Browse all models"
+    },
+    "valueProps": {
+      "title": "What sets {name} apart?",
+      "aTitle": "Production-ready 3D models, ready to license",
+      "aBody": "MODELTREE is a hub for using and contributing to the world of 3D design. Whether you're seeking assets for your projects or offering your own creations, MODELTREE provides the platform and community to make it happen.",
+      "bTitle": "Clear pricing, no surprises",
+      "bBody": "Every model shows its licence and price up front, so you can budget a project without requesting a quote or negotiating terms.",
+      "cTitle": "Curated Quality Standard",
+      "cBody": "No more guesswork. The Quality Standard highlights the key technical characteristics of every file, including PBR textures, making it easier and faster to find the right models."
+    },
+    "craft": {
+      "badge": "Built for production",
+      "title": "High-quality, unique jewellery models",
+      "body": "Every model on {name} is real geometry, not a decorative mesh. Modelled in-house for casting and print, checked before it goes live, and described in the measurements a bench actually works to.",
+      "watertightTitle": "Watertight geometry",
+      "watertightBody": "Closed, manifold meshes that slice cleanly and hold their detail — no gaps around a shank, no facets that vanish on the build plate.",
+      "dimensionsTitle": "Real dimensions, stated up front",
+      "dimensionsBody": "Ring size, stone seat and metal weight in millimetres and grams, so you know the casting cost before you download.",
+      "productionTitle": "Cast-ready or print-ready",
+      "productionBody": "Filter by how you produce, and get the formats that suit it — STL, Rhino, Matrix, 3Design and more, in one download.",
+      "cta": "Browse the library"
+    },
+    "custom": {
+      "badge": "Custom 3D solutions",
+      "title": "Need something unique? Let's create it",
+      "body": "Two ways to get a model that doesn't exist yet: hand the whole brief to our production team, or hire a designer directly.",
+      "why": "Why {name}",
+      "modelryName": "Modelry",
+      "modelrySubtitle": "Full-service 3D model creation",
+      "modelryCta": "Get a quote",
+      "modelryStep1Title": "Upload images",
+      "modelryStep1Body": "Send us reference images or product links. No technical expertise needed.",
+      "modelryStep2Title": "3D Model Creation",
+      "modelryStep2Body": "We handle modeling, asset production, designer selection and in-house quality assurance.",
+      "modelryStep3Title": "Approve and Use",
+      "modelryStep3Body": "Review and accept the final 3D model and images, ready for publishing.",
+      "modelryBenefit1": "End-to-end service, no vendor juggling",
+      "modelryBenefit2": "Consistent quality across every batch",
+      "modelryBenefit3": "Fixed pricing, no hourly surprises",
+      "modelryBenefit4": "Scalable production for thousands of SKUs",
+      "projectsName": "3D Projects",
+      "projectsSubtitle": "Work directly with a designer",
+      "projectsCta": "Post a Project",
+      "projectsStep1Title": "Create a Listing",
+      "projectsStep1Body": "Describe your project with requirements, budget and timeline.",
+      "projectsStep2Title": "Select a Designer",
+      "projectsStep2Body": "Browse designers who applied for your job, compare their portfolios and offered prices, then choose who to work with.",
+      "projectsStep3Title": "Get Your Model",
+      "projectsStep3Body": "Collaborate directly with the designer to finalize your 3D model.",
+      "projectsBenefit1": "Direct collaboration: talk to the designer",
+      "projectsBenefit2": "Flexible iterations: adjust designs as the brief evolves",
+      "projectsBenefit3": "Best-fit creative projects: ideal for custom or one-off work"
+    },
+    "footer": {
+      "company": "Company",
+      "marketplace": "Marketplace",
+      "forDesigners": "For designers",
+      "support": "Support",
+      "about": "About us",
+      "careers": "Careers",
+      "press": "Press",
+      "blog": "Blog",
+      "contact": "Contact",
+      "models": "3D models",
+      "freeModels": "Free models",
+      "startSelling": "Start selling",
+      "royalties": "Royalty rates",
+      "guidelines": "Publishing guidelines",
+      "forum": "Designer forum",
+      "challenges": "Challenges",
+      "help": "Help center",
+      "licensing": "Licensing",
+      "refunds": "Refund policy",
+      "report": "Report content",
+      "status": "System status",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "cookies": "Cookies",
+      "licensingLink": "Licensing",
+      "engagement": "Engagement rings",
+      "bands": "Wedding bands",
+      "castReady": "Cast-ready",
+      "membership": "Membership",
+      "customWork": "Custom modelling",
+      "delivery": "Delivery policy",
+      "sellerTerms": "Seller terms",
+      "cookiePolicy": "Cookie policy",
+      "legal": "Legal"
+    },
+    "heroEyebrowTag": "Cast-ready",
+    "heroEyebrow": "Modelled in-house by the GoldTree studio",
+    "heroTitle": "Your number one destination for <hl>cast-ready</hl> jewellery models",
+    "heroStatsTitle": "The GoldTree library, <hl>in numbers</hl>",
+    "heroStatsLive": "Catalog snapshot",
+    "ribbon": {
+      "tag": "GoldTree",
+      "studio": "Jewellery modelled in-house, cast-ready and print-ready",
+      "contact": "Talk to the studio",
+      "castReady": "Cast-ready models",
+      "custom": "Custom modelling",
+      "sell": "Sell your models"
+    }
+  },
+  "site": {
+    "tagline": "Your number one destination for cast-ready jewellery models",
+    "description": "A jewellery-first 3D marketplace from GoldTree. Rings, pendants and settings modelled in-house for casting and print, plus a wider catalog of production-ready assets, or commission exactly what you need."
+  },
+  "listing": {
+    "title": "Title",
+    "titlePlaceholder": "Solitaire Engagement Ring (6 Prong)",
+    "description": "Description",
+    "descriptionPlaceholder": "Metal thickness, stone seats and sizes, what is included, and how it is meant to be produced.",
+    "category": "Category",
+    "choose": "Choose a category",
+    "price": "Price (USD)",
+    "priceHint": "Leave at 0 to give it away.",
+    "license": "License",
+    "formats": "File formats included",
+    "features": "Features",
+    "publish": "Publish",
+    "saveDraft": "Save as draft",
+    "update": "Save changes",
+    "newTitle": "New listing",
+    "newBody": "Describe the model and set a price. You can save a draft and come back. Nothing is visible to buyers until you publish.",
+    "editTitle": "Edit listing",
+    "editBody": "Update the details, files and preview images. Existing uploads stay unless you remove them.",
+    "metal": "Metal",
+    "stone": "Stone shape",
+    "production": "Production",
+    "weight": "Metal weight (g)",
+    "size": "Size (mm)",
+    "priceIls": "Price (₪)",
+    "priceHintIls": "Leave at 0 to give it away. Prices are in shekels.",
+    "tags": "Tags & keywords",
+    "tagsHint": "Add up to {max} keywords buyers might search — piece, style, occasion. Press Enter or comma after each.",
+    "tagsPlaceholder": "engagement, solitaire, vintage…",
+    "tagsFull": "You've reached the {max}-tag limit. Remove one to add another.",
+    "tagRemove": "Remove tag {tag}",
+    "backToDashboard": "Back to dashboard"
+  },
+  "upload": {
+    "filesLegend": "Model files",
+    "filesHint": "Pick a format, then attach the file. Uploads go straight to storage — a large Rhino file will not slow the page.",
+    "imagesLegend": "Preview images",
+    "imagesHint": "Up to {max} images. The first is used as the thumbnail.",
+    "addImages": "Add preview images",
+    "imagesFormats": "JPG, PNG or WebP up to 10 MB each",
+    "uploading": "Uploading",
+    "uploaded": "Uploaded",
+    "failed": "Upload failed",
+    "uploadFailed": "Could not upload {name}",
+    "removeImage": "Remove image",
+    "removeFile": "Remove file",
+    "publishNote": "Publishing puts the listing in the catalog straight away. Save it as a draft to finish later.",
+    "previewRequired": "Add at least one preview image before publishing — it is the thumbnail buyers see in the catalog.",
+    "previewMissing": "Add a preview image before publishing."
+  },
+  "profileForm": {
+    "name": "Name",
+    "handle": "Handle",
+    "handleHint": "Your public storefront address. Changing it breaks existing links.",
+    "handleChecking": "Checking availability…",
+    "handleAvailable": "Available",
+    "handleTaken": "Already taken",
+    "handleInvalid": "Letters, numbers, dots, dashes and underscores only.",
+    "accountType": "Account type",
+    "buyer": "Buyer",
+    "designer": "Designer",
+    "buyerHint": "Browse and license models",
+    "designerHint": "Publish and earn royalties",
+    "location": "Location",
+    "locationPlaceholder": "Tel Aviv, Israel",
+    "bio": "Bio",
+    "bioPlaceholder": "What you make, and who it's for.",
+    "bioHint": "Shown on your public storefront. Up to 500 characters.",
+    "save": "Save changes",
+    "handlePrefix": "modeltree.com/designers/"
+  },
+  "common": {
+    "loading": "Loading",
+    "by": "by",
+    "outOf5From": "out of 5 from",
+    "viewImage": "View image {n} of {total}",
+    "prevImage": "Previous image",
+    "nextImage": "Next image",
+    "openFullscreen": "Open fullscreen view",
+    "closeFullscreen": "Close fullscreen view",
+    "badgeTopRated": "Top rated",
+    "badgeAssets": "{count} assets",
+    "badgeFree": "Free",
+    "badgeEditors": "Editor's pick"
+  },
+  "license": {
+    "standard": "Standard commercial",
+    "extended": "Extended commercial",
+    "blurbStandard": "For one workshop. Cast or print and sell the finished pieces you make.",
+    "blurbExtended": "For multiple benches or production at scale, with resale of the finished pieces."
+  },
+  "sort": {
+    "label": "Sort",
+    "trending": "Trending",
+    "newest": "Newest",
+    "price-asc": "Price: low to high",
+    "price-desc": "Price: high to low",
+    "rating": "Top rated"
+  },
+  "segment": {
+    "title": "{category} 3D models",
+    "description": "Browse {category} models, filtered by format and license.",
+    "free": "Free jewellery models",
+    "freeDescription": "Zero-cost pieces with commercial licensing.",
+    "cast-ready": "Cast-ready models",
+    "cast-readyDescription": "Watertight geometry with correct metal thickness for casting.",
+    "print-ready": "Print-ready models",
+    "print-readyDescription": "Sized and supported for direct resin printing."
+  },
+  "authAside": {
+    "loginTitle": "40,000 jewellery models, cast-ready and yours to license",
+    "login1": "Royalty-free models, textures and print-ready assets",
+    "login2": "Licenses and invoices kept in one place",
+    "login3": "Sell your own work and earn on every download",
+    "signupTitle": "Turn your 3D work into revenue",
+    "signup1": "Publish unlimited models and earn on every sale",
+    "signup2": "Reach studios, architects and product teams browsing the catalog",
+    "signup3": "Licensing, invoicing and payouts handled for you",
+    "asideTitle": "Turn your 3D work into revenue",
+    "freeToJoin": "Free to join. Earn a commission on every sale, and reach members who take two models a month and request custom size adjustments."
+  },
+  "facet": {
+    "metal": {
+      "yellow-gold": "Yellow gold",
+      "white-gold": "White gold",
+      "rose-gold": "Rose gold",
+      "platinum": "Platinum",
+      "silver": "Silver",
+      "unspecified": "Not specified"
+    },
+    "stone": {
+      "round": "Round brilliant",
+      "princess": "Princess",
+      "oval": "Oval",
+      "emerald": "Emerald",
+      "pear": "Pear",
+      "marquise": "Marquise",
+      "cushion": "Cushion",
+      "none": "No stone"
+    },
+    "production": {
+      "cast": "Cast",
+      "print": "Direct print",
+      "both": "Cast or print"
+    }
+  },
+  "pricing": {
+    "metaTitle": "Membership and pricing",
+    "metaDescription": "Two jewellery models every month for ₪55, or buy pieces individually. Adjustments and custom models quoted through chat with our modelling team.",
+    "eyebrow": "Membership",
+    "title": "Two free models a month for new members",
+    "subtitle": "Two gift models for new members — join us to get a special benefit.",
+    "perMonth": "/ month",
+    "quoted": "Quoted per job",
+    "free": "Free",
+    "popular": "Most popular",
+    "vat": "Prices exclude VAT. Charged in shekels.",
+    "freeName": "Pay as you go",
+    "freeTagline": "Browse everything, buy what you need",
+    "freeCta": "Browse the catalog",
+    "freeF1": "Full access to the catalog",
+    "freeF2": "Buy any model individually",
+    "freeF3": "Royalty-free licence on every purchase",
+    "freeF4": "Invoice issued on every purchase",
+    "memberName": "Membership",
+    "memberTagline": "Two models every month, plus direct access to our modelers",
+    "memberCta": "Start membership",
+    "memberF1": "<b>2 models free every month</b>, your pick from the catalog",
+    "memberF2": "Licences are yours to keep, even if you cancel",
+    "memberF3": "Chat directly with our modelling team",
+    "memberF4": "Member rates on size adjustments and edits",
+    "memberF5": "Priority queue on custom requests",
+    "memberF6": "Cancel any time",
+    "customName": "Custom modelling",
+    "customTagline": "A piece that does not exist yet, built to your brief",
+    "customCta": "Click here to chat with a modeler and order",
+    "customF1": "Ring resizes and small edits from a low fixed fee",
+    "customF2": "Fully custom pieces modelled from your brief",
+    "customF3": "Work directly with the modeler in chat",
+    "customF4": "Cast-ready files, checked before delivery",
+    "compareTitle": "What the membership is worth",
+    "compareBody": "Two models a month at catalog prices is typically more than the membership costs on its own — before the member rates on adjustments.",
+    "compareMember": "Membership",
+    "compareModels": "Two mid-priced models bought individually",
+    "compareNote": "Based on the current catalog. Your two picks can be any price.",
+    "faqTitle": "Common questions",
+    "faq1Q": "What happens to my models if I cancel?",
+    "faq1A": "They stay yours. Every model you take under the membership carries the same royalty-free licence as a purchase, and cancelling does not revoke it.",
+    "faq2Q": "Can I choose any model?",
+    "faq2A": "Any two pieces in the catalog each month, at any price. There is no separate member-only shelf.",
+    "faq3Q": "Do unused models roll over?",
+    "faq3A": "Rollover has not been decided yet. Ask us before you subscribe and we will tell you where it stands.",
+    "faq4Q": "How do adjustments work?",
+    "faq4A": "Open a chat from any model you own, say what needs changing, and a modeler quotes it. A ring resize costs a fraction of a new model."
+  },
+  "custom": {
+    "metaTitle": "Custom modelling and adjustments",
+    "metaDescription": "Chat directly with GoldTree's modelling team. Resize a ring you already bought, or have a piece modelled from scratch.",
+    "eyebrow": "Modelling team",
+    "title": "Talk to a modeler, not a ticket queue",
+    "subtitle": "Every model here was built by our own modelers, and you can reach them. Whether a stone seat needs to move a millimetre or a customer wants something that does not exist yet, it starts as a chat.",
+    "primaryCta": "Open a request",
+    "secondaryCta": "See membership",
+    "adjustEyebrow": "Adjustment",
+    "adjustTitle": "Change a model you already own",
+    "adjustBody": "Ring sizing, stone dimensions, band width, engraving space. You bought the piece, so you are not paying to have it modelled again — you are paying for the edit.",
+    "adjustPrice": "Quoted per edit, far below a new model",
+    "adjustE1": "Resize a ring to your customer's finger",
+    "adjustE2": "Swap a 6.5mm seat for an 8x6 oval",
+    "adjustE3": "Thicken a shank for a heavier casting",
+    "adjustE4": "Add engraving space to a signet face",
+    "newEyebrow": "From scratch",
+    "newTitle": "Commission a piece that does not exist",
+    "newBody": "Send reference photos, a sketch, or a customer's description. A modeler scopes it, quotes it, and builds it cast-ready. You approve before anything is delivered.",
+    "newPrice": "Quoted from your brief",
+    "newE1": "Match a piece from a customer's photograph",
+    "newE2": "A one-off commission with a set stone list",
+    "newE3": "A full collection built on one design language",
+    "newE4": "Rework an old design for modern casting",
+    "howTitle": "How a request runs",
+    "how1Title": "Open a chat",
+    "how1Body": "From a model you own, or from scratch. Say what you need in Hebrew or English.",
+    "how2Title": "Get a quote",
+    "how2Body": "A modeler reads the brief, asks anything unclear, and prices the job before work starts.",
+    "how3Title": "Approve and receive",
+    "how3Body": "You see the result before you accept it. Files arrive cast-ready in the formats you work in.",
+    "memberTitle": "Members pay less for edits",
+    "memberBody": "Membership includes two models a month and member rates on every adjustment. If you are sending work regularly, it pays for itself.",
+    "memberCta": "See membership",
+    "adjustCta": "Request an adjustment",
+    "newCta": "Commission a piece",
+    "howItWorksTitle": "How the conversation runs.",
+    "howItWorksBody": "You open a request here so the brief, the quote and the status stay on your account. The back-and-forth happens on WhatsApp, where the modelling team answers fastest.",
+    "chatCta": "Chat with our designers",
+    "chatTitle": "Chat with our designers",
+    "chatBack": "Back to custom work",
+    "chatIntro": "You are about to message GoldTree's own modelling team — the modelers who built the library on this site. Tell them what you need and they will scope it, price it and build it. Read this first, so the conversation starts in the right place.",
+    "chatStepsTitle": "How it works",
+    "chatStep1Title": "Send your brief",
+    "chatStep1Body": "A photo, a sketch, or a sentence. For an adjustment, say which model you bought and what has to change — ring size, stone dimensions, band width.",
+    "chatStep2Title": "Get a quote",
+    "chatStep2Body": "A modeler replies with a price and a timeframe. Editing a model you already own costs a fraction of commissioning a new one.",
+    "chatStep3Title": "Approve, then we build",
+    "chatStep3Body": "Nothing starts until you accept the quote. The finished files arrive in the formats you asked for, cast-ready.",
+    "chatTermsTitle": "Before you message",
+    "chatTerm1": "Quotes are given per job. Nothing is charged until you accept one.",
+    "chatTerm2": "Adjustments apply to models bought on ModelTree — say which one.",
+    "chatTerm3": "Anything discussed on WhatsApp that becomes an order is recorded here, so the brief and the quote stay on your account.",
+    "chatTerm4": "Messaging shares your phone number with GoldTree. It is used to answer you, and nothing else.",
+    "chatOpen": "Chat on WhatsApp",
+    "chatNewTab": "opens in a new tab",
+    "chatHours": "The team answers Sunday to Thursday, Israeli business hours.",
+    "chatGreeting": "Hi, I would like to talk to the modelling team about a custom piece.",
+    "chatUnavailable": "The chat is not connected yet. Open a request instead and the modelling team will pick it up from there.",
+    "changeGreeting": "Hi, I would like to request changes to a model I found on ModelTree.",
+    "requestChangesCta": "Request changes",
+    "fabLabel": "Custom modelling on WhatsApp",
+    "fabCta": "Request custom modelling"
+  },
+  "membership": {
+    "badge": "Membership",
+    "included": "Free with membership",
+    "includedBody": "Members take any two models a month. This one counts.",
+    "cta": "See membership",
+    "headerCta": "Membership",
+    "stripTitle": "Two free models a month for new members",
+    "stripBody": "₪55 a month, any two pieces in the catalog, licences yours to keep.",
+    "stripCta": "See membership",
+    "adjustCta": "Request size adjustments",
+    "stripPrice": "₪55 / month"
+  },
+  "requests": {
+    "metaTitle": "Custom work requests",
+    "title": "Your requests",
+    "subtitle": "Adjustments and commissions with GoldTree's modelling team.",
+    "queueTitle": "Request queue",
+    "queueSubtitle": "Open requests from buyers, newest first.",
+    "empty": "No requests yet",
+    "emptyBody": "Ask for a ring resize on a model you own, or commission a piece from scratch.",
+    "new": "New request",
+    "openAdjustment": "Request an adjustment",
+    "openCommission": "Commission a piece",
+    "kindAdjustment": "Adjustment",
+    "kindCommission": "Commission",
+    "statusOpen": "Awaiting quote",
+    "statusQuoted": "Quoted",
+    "statusAccepted": "Accepted",
+    "statusDelivered": "Delivered",
+    "statusClosed": "Closed",
+    "statusDeclined": "Declined",
+    "titleLabel": "What do you need?",
+    "titlePlaceholder": "Resize to 54, keep the stone seat",
+    "briefLabel": "Describe it",
+    "briefPlaceholder": "Ring size, stone dimensions, metal, anything the modeler should know.",
+    "modelLabel": "Which model?",
+    "modelPlaceholder": "Choose a model you own",
+    "noOwnedModels": "You have no purchased models to adjust yet.",
+    "submit": "Send request",
+    "back": "Back to requests",
+    "brief": "Brief",
+    "quote": "Quote",
+    "quoteLabel": "Your price (₪)",
+    "quoteSubmit": "Send quote",
+    "quoted": "Quoted at {amount}",
+    "accept": "Accept quote",
+    "accepted": "Quote accepted",
+    "opened": "Opened {date}",
+    "adjustmentHint": "Adjusting a model you already own costs a fraction of a new one.",
+    "waTitle": "Continue on WhatsApp",
+    "waBody": "The modelling team answers on WhatsApp. Your request reference is already in the message, so they know which piece you mean.",
+    "waOpen": "Open WhatsApp",
+    "waOpenNewTab": "opens in a new tab",
+    "waGreeting": "Hi, I opened a request on ModelTree:",
+    "waUnavailable": "WhatsApp is not configured yet. The team will pick this up from the request queue.",
+    "kindLabel": "What kind of request?"
+  },
+  "languagePrompt": {
+    "title": "Choose your language",
+    "body": "The site is available in Hebrew and English. You can change this any time from the header."
+  },
+  "cookies": {
+    "label": "Cookie notice",
+    "body": "We use cookies to keep you signed in and to remember your cart, saved models and language. No tracking or advertising cookies.",
+    "learnMore": "Learn more",
+    "accept": "Got it"
+  },
+  "whyChoose": {
+    "title": "Why choose us?",
+    "subtitle": "A model library built specifically for the jewellery world",
+    "intro": "We're here to give you access to high-quality models, fair prices and a service built from a real understanding of what jewellery designers, goldsmiths and businesses in the field actually need.",
+    "reasonsTitle": "Why use our site?",
+    "reasons": [
+      {
+        "title": "Your models stay yours",
+        "body": "Bought a model? It stays in your library. We believe a model you bought is yours — so the models you purchase are kept in your account and are never deleted."
+      },
+      {
+        "title": "Need a change or adjustment? We're here for you",
+        "body": "The model is almost perfect but needs a small change? Want to resize it, make an adjustment, edit a specific detail or modify an existing model? You can contact our modellers directly and get a professional, fast and convenient response — so you can tailor the model to exactly what you need, easily, quickly and without starting over."
+      },
+      {
+        "title": "Far more affordable prices",
+        "body": "We work to offer models at prices that are significantly more accessible than competing sites and platforms. More models, lower costs — more freedom to create."
+      },
+      {
+        "title": "High quality, no compromises",
+        "body": "Every model is hand-picked and checked to give you high quality suited to professional work in the jewellery industry. Quality you can rely on — with every single model."
+      },
+      {
+        "title": "Fast and convenient",
+        "body": "Find the model you need, buy it and get to work. No complicated processes, no wasted time and no headaches."
+      }
+    ],
+    "premiumTitle": "Want to save even more? Meet Premium ⭐",
+    "premiumIntro": "Instead of paying for each model separately, you can join Premium for:",
+    "price": "Just ₪55 a month",
+    "gift": "🎁 Every Premium membership includes 2 free models each month. Every month you get 2 models at no extra cost, on top of all the benefits of the site. If you use models regularly, the membership can save you hundreds of shekels over time.",
+    "savingsTitle": "💰 How much can you save?",
+    "savingsCost": "Membership cost: ₪55 a month",
+    "savingsGet": "What you get: 2 free models every month",
+    "savingsBody": "If an average model costs over ₪100, two models can be worth ₪200 or more to you — and you pay only ₪55 a month.",
+    "closing": "More models. More savings. More ways to create. Why pay more?",
+    "closingBody": "Whether you're a goldsmith, a jewellery designer, a business owner or simply love to create — our goal is to give you the tools you need, at a fair price and with personal service.",
+    "closingCta": "Join Premium and get 2 free models every month. Start creating. Start saving.",
+    "cta": "Join Premium",
+    "close": "Close"
+  },
+  "terms": {
+    "metaTitle": "Terms of Service — ModelTree",
+    "metaDescription": "The terms that govern your use of the ModelTree jewellery marketplace, membership and custom modelling services.",
+    "title": "Terms of Service",
+    "updated": "Last updated {date}",
+    "intro": "These Terms of Service (\"Terms\") govern your access to and use of ModelTree, a jewellery 3D-model marketplace operated by GoldTree (\"ModelTree\", \"we\", \"us\"). By creating an account, subscribing to membership, or downloading a model, you agree to these Terms. Please read them alongside our Privacy Policy.",
+    "sections": [
+      {
+        "heading": "Who we are",
+        "body": "ModelTree is a marketplace for cast-ready jewellery models operated by GoldTree, based in Israel. These Terms form a binding agreement between you and GoldTree."
+      },
+      {
+        "heading": "Eligibility and accounts",
+        "body": "You must be at least 18 and able to enter a binding contract to use ModelTree. You are responsible for the activity under your account and for keeping your login details secure. Tell us promptly if you suspect unauthorised use."
+      },
+      {
+        "heading": "Membership and payments",
+        "body": [
+          "Membership is a recurring subscription billed at ₪55 per month. This is a recurring payment: your card is charged automatically every month on the renewal date until you cancel. Prices are shown in new Israeli shekels and include VAT where applicable.",
+          "The recurring nature and the price are shown clearly before you subscribe. You can cancel at any time from your account settings. Cancellation stops future renewals but does not refund the current period unless the law requires otherwise."
+        ]
+      },
+      {
+        "heading": "Marketplace purchases and licences",
+        "body": "Buying or downloading a model grants you a non-exclusive licence to use it under the terms shown on the model's page. Models remain the intellectual property of their designers or of GoldTree. You may not resell, redistribute, or sub-license a model as a standalone file."
+      },
+      {
+        "heading": "Buying from GoldTree and from independent designers",
+        "body": "The catalogue includes both models produced in-house by GoldTree and models sold by independent third-party designers through the marketplace. Each product page makes clear who the seller is. GoldTree operates the marketplace, takes payment and is the merchant of record; the same delivery, licensing and refund protections apply whether a model is first-party or third-party."
+      },
+      {
+        "heading": "Designer content and obligations",
+        "body": "If you upload models, you confirm you own them or are licensed to sell them and that they infringe no one's rights. You grant ModelTree the right to host, display, and distribute your models to buyers. You are responsible for the accuracy of your listings."
+      },
+      {
+        "heading": "Custom modelling requests",
+        "body": "Custom work is quoted and agreed before any charge. Deliverables, revisions, and timelines are set out in the request thread. Ownership of a commissioned model transfers to you on full payment unless agreed otherwise."
+      },
+      {
+        "heading": "Acceptable use",
+        "body": "You agree not to misuse the platform: no unlawful or infringing content, no attempts to disrupt or reverse-engineer the service, and no scraping of the catalog. We may suspend accounts that breach these Terms."
+      },
+      {
+        "heading": "Cancellations and refunds",
+        "body": "Because models are digital goods delivered immediately, purchases are generally non-refundable once downloaded, except where the law requires otherwise or a model is materially faulty. Membership refunds follow our refund policy."
+      },
+      {
+        "heading": "Disclaimers and liability",
+        "body": "ModelTree is provided \"as is\". To the extent permitted by law, we are not liable for indirect or consequential losses, and our total liability is limited to the amount you paid us in the twelve months before the claim."
+      },
+      {
+        "heading": "Changes to the service and these Terms",
+        "body": "We may update the platform and these Terms from time to time. If a change is material we will give reasonable notice, and continued use after it takes effect means you accept the revised Terms."
+      },
+      {
+        "heading": "Governing law",
+        "body": "These Terms are governed by the laws of the State of Israel, and the courts of Tel Aviv-Jaffa have exclusive jurisdiction over any dispute."
+      },
+      {
+        "heading": "Contact us",
+        "body": "Questions about these Terms can be sent to legal@goldtree.co.il."
+      }
+    ]
+  },
+  "privacy": {
+    "metaTitle": "Privacy Policy — ModelTree",
+    "metaDescription": "How ModelTree collects, uses, and protects your personal information.",
+    "title": "Privacy Policy",
+    "updated": "Last updated {date}",
+    "intro": "This Privacy Policy explains how ModelTree, operated by GoldTree (\"we\", \"us\"), collects, uses, and protects your personal information when you use our marketplace, membership, and custom modelling services.",
+    "sections": [
+      {
+        "heading": "Information we collect",
+        "body": [
+          "Account details you provide, such as your name, email address, and password.",
+          "Transaction data when you subscribe or buy models, including billing details processed by our payment provider.",
+          "Usage data such as pages viewed, models downloaded, and device and browser information."
+        ]
+      },
+      {
+        "heading": "How we use your information",
+        "body": "We use your information to provide and secure the service, process payments and memberships, deliver models and custom work, respond to support requests, and send service and marketing messages you can opt out of."
+      },
+      {
+        "heading": "Legal bases",
+        "body": "We process your data to perform our contract with you, to meet legal obligations, with your consent where required, and for our legitimate interests in running and improving ModelTree."
+      },
+      {
+        "heading": "Sharing and service providers",
+        "body": "We share data with providers who help us run the service — hosting, database, file storage, payments, and analytics — under agreements that require them to protect it. We do not sell your personal information."
+      },
+      {
+        "heading": "Cookies",
+        "body": "We use cookies and similar technologies to keep you signed in, remember your language preference, and understand how the site is used. You can control cookies through your browser and our cookie settings."
+      },
+      {
+        "heading": "Data retention",
+        "body": "We keep your information for as long as your account is active and as needed to meet legal, tax, and accounting requirements, after which we delete or anonymise it."
+      },
+      {
+        "heading": "Security",
+        "body": "We use technical and organisational measures to protect your data, including encryption in transit and access controls. No system is perfectly secure, so we cannot guarantee absolute security."
+      },
+      {
+        "heading": "Your rights",
+        "body": "Depending on where you live, you may have the right to access, correct, delete, or export your data, and to object to or restrict certain processing. Contact us to exercise these rights."
+      },
+      {
+        "heading": "International transfers",
+        "body": "Some of our providers process data outside Israel. Where we transfer data internationally, we rely on appropriate safeguards to protect it."
+      },
+      {
+        "heading": "Children",
+        "body": "ModelTree is not directed to children under 18, and we do not knowingly collect their personal information."
+      },
+      {
+        "heading": "Changes to this policy",
+        "body": "We may update this Privacy Policy from time to time. If a change is material we will give reasonable notice through the service or by email."
+      },
+      {
+        "heading": "Contact us",
+        "body": "For privacy questions or to exercise your rights, email privacy@goldtree.co.il."
+      }
+    ]
+  },
+  "refunds": {
+    "metaTitle": "Refund & Cancellation Policy — ModelTree",
+    "metaDescription": "How refunds and cancellations work for digital 3D models and ModelTree membership.",
+    "title": "Refund & Cancellation Policy",
+    "updated": "Last updated {date}",
+    "intro": "ModelTree sells digital products — 3D model files delivered instantly for download. This policy explains when a purchase can be cancelled or refunded, for both one-off model purchases and monthly membership. It applies to models sold directly by GoldTree and, where noted, to models sold by independent designers through our marketplace.",
+    "sections": [
+      {
+        "heading": "Digital products delivered immediately",
+        "body": "All models are digital files. Because they are delivered and can be downloaded the moment payment succeeds, purchases are generally final and non-refundable once a download has started. By completing a purchase you agree that delivery begins immediately and acknowledge that this affects statutory cancellation rights for digital content."
+      },
+      {
+        "heading": "When we do refund a model purchase",
+        "body": [
+          "We will replace the file or refund the purchase where the model is materially faulty — for example the mesh is corrupt, the download is broken, or the files do not match what the product page described.",
+          "We will also refund a clear accidental duplicate purchase of the same model on the same account, provided the file has not been used commercially."
+        ]
+      },
+      {
+        "heading": "What is not refundable",
+        "body": "We cannot refund because you no longer need a model, bought the wrong item by mistake after downloading, lack the software to open the files, or changed your mind after downloading. These are limits of selling digital goods, not exceptions we apply selectively."
+      },
+      {
+        "heading": "Models sold by independent designers",
+        "body": "For models sold by third-party designers through the marketplace, the same faulty-file protection applies and is handled by GoldTree as the platform. We assess the claim, issue the refund where due, and settle any adjustment with the designer — you do not need to contact the designer yourself."
+      },
+      {
+        "heading": "Membership billing and cancellation",
+        "body": [
+          "Membership is a recurring subscription billed at ₪55 per month. It renews automatically on the same date each month until you cancel.",
+          "You can cancel at any time from your account settings. Cancellation stops the next renewal and keeps your access until the end of the period already paid for. We do not refund the current period on cancellation unless the law requires it."
+        ]
+      },
+      {
+        "heading": "Accidental or first renewal charges",
+        "body": "If a renewal was charged in error, or you cancelled but were still billed, contact us within 14 days and we will investigate and refund a charge that should not have been taken."
+      },
+      {
+        "heading": "Your statutory rights",
+        "body": "Nothing in this policy limits rights you have under the Israeli Consumer Protection Law or other applicable law, including the cancellation rights that apply to distance and online transactions. Where the law gives you a stronger right than this policy, the law applies."
+      },
+      {
+        "heading": "How to request a refund",
+        "body": "Email support@goldtree.co.il with your account email and the order reference. We aim to respond within 2 business days. Approved refunds are returned to the original payment method through our payment provider."
+      }
+    ]
+  },
+  "delivery": {
+    "metaTitle": "Digital Product & Delivery Policy — ModelTree",
+    "metaDescription": "How you receive the STL and 3D model files you buy on ModelTree. Digital delivery only — nothing is shipped.",
+    "title": "Digital Product & Delivery Policy",
+    "updated": "Last updated {date}",
+    "intro": "Everything sold on ModelTree is a digital product: 3D model files for jewellery, supplied as STL and the other formats listed on each product page. No physical item is manufactured, packed or shipped. This page explains exactly how you receive your files.",
+    "sections": [
+      {
+        "heading": "Digital products only — nothing is shipped",
+        "body": "Unless a listing explicitly states otherwise, you are buying downloadable files, not a physical object. There is no shipping, no postage and no delivery address. You will not receive anything in the post."
+      },
+      {
+        "heading": "How you receive your files",
+        "body": [
+          "As soon as your payment is confirmed, your files become available to download. You can download them immediately from the order confirmation screen and at any time afterwards from your account, under your purchases.",
+          "We also send an order confirmation email with a link back to your downloads. Delivery is normally instant; at busy times it may take a few minutes for a purchase to appear in your account."
+        ]
+      },
+      {
+        "heading": "What is included",
+        "body": "Each product page lists the exact formats, the license, and what the download contains before you buy. Jewellery models are supplied cast-ready or print-ready as stated on the listing. Check the formats section on the page to confirm the files suit your workflow."
+      },
+      {
+        "heading": "Re-downloading your purchases",
+        "body": "Purchased files stay in your account so you can download them again if you lose the local copy or change computers. We keep them available for as long as you hold an account with us and, where relevant, for the duration of the license."
+      },
+      {
+        "heading": "Software you need",
+        "body": "STL files open in standard slicer and CAD software (for example your 3D-printer slicer, or jewellery CAD such as Matrix, RhinoGold or ZBrush). We do not supply this software. Owning a model does not include design or manufacturing services unless bought separately as custom work."
+      },
+      {
+        "heading": "If a download fails",
+        "body": "If a file will not download or open, contact support@goldtree.co.il with your order reference. We will re-issue the download or replace a faulty file. See our Refund & Cancellation Policy for when a purchase can be refunded."
+      },
+      {
+        "heading": "Membership downloads",
+        "body": "Membership includes a set number of model downloads per billing period, as described on the pricing page. Downloads taken under an active membership are delivered the same way — instantly, to your account."
+      }
+    ]
+  },
+  "cookiePolicy": {
+    "metaTitle": "Cookie Policy — ModelTree",
+    "metaDescription": "The cookies ModelTree uses to keep you signed in and remember your cart and language — and how to control them.",
+    "title": "Cookie Policy",
+    "updated": "Last updated {date}",
+    "intro": "This Cookie Policy explains how ModelTree, operated by GoldTree, uses cookies and similar technologies. We keep this deliberately small: we use cookies to run the site, not to build advertising profiles.",
+    "sections": [
+      {
+        "heading": "What cookies are",
+        "body": "Cookies are small text files a website stores in your browser. They let a site remember things between page loads and visits — such as the fact that you are signed in — so it works as you expect."
+      },
+      {
+        "heading": "Strictly necessary cookies",
+        "body": "These keep you signed in, remember the items in your cart and your saved models, and store your language choice (Hebrew or English). The site cannot function correctly without them, so they are always on and do not require consent."
+      },
+      {
+        "heading": "Preference cookies",
+        "body": "We use a small number of cookies to remember choices you make, such as dismissing a notice or keeping your chosen language, so you are not asked again on every visit."
+      },
+      {
+        "heading": "Performance and analytics",
+        "body": "We use privacy-respecting performance measurement to see how fast pages load and to fix problems. It does not track you across other websites and is not used for advertising."
+      },
+      {
+        "heading": "What we do not use",
+        "body": "We do not use advertising cookies, cross-site tracking, or third-party marketing pixels. We do not sell data collected through cookies."
+      },
+      {
+        "heading": "Managing cookies",
+        "body": "You can delete or block cookies in your browser settings at any time. Blocking strictly necessary cookies will stop you from signing in or checking out. Our cookie notice, shown on your first visit, summarises this policy."
+      },
+      {
+        "heading": "Payment provider cookies",
+        "body": "When you pay, our payment provider may set its own cookies to process the transaction securely and prevent fraud. These are governed by the provider's own policy and are used only to complete your payment."
+      }
+    ]
+  },
+  "licensing": {
+    "metaTitle": "Licensing, Intellectual Property & Copyright — ModelTree",
+    "metaDescription": "What you can and cannot do with the 3D models you buy on ModelTree, and how we handle copyright.",
+    "title": "Licensing, Intellectual Property & Copyright",
+    "updated": "Last updated {date}",
+    "intro": "When you buy a model on ModelTree you are buying a licence to use it, not the copyright in it. This page explains the licence you receive, what you may and may not do with a model, and how to raise a copyright concern. The exact licence for each model is shown on its product page and prevails if it differs from the summary here.",
+    "sections": [
+      {
+        "heading": "The licence you receive",
+        "body": "Unless a product page states otherwise, a purchase grants you a worldwide, non-exclusive, non-transferable licence to use the model to design, manufacture, cast, 3D-print and sell physical jewellery. The licence is granted to the buying account and cannot be shared between businesses."
+      },
+      {
+        "heading": "What you may do",
+        "body": "You may use the files in your own production workflow, modify and adapt them for your own manufacturing, and sell the physical pieces you make from them. You may keep working copies and re-download the files for your own use."
+      },
+      {
+        "heading": "What you may not do",
+        "body": "You may not resell, share, sub-license or redistribute the model file itself — as-is or modified — as a digital product, on another marketplace, or in a bundle. You may not claim authorship of the model, or use it to train a machine-learning model. A single purchase does not cover multiple unrelated businesses."
+      },
+      {
+        "heading": "Ownership",
+        "body": "Copyright and all intellectual-property rights in a model remain with GoldTree, or with the independent designer who created it, as applicable. Nothing you buy transfers ownership of the design unless a listing or a written custom-work agreement expressly says so."
+      },
+      {
+        "heading": "Custom and commissioned work",
+        "body": "Where you commission a bespoke model, ownership and licensing follow the written terms agreed for that commission. Unless agreed otherwise, ownership of a commissioned model transfers to you on full payment."
+      },
+      {
+        "heading": "Our brand",
+        "body": "The MODELTREE and GoldTree names, logos and page designs are our trademarks and may not be used without permission. A model licence does not grant any right to our branding."
+      },
+      {
+        "heading": "Copyright complaints",
+        "body": "We respond to genuine copyright and IP complaints. If you believe a model infringes your rights, email legal@goldtree.co.il with the model URL, proof of your rights and your contact details. We will review, and remove or disable infringing listings where a complaint is substantiated."
+      },
+      {
+        "heading": "Repeat infringement",
+        "body": "Designers who repeatedly upload infringing content have their listings removed and their seller accounts suspended or closed."
+      }
+    ]
+  },
+  "sellerTerms": {
+    "metaTitle": "Seller & Designer Agreement — ModelTree",
+    "metaDescription": "Terms for independent designers selling 3D models through the ModelTree marketplace: content, commission, payouts and responsibilities.",
+    "title": "Seller & Designer Agreement",
+    "updated": "Last updated {date}",
+    "intro": "These terms apply to designers who list and sell 3D models through the ModelTree marketplace. They are additional to our general Terms of Service. ModelTree is operated by GoldTree, which runs the marketplace, takes payment from buyers and pays designers their share. By opening a seller account or uploading a model you accept these terms.",
+    "sections": [
+      {
+        "heading": "Who can sell",
+        "body": "You must have a seller account, be at least 18, and be able to enter a binding contract. You are responsible for everything uploaded and sold under your account and for keeping your login secure."
+      },
+      {
+        "heading": "Your content and rights",
+        "body": "You confirm that you own each model you upload, or are fully licensed to sell it, and that it infringes no one's intellectual-property, trademark or other rights. You are solely responsible for your listings, their descriptions, and the accuracy of what you promise buyers."
+      },
+      {
+        "heading": "Licence you grant us",
+        "body": "You grant GoldTree a non-exclusive, worldwide licence to host, display, market, and distribute your models to buyers through the platform, and to show previews and thumbnails for promotion. You keep ownership of your models; this licence exists so we can operate the marketplace and deliver purchases."
+      },
+      {
+        "heading": "First-party and third-party listings",
+        "body": "The marketplace carries both models produced in-house by GoldTree and models sold by independent designers. Your listings are shown as sold by you through the platform. You are the author and rights-holder of your own models; GoldTree is the platform and the merchant of record for the transaction."
+      },
+      {
+        "heading": "Pricing",
+        "body": "You set the price of your models within the ranges and rules the platform supports. Prices are shown to buyers in new Israeli shekels, inclusive of VAT where applicable. We may run platform-wide promotions with notice; your commission is calculated on the actual amount the buyer pays."
+      },
+      {
+        "heading": "Commission and your share",
+        "body": [
+          "GoldTree retains a commission on each sale and pays you the remainder — your revenue share. The current commission rate is shown in your seller dashboard and may be updated with reasonable notice.",
+          "Your share is calculated on the net sale value after any taxes, refunds, chargebacks and payment-processing fees attributable to the sale."
+        ]
+      },
+      {
+        "heading": "Payouts",
+        "body": [
+          "At launch, payouts are processed manually. We pay out earnings that have cleared and exceed the minimum payout threshold shown in your dashboard, on a regular cycle, to the payout details you provide.",
+          "Earnings from a sale become payable only after the buyer's refund window has passed. Refunds and chargebacks are deducted from your balance. You are responsible for giving us correct payout details."
+        ]
+      },
+      {
+        "heading": "Taxes and invoicing",
+        "body": "You are responsible for your own taxes on the income you earn, and for issuing any tax documentation you are legally required to provide. GoldTree issues tax invoices to buyers for their purchases. Nothing here creates an employment or partnership relationship between us."
+      },
+      {
+        "heading": "Content standards and prohibited content",
+        "body": "Models must meet our published quality and technical standards and must not be infringing, unlawful, stolen, or misrepresented. We may reject, remove, or unpublish any listing that breaches these standards or these terms."
+      },
+      {
+        "heading": "Seller responsibility and moderation",
+        "body": "You are responsible for user-generated content you post, including model files, images, and text. We may review, moderate, and remove content, and we may suspend or close seller accounts that breach these terms, receive substantiated infringement complaints, or harm buyers."
+      },
+      {
+        "heading": "Indemnity",
+        "body": "You agree to indemnify GoldTree against claims, losses and costs arising from your content, your breach of these terms, or your infringement of a third party's rights."
+      },
+      {
+        "heading": "Termination",
+        "body": "Either side may end this agreement at any time. You may remove your listings, subject to honouring licences already sold to buyers, which continue after your account closes. We may withhold payouts where fraud or infringement is being investigated."
+      }
+    ]
+  },
+  "about": {
+    "metaTitle": "About ModelTree — a jewellery-first 3D marketplace",
+    "metaDescription": "ModelTree is a jewellery 3D-model marketplace by GoldTree: cast-ready models, membership and custom modelling for jewelers.",
+    "title": "About ModelTree",
+    "subtitle": "A jewellery-first 3D marketplace, built by a gold-trading company for the people who actually make jewellery.",
+    "intro": "ModelTree is operated by GoldTree, a gold-trading company based in Israel. Over two years, our in-house team of four designers built a library of around 40,000 jewellery models for casting and 3D printing. ModelTree opens that library — and a growing catalogue from independent designers — to jewelers everywhere.",
+    "sections": [
+      {
+        "heading": "What we do",
+        "body": "We sell cast-ready and print-ready 3D models for jewellery — rings, pendants, settings and more — as instant digital downloads. Buy a model outright, or take a monthly membership that includes a set number of downloads. Every file is prepared for real production, not just for rendering."
+      },
+      {
+        "heading": "A marketplace, not just a library",
+        "body": "Alongside models produced in-house by GoldTree, independent designers list and sell their own work through ModelTree. Product pages make clear who you are buying from, and the same delivery, licensing and refund protections apply either way."
+      },
+      {
+        "heading": "Custom modelling",
+        "body": "When a jeweler needs something specific, our modelling team adjusts an existing piece or builds a new one to brief. Custom work is quoted and agreed before any charge, and the conversation happens where Israeli jewelers already work."
+      },
+      {
+        "heading": "Built for this market",
+        "body": "The platform is Hebrew-first and English-ready, priced in new Israeli shekels, and shaped around how jewelers here actually buy and produce. That focus is the whole point: tools that fit the trade rather than a generic asset store."
+      }
+    ],
+    "businessTitle": "Business information"
+  },
+  "contact": {
+    "metaTitle": "Contact ModelTree",
+    "metaDescription": "Get in touch with ModelTree by GoldTree — support, billing, legal and privacy contacts, and business details.",
+    "title": "Contact us",
+    "intro": "We are happy to help with your account, an order, a licensing question or a policy matter. Choose the right address below and we will get back to you.",
+    "supportTitle": "Support & orders",
+    "supportBody": "Questions about your account, a purchase, downloads, membership or a refund. We aim to reply within 2 business days.",
+    "legalTitle": "Legal & copyright",
+    "legalBody": "Terms, licensing and copyright or intellectual-property complaints.",
+    "privacyTitle": "Privacy & data",
+    "privacyBody": "Questions about your personal data or our Privacy Policy.",
+    "whatsappTitle": "Custom modelling",
+    "whatsappBody": "For custom-work requests, our modelling team answers on WhatsApp. Start from a model or the custom-work page and we will pick it up there.",
+    "whatsappCta": "Start a custom-work request",
+    "businessTitle": "Business information",
+    "labels": {
+      "email": "Email",
+      "address": "Registered address",
+      "registration": "Company registration",
+      "legalName": "Legal entity",
+      "country": "Country"
+    }
+  },
+  "checkout": {
+    "metaTitle": "Checkout — ModelTree",
+    "title": "Checkout",
+    "summaryTitle": "Order summary",
+    "subtotal": "Subtotal ({count})",
+    "tax": "VAT",
+    "taxNote": "Included where applicable",
+    "total": "Total",
+    "digitalNote": "You are buying digital files. Nothing is shipped — your models are available to download the moment payment succeeds.",
+    "recurringNote": "Membership is a recurring subscription of ₪55 per month. It renews automatically until you cancel, which you can do at any time from your account.",
+    "agreeLabel": "I have read and agree to the <terms>Terms of Service</terms>, the <refunds>Refund Policy</refunds> and the <privacy>Privacy Policy</privacy>, and I understand these are digital products delivered immediately.",
+    "payNow": "Pay securely",
+    "secureNote": "Payment is processed securely by our payment provider over an encrypted connection. We never see or store your full card details.",
+    "empty": "Your cart is empty",
+    "emptyBody": "Add a model to your cart before checking out.",
+    "emptyAction": "Browse models",
+    "backToCart": "Back to cart",
+    "pendingTitle": "Payment provider not connected yet",
+    "pendingBody": "This store is being prepared for launch. Live card payment will be enabled once our payment provider is approved. No charge is taken.",
+    "successTitle": "Thank you — your order is confirmed",
+    "successBody": "Your payment succeeded and your files are ready. Download them below or any time from your account. A confirmation email and tax invoice are on their way.",
+    "successDownloads": "Go to my downloads",
+    "successKeep": "Keep browsing",
+    "orderRef": "Order reference",
+    "failedTitle": "Payment was not completed",
+    "failedBody": "Your payment did not go through and you have not been charged. You can try again, or contact us if the problem continues.",
+    "failedRetry": "Return to checkout",
+    "failedSupport": "Contact support"
+  }
+}

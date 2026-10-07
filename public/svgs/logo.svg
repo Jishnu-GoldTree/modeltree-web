@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" fill="none" stroke="#cb2956" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
+  <!-- MODELTREE mark: an isometric cube carrying an M (left face) and T (right face). -->
+  <path d="M300 100 500 200 500 400 300 500 100 400 100 200 Z"/>
+  <path d="M100 200 300 300 500 200 M300 300 300 500"/>
+  <path d="M136 394 136 278 200 374 264 342 264 458"/>
+  <path d="M330 329 470 259 M400 294 400 430"/>
+</svg>

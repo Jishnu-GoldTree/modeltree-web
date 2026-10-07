@@ -1,0 +1,274 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
+  --font-heading:
+    "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-muted: var(--brand-muted);
+  --color-brand-on-ink: var(--brand-on-ink);
+  --color-ink: var(--ink);
+  --color-ink-foreground: var(--ink-foreground);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  /* MODELTREE brand — a vivid raspberry (#CB2957). Unlike the earlier metallic
+     schemes this accent is a mid-dark saturated fill, so it carries white text
+     rather than dark. Hue ~11 (rose-red). */
+  --brand: oklch(0.556 0.196 11);
+  /* White on the raspberry fill — 5.26:1, passes AA. */
+  --brand-foreground: oklch(0.985 0 0);
+  /* Darkened a touch so it holds up as text/icons on white and on the light
+     --brand-muted tint. */
+  --brand-accent: oklch(0.51 0.19 12);
+  --brand-muted: oklch(0.955 0.022 11);
+  /* The raspberry as text on the dark --ink strip. The mid-dark --brand only
+     reaches ~2.8:1 there; lifting the lightness to 0.72 (chroma pulled back so
+     it doesn't glow) clears AA at ~5.6:1. Not theme-scoped: the ink surface is
+     dark in both modes, so this stays the same tone in .dark. */
+  --brand-on-ink: oklch(0.72 0.16 13);
+  --ink: oklch(0.2 0.012 15);
+  --ink-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.35rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --brand: oklch(0.6 0.2 12);
+  --brand-foreground: oklch(0.985 0 0);
+  /* Lightened rather than darkened here: on a dark card the accent has to sit
+     above the surface, not below it. */
+  --brand-accent: oklch(0.72 0.16 13);
+  --brand-muted: oklch(0.33 0.09 12);
+  --ink: oklch(0.22 0.012 15);
+  --ink-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+    /* Nudge the root up from the browser-default 16px so the whole UI scales a
+       little — text and the rem-based spacing/sizing that tracks it. Percentage
+       rather than a px value so it still honors a user's browser font-size
+       preference. */
+    font-size: 106.25%; /* ~17px at the 16px default */
+  }
+  /* Geist carries no Hebrew glyphs. Heebo must come FIRST here, not after
+     Geist: next/font expands --font-geist-sans to "Geist, Geist Fallback", and
+     that generated fallback is a local face with broad Unicode coverage — it
+     matches Hebrew before the stack ever reaches Heebo, so Heebo never loads
+     and Hebrew renders in a system font. Heebo covers Latin too, so Latin runs
+     on Hebrew pages stay in one consistent family. */
+  :lang(he) {
+    font-family:
+      var(--font-hebrew), var(--font-geist-sans), ui-sans-serif, system-ui,
+      sans-serif;
+  }
+
+  /* User-authored content is English while the interface may be Hebrew.
+     Direction-neutral punctuation otherwise inherits the RTL paragraph and
+     jumps to the wrong end — "Wolf, rigged." renders as ".Wolf, rigged".
+     Isolation keeps each run resolving on its own. */
+  [data-user-text] {
+    unicode-bidi: isolate;
+  }
+}
+
+@layer components {
+  /* Page gutter shared by every landing section so bands stay aligned.
+     Widened to a marketplace-scale column (1600px) with tighter gutters so the
+     catalog grid and product layouts fill the viewport the way a 3D-asset store
+     does, rather than sitting in the narrow centred band a boutique site uses. */
+  .shell {
+    @apply mx-auto w-full max-w-400 px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Clearance for the fixed header, which is a stack — utility ribbon, nav
+     bar, membership ribbon — not a single bar. Its height is therefore not
+     something a page should re-derive by counting rows: every route clears it
+     with this one class, and adding or resizing a ribbon is a one-line change
+     here. The utility ribbon (h-9) is dropped below sm, so the offset is the
+     bar plus the membership ribbon (6.5rem) there and the full stack (8.75rem)
+     from sm up. */
+  .header-offset {
+    @apply pt-26 sm:pt-35;
+  }
+
+  /* ── Section rhythm ──────────────────────────────────────────────────
+     Two classes, one scale. Sections never set their own vertical spacing.
+
+     The space *between* sections belongs to the parent, not to the sections.
+     When each one carried its own padding, every section had to know what sat
+     above it: most used pb-only and inherited their top gap from the section
+     before, which silently broke the moment a full-bleed band was inserted —
+     a band's padding is inside its background, so it contributes nothing
+     below its border, and "Explore 3D assets" ended up flush against it.
+     A gap on the container cannot be got wrong that way, and adjacent
+     paddings can never double up.
+
+     The trailing padding matters as much as the gap: the last section has
+     nothing below it to space against, so without it the final row sits
+     straight on the footer. */
+  .section-flow {
+    @apply flex flex-col gap-16 pb-16 sm:gap-20 sm:pb-20;
+  }
+
+  /* The space *inside* a section that paints its own background, so its
+     content clears the band's edges. Sections with no background need none of
+     this — .section-flow already spaces them. */
+  .section-band {
+    @apply py-16 sm:py-20;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ── Showreel marquee ────────────────────────────────────────────────
+   Used by the "in motion" band to slide the in-house render tiles past
+   continuously. The track holds two identical halves and translates by
+   exactly one half (-50%), so the loop point is seamless. Motion is paused
+   for visitors who ask for reduced motion — the tiles simply sit still,
+   and each one keeps its own poster/pause behaviour from ProductVideo. */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@layer utilities {
+  .animate-marquee {
+    animation: marquee-scroll var(--marquee-duration, 60s) linear infinite;
+  }
+  /* Pause on hover so a visitor can settle on a piece. */
+  .marquee-group:hover .animate-marquee {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-marquee {
+      animation: none;
+    }
+  }
+}
