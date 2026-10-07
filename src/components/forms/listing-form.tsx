@@ -177,6 +177,8 @@ function humanBytes(bytes: number) {
   return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`
 }
 
+const NO_FIELDS: ReadonlySet<string> = new Set()
+
 export function ListingForm({
   categories,
   licenses,
@@ -198,21 +200,33 @@ export function ListingForm({
   )
 
   // The server action is the single source of validation, so errors only arrive
-  // on submit. Mirroring them locally lets a field's error clear the instant
-  // that field changes, instead of a stale "too short" sitting under text the
-  // designer has already fixed. Re-synced on every new submit result.
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  useEffect(() => {
-    setErrors(state.fieldErrors ?? {})
-  }, [state])
-  const clearError = useCallback((...fields: string[]) => {
-    setErrors((prev) => {
-      if (!fields.some((f) => f in prev)) return prev
-      const next = { ...prev }
-      for (const f of fields) delete next[f]
-      return next
-    })
-  }, [])
+  // on submit. Tracking which fields were edited since lets a field's error
+  // clear the instant that field changes, instead of a stale "too short"
+  // sitting under text the designer has already fixed.
+  //
+  // Derived rather than copied into state by an effect: the cleared set is
+  // keyed to the submit result it applies to, so a new result starts with
+  // nothing cleared on the same render instead of one render late.
+  const [cleared, setCleared] = useState<{ result: ListingState; fields: ReadonlySet<string> }>(
+    () => ({ result: state, fields: new Set() }),
+  )
+  const clearedFields = cleared.result === state ? cleared.fields : NO_FIELDS
+  const errors = useMemo(() => {
+    const all = state.fieldErrors ?? {}
+    if (clearedFields.size === 0) return all
+    return Object.fromEntries(Object.entries(all).filter(([field]) => !clearedFields.has(field)))
+  }, [state, clearedFields])
+  const clearError = useCallback(
+    (...fields: string[]) => {
+      setCleared((prev) => {
+        const base = prev.result === state ? prev.fields : NO_FIELDS
+        const fresh = fields.filter((f) => f in (state.fieldErrors ?? {}) && !base.has(f))
+        if (fresh.length === 0 && prev.result === state) return prev
+        return { result: state, fields: new Set([...base, ...fresh]) }
+      })
+    },
+    [state],
+  )
 
   // One uploadId per form session groups everything under a single R2 prefix,
   // which makes cleanup (abandoned drafts) a directory delete later.

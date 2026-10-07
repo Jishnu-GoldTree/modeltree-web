@@ -50,7 +50,9 @@ export function CheckoutConsent({ signedIn }: { signedIn: boolean }) {
         />
         <Label
           htmlFor="checkout-terms"
-          className="text-xs leading-snug font-normal text-muted-foreground"
+          // `block`: the shadcn Label is a flex row, which turned every text
+          // run and link of this sentence into its own narrow column.
+          className="block text-xs leading-snug font-normal text-muted-foreground"
         >
           {t.rich("agreeLabel", {
             terms: (chunks) => (
