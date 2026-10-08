@@ -142,7 +142,7 @@ export function SiteHeader() {
               primary verb, not something that only appears once the hero scrolls
               away. Given a generous fixed width so it reads as the centrepiece
               while still leaving the trailing cluster room. */}
-          <div className="hidden w-full max-w-sm md:block lg:max-w-md xl:max-w-lg">
+          <div className="hidden w-full max-w-md xl:block 2xl:max-w-lg">
             <SearchForm size="compact" commandKey />
           </div>
 

@@ -20,8 +20,9 @@ const HERO_CLIPS = ["ijewel-05", "ijewel-03", "ijewel-10", "ijewel-01"] as const
  * and what it looks like (the library's own turntables).
  *
  * The surface is the same warm off-white the pieces are rendered on, so the
- * clips sit in the page rather than as dark boxes on it. Below lg the clips
- * are left out entirely: on a phone they would push the search below the fold
+ * clips sit in the page rather than as dark boxes on it. From md the clips
+ * share the row (a tablet has the width for both); below md they are left out
+ * entirely: on a phone they would push the search below the fold
  * and cost several megabytes before the visitor has done anything.
  */
 export async function HomeHero({ categories }: { categories: HomeCategory[] }) {
@@ -30,12 +31,12 @@ export async function HomeHero({ categories }: { categories: HomeCategory[] }) {
 
   return (
     <section className="header-offset bg-cream">
-      <div className="shell grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-14 lg:py-20">
-        <div className="max-w-xl">
+      <div className="shell grid items-center gap-10 py-12 sm:py-16 md:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] md:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-14 lg:py-20">
+        <div className="max-w-xl md:max-w-none lg:max-w-xl">
           <p className="text-xs font-semibold tracking-[0.14em] text-brand-accent uppercase">
             {t("eyebrow")}
           </p>
-          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-balance sm:text-5xl md:text-[2.75rem] lg:text-5xl xl:text-6xl">
             {t.rich("title", {
               hl: (chunks) => <span className="text-brand-accent">{chunks}</span>,
             })}
@@ -76,9 +77,9 @@ export async function HomeHero({ categories }: { categories: HomeCategory[] }) {
           </div>
         </div>
 
-        <ul className="hidden grid-cols-2 gap-3 lg:grid" aria-hidden>
+        <ul className="hidden grid-cols-2 gap-2.5 md:grid lg:gap-3" aria-hidden>
           {HERO_CLIPS.map((clip, i) => (
-            <li key={clip} className={i % 2 === 1 ? "translate-y-8" : undefined}>
+            <li key={clip} className={i % 2 === 1 ? "translate-y-6 lg:translate-y-8" : undefined}>
               <ProductVideo
                 src={`/videos/${clip}.webm`}
                 poster={`/videos/posters/${clip}.webp`}

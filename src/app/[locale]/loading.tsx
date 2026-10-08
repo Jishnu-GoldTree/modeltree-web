@@ -11,7 +11,7 @@ export default function Loading() {
   return (
     <PageSkeleton flush>
       <section className="bg-cream">
-        <div className="shell grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-14 lg:py-20">
+        <div className="shell grid items-center gap-10 py-12 sm:py-16 md:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] md:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-14 lg:py-20">
           <div className="max-w-xl">
             <Skeleton className="h-3 w-48 bg-foreground/8" />
             <Skeleton className="mt-5 h-11 w-4/5 bg-foreground/8 sm:h-13" />
@@ -32,9 +32,9 @@ export default function Loading() {
               <Skeleton className="h-11 w-40 bg-foreground/8" />
             </div>
           </div>
-          <ul className="hidden grid-cols-2 gap-3 lg:grid">
+          <ul className="hidden grid-cols-2 gap-2.5 md:grid lg:gap-3">
             {[0, 1, 2, 3].map((i) => (
-              <li key={i} className={i % 2 === 1 ? "translate-y-8" : undefined}>
+              <li key={i} className={i % 2 === 1 ? "translate-y-6 lg:translate-y-8" : undefined}>
                 <Skeleton className="aspect-4/5 rounded-2xl bg-foreground/6" />
               </li>
             ))}
