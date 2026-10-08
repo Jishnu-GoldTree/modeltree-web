@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { MARKETPLACE_STATS, formatStat } from "@/lib/data/stats"
 import { getTranslations } from "next-intl/server"
 import Image from "next/image"
@@ -7,6 +8,7 @@ import { ArrowLeft, Check } from "lucide-react"
 import { Logo } from "@/components/layout/logo"
 import { LoginForm } from "@/components/forms/login-form"
 import { ENABLED_OAUTH_PROVIDERS } from "@/lib/auth-config"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export async function generateMetadata({
   params,
@@ -35,10 +37,11 @@ const AUTH_ERRORS: Record<string, string> = {
   server_error: "The provider had a problem. Try again in a moment.",
 }
 
-export default async function LoginPage({ searchParams }: PageProps<"/[locale]/login">) {
-  const t = await getTranslations("auth")
-  const aside = await getTranslations("authAside")
-  const land = await getTranslations("landing")
+async function LoginFormFromParams({
+  searchParams,
+}: {
+  searchParams: PageProps<"/[locale]/login">["searchParams"]
+}) {
   const { error, next } = await searchParams
 
   // Only same-site relative paths. Accepting an arbitrary `next` would make the
@@ -51,6 +54,38 @@ export default async function LoginPage({ searchParams }: PageProps<"/[locale]/l
     typeof error === "string"
       ? (AUTH_ERRORS[error] ?? "Sign-in failed. Try again.")
       : undefined
+
+  return (
+    <LoginForm
+      enabledProviders={ENABLED_OAUTH_PROVIDERS}
+      authError={authError}
+      redirectTo={redirectTo}
+    />
+  )
+}
+
+function LoginFormSkeleton() {
+  return (
+    <div className="flex flex-col gap-6" aria-hidden>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <Skeleton className="h-10" />
+        <Skeleton className="h-10" />
+      </div>
+      <Skeleton className="h-px" />
+      <div className="flex flex-col gap-4">
+        <Skeleton className="h-15" />
+        <Skeleton className="h-15" />
+        <Skeleton className="h-5 w-32" />
+        <Skeleton className="h-10" />
+      </div>
+    </div>
+  )
+}
+
+export default async function LoginPage({ searchParams }: PageProps<"/[locale]/login">) {
+  const t = await getTranslations("auth")
+  const aside = await getTranslations("authAside")
+  const land = await getTranslations("landing")
 
   return (
     <main id="main-content" className="grid min-h-svh lg:grid-cols-2">
@@ -121,11 +156,9 @@ export default async function LoginPage({ searchParams }: PageProps<"/[locale]/l
             {t("logInSubtitle")}
           </p>
 
-          <LoginForm
-            enabledProviders={ENABLED_OAUTH_PROVIDERS}
-            authError={authError}
-            redirectTo={redirectTo}
-          />
+          <Suspense fallback={<LoginFormSkeleton />}>
+            <LoginFormFromParams searchParams={searchParams} />
+          </Suspense>
         </div>
 
         <p className="mx-auto max-w-sm text-center text-xs text-muted-foreground">
