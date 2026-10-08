@@ -91,9 +91,9 @@ export default async function PricingPage() {
                 className={cn(
                   "relative flex h-full flex-col rounded-2xl border bg-card p-6 sm:p-7",
                   // The membership is the thing being sold; it gets the weight.
-                  plan.featured && "border-brand shadow-lg",
+                  plan.featured && "border-brand",
                   // Custom modelling is the client's second commercial path — lift it too.
-                  plan.accent && "border-brand-accent/50 shadow-md",
+                  plan.accent && "border-brand-accent/50",
                 )}
               >
                 {plan.featured && (

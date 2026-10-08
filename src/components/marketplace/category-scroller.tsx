@@ -71,7 +71,7 @@ export function CategoryScroller({
             type="button"
             aria-label={prevLabel}
             onClick={() => scrollByPage(-1)}
-            className="pointer-events-auto grid size-8 place-items-center rounded-full border bg-background text-muted-foreground shadow-sm outline-none transition-colors hover:border-brand hover:text-foreground focus-visible:ring-3 focus-visible:ring-brand/50"
+            className="pointer-events-auto grid size-8 place-items-center rounded-full border bg-background text-muted-foreground outline-none transition-colors hover:border-brand hover:text-foreground focus-visible:ring-3 focus-visible:ring-brand/50"
           >
             <ChevronLeft className="size-4" aria-hidden />
           </button>
@@ -84,7 +84,7 @@ export function CategoryScroller({
             type="button"
             aria-label={nextLabel}
             onClick={() => scrollByPage(1)}
-            className="pointer-events-auto grid size-8 place-items-center rounded-full border bg-background text-muted-foreground shadow-sm outline-none transition-colors hover:border-brand hover:text-foreground focus-visible:ring-3 focus-visible:ring-brand/50"
+            className="pointer-events-auto grid size-8 place-items-center rounded-full border bg-background text-muted-foreground outline-none transition-colors hover:border-brand hover:text-foreground focus-visible:ring-3 focus-visible:ring-brand/50"
           >
             <ChevronRight className="size-4" aria-hidden />
           </button>

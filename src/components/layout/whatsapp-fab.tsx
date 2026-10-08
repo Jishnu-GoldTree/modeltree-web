@@ -71,7 +71,7 @@ export function WhatsAppFab() {
       aria-label={t("fabLabel")}
       title={t("fabLabel")}
       className={cn(
-        "group fixed right-6 z-40 flex h-14 items-center overflow-hidden rounded-full border border-black/5 bg-white shadow-lg outline-none focus-visible:ring-3 focus-visible:ring-brand/50",
+        "group fixed right-6 z-40 flex h-14 items-center overflow-hidden rounded-full border border-black/5 bg-white outline-none focus-visible:ring-3 focus-visible:ring-brand/50",
         clearsListingFab ? "bottom-24" : "bottom-6",
       )}
     >

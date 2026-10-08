@@ -653,7 +653,7 @@ export function ListingForm({
                   <button
                     type="button"
                     onClick={() => removeImage(img.id)}
-                    className="absolute end-1.5 top-1.5 rounded-md bg-white/90 p-1.5 text-muted-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-destructive hover:text-white focus-visible:ring-2 focus-visible:ring-destructive/50 focus-visible:outline-none dark:bg-black/70 dark:text-white/80"
+                    className="absolute end-1.5 top-1.5 rounded-md bg-white/90 p-1.5 text-muted-foreground backdrop-blur-sm transition-colors hover:bg-destructive hover:text-white focus-visible:ring-2 focus-visible:ring-destructive/50 focus-visible:outline-none dark:bg-black/70 dark:text-white/80"
                     aria-label={u("removeImage")}
                     title={u("removeImage")}
                   >

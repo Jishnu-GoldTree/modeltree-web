@@ -66,21 +66,21 @@
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
-  /* MODELTREE brand — a vivid raspberry (#CB2957). Unlike the earlier metallic
-     schemes this accent is a mid-dark saturated fill, so it carries white text
-     rather than dark. Hue ~11 (rose-red). */
-  --brand: oklch(0.556 0.196 11);
-  /* White on the raspberry fill — 5.26:1, passes AA. */
+  /* MODELTREE brand — fluorescent magenta (#E0007A). The brightest pink that
+     still carries white text: 4.72:1 on the fill, AA for button labels. Pink
+     on gold is the jeweller's pairing, so it lifts the renders rather than
+     fighting them. */
+  --brand: oklch(0.588 0.239 358.8);
   --brand-foreground: oklch(0.985 0 0);
-  /* Darkened a touch so it holds up as text/icons on white and on the light
-     --brand-muted tint. */
-  --brand-accent: oklch(0.51 0.19 12);
-  --brand-muted: oklch(0.955 0.022 11);
-  /* The raspberry as text on the dark --ink strip. The mid-dark --brand only
-     reaches ~2.8:1 there; lifting the lightness to 0.72 (chroma pulled back so
-     it doesn't glow) clears AA at ~5.6:1. Not theme-scoped: the ink surface is
-     dark in both modes, so this stays the same tone in .dark. */
-  --brand-on-ink: oklch(0.72 0.16 13);
+  /* #C4006A — deeper, for brand-coloured text and icons: 5.9:1 on white and
+     5.1:1 on the --brand-muted tint. */
+  --brand-accent: oklch(0.532 0.216 358.8);
+  /* #FFE8F3 */
+  --brand-muted: oklch(0.953 0.029 347.1);
+  /* #FF3D9A — the full neon, used only on the dark --ink surfaces (top strip,
+     footer, dark bands), where it glows and still reads at 5.4:1. On white it
+     would fail as text, which is why the light surfaces use --brand-accent. */
+  --brand-on-ink: oklch(0.677 0.238 356.8);
   --ink: oklch(0.2 0.012 15);
   --ink-foreground: oklch(0.985 0 0);
   /* The warm off-white GoldTree renders its jewellery on. Surfaces that sit
@@ -122,12 +122,12 @@
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);
-  --brand: oklch(0.6 0.2 12);
+  --brand: oklch(0.588 0.239 358.8);
   --brand-foreground: oklch(0.985 0 0);
   /* Lightened rather than darkened here: on a dark card the accent has to sit
      above the surface, not below it. */
-  --brand-accent: oklch(0.72 0.16 13);
-  --brand-muted: oklch(0.33 0.09 12);
+  --brand-accent: oklch(0.677 0.238 356.8);
+  --brand-muted: oklch(0.286 0.094 350.8);
   --ink: oklch(0.22 0.012 15);
   --ink-foreground: oklch(0.985 0 0);
   --cream: oklch(0.24 0.01 60);

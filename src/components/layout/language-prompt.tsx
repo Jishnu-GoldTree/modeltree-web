@@ -68,7 +68,7 @@ export function LanguagePrompt({ asking }: { asking: boolean }) {
       aria-label={t("title")}
       // Anchored rather than modal: it is a preference, not a gate, and a
       // blocking overlay on first paint is the fastest way to lose a visitor.
-      className="fixed inset-x-4 bottom-4 z-70 mx-auto max-w-md rounded-2xl border bg-popover p-5 shadow-lg sm:inset-x-auto sm:end-6 sm:bottom-6"
+      className="fixed inset-x-4 bottom-4 z-70 mx-auto max-w-md rounded-2xl border bg-popover p-5 sm:inset-x-auto sm:end-6 sm:bottom-6"
     >
       <div className="flex items-start gap-3">
         <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand/15 text-brand-accent">

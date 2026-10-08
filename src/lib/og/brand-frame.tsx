@@ -23,8 +23,8 @@ export const ogSize = { width: 1200, height: 630 };
 export const ogContentType = "image/png";
 
 const INK = "#101924";
-/** --brand, vivid raspberry (#CB2957). */
-const BRAND = "#cb2957";
+/** --brand, fluorescent magenta (#E0007A). */
+const BRAND = "#e0007a";
 const WHITE = "#ffffff";
 const MUTED = "#93a4b8";
 
@@ -94,7 +94,7 @@ export function BrandFrame({ locale }: { locale: Locale }) {
         textAlign: rtl ? "right" : "left",
         padding: 72,
         backgroundColor: INK,
-        // Raspberry glow bleeding in from the top corner, over a faint grid.
+        // Magenta glow bleeding in from the top corner, over a faint grid.
         backgroundImage: `radial-gradient(circle at ${rtl ? "22%" : "78%"} 12%, rgba(203,41,87,0.26) 0%, rgba(203,41,87,0) 45%),
           linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
           linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px)`,

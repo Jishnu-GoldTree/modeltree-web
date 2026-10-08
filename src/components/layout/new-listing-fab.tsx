@@ -29,7 +29,7 @@ export function NewListingFab() {
     <Link
       href="/dashboard/upload"
       aria-label={t("newListing")}
-      className="fixed bottom-6 end-6 z-40 inline-flex size-14 items-center justify-center rounded-full bg-brand text-brand-foreground shadow-lg outline-none transition-transform hover:scale-105 focus-visible:ring-3 focus-visible:ring-brand/50 motion-reduce:transition-none"
+      className="fixed bottom-6 end-6 z-40 inline-flex size-14 items-center justify-center rounded-full bg-brand text-brand-foreground outline-none transition-transform hover:scale-105 focus-visible:ring-3 focus-visible:ring-brand/50 motion-reduce:transition-none"
     >
       <Plus className="size-6" aria-hidden />
     </Link>

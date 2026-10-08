@@ -27,7 +27,7 @@ export default async function MockPaymentPage({
 
   return (
     <main className="flex min-h-dvh items-center justify-center bg-muted/40 p-4">
-      <div className="w-full max-w-sm rounded-2xl border bg-background p-6 shadow-sm">
+      <div className="w-full max-w-sm rounded-2xl border bg-background p-6">
         <p className="text-xs font-medium tracking-wide text-amber-600 uppercase">
           Test mode: no real charge
         </p>

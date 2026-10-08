@@ -94,8 +94,11 @@ export function SearchForm({
                   // Hero sits on the dark hero band: a white glass pill. Compact
                   // rides the white header, so it needs a visible neutral border
                   // and light fill instead — a white-on-white pill would vanish.
+                  // The hero field wears the brand focus ring at rest: no
+                  // elevation in this design, so the ring is what sets the
+                  // page's primary action apart from the surface.
                   isHero
-                    ? "border border-white/15 bg-white/95 p-1.5 ps-5 shadow-lg shadow-black/10 backdrop-blur"
+                    ? "border border-brand bg-white p-1.5 ps-5 ring-3 ring-brand/30"
                     : "border border-input bg-muted/40 p-1 ps-4"
                 )}
               >

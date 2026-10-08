@@ -82,7 +82,7 @@ export async function HomeHero({ categories }: { categories: HomeCategory[] }) {
               <ProductVideo
                 src={`/videos/${clip}.webm`}
                 poster={`/videos/posters/${clip}.webp`}
-                className="aspect-4/5 rounded-2xl shadow-sm"
+                className="aspect-4/5 rounded-2xl"
               />
             </li>
           ))}

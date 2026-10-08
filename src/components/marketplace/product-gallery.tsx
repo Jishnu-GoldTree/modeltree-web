@@ -214,7 +214,7 @@ export function ProductGallery({
             <button
               type="button"
               onClick={() => setFullscreen(false)}
-              className="absolute end-4 top-4 z-10 rounded-full bg-black/60 p-2 text-white shadow-lg shadow-black/30 ring-1 ring-white/25 backdrop-blur-sm transition-colors hover:bg-black/80 focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:outline-none"
+              className="absolute end-4 top-4 z-10 rounded-full bg-black/60 p-2 text-white ring-1 ring-white/25 backdrop-blur-sm transition-colors hover:bg-black/80 focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:outline-none"
               aria-label={t("closeFullscreen")}
             >
               <X className="size-5" aria-hidden />
@@ -289,7 +289,7 @@ function ArrowButton({
         // `rounded-lg` matches the Button component's base radius so the
         // overlay controls read as part of the same UI kit instead of a
         // stray media-viewer pill.
-        "absolute top-1/2 -translate-y-1/2 rounded-lg bg-black/60 text-white shadow-lg shadow-black/30 ring-1 ring-white/25 backdrop-blur-sm transition-all",
+        "absolute top-1/2 -translate-y-1/2 rounded-lg bg-black/60 text-white ring-1 ring-white/25 backdrop-blur-sm transition-all",
         "hover:bg-black/80 focus-visible:bg-black/80 focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:outline-none",
         // Always visible on every device — no hover/focus reveal. The dark
         // fill + light ring keep the arrows legible over pale jewellery shots,

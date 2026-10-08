@@ -30,7 +30,7 @@ export function Toaster() {
       toastOptions={{
         classNames: {
           toast:
-            "group rounded-lg border bg-popover text-popover-foreground shadow-lg",
+            "group rounded-lg border bg-popover text-popover-foreground",
           description: "text-muted-foreground",
           actionButton: "bg-brand text-brand-foreground",
           cancelButton: "bg-muted text-muted-foreground",

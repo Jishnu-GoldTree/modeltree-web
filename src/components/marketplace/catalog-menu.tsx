@@ -58,7 +58,7 @@ export function CatalogMenu({
           if (ref.current) ref.current.open = false
         }}
         className={cn(
-          "absolute z-30 mt-2 max-h-80 min-w-56 overflow-y-auto rounded-xl border bg-popover p-1.5 text-popover-foreground shadow-lg",
+          "absolute z-30 mt-2 max-h-80 min-w-56 overflow-y-auto rounded-xl border bg-popover p-1.5 text-popover-foreground",
           align === "end" ? "end-0" : "start-0",
         )}
       >
