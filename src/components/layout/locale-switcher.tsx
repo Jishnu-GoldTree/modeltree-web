@@ -3,7 +3,7 @@
 import { useTransition } from "react"
 import { useLocale, useTranslations } from "next-intl"
 import { useParams } from "next/navigation"
-import { Languages } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 
 import { usePathname, useRouter } from "@/i18n/navigation"
 import { LOCALE_LABELS, routing, type Locale } from "@/i18n/routing"
@@ -15,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { LocaleFlag } from "@/components/layout/locale-flag"
 
 /**
  * Switches locale while staying on the current page.
@@ -55,12 +56,17 @@ export function LocaleSwitcher() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          size="icon"
+          size="sm"
           aria-label={`${t("label")}: ${currentLabel}`}
           title={`${t("label")}: ${currentLabel}`}
           disabled={pending}
+          className="gap-1.5 px-2"
         >
-          <Languages className="size-5" aria-hidden />
+          <LocaleFlag locale={locale} />
+          {/* Latin code in both locales ("HE", not "עב"): it's a label for the
+              control, read the same way whichever language the page is in. */}
+          <span className="text-xs font-semibold tracking-wide uppercase">{locale}</span>
+          <ChevronDown className="size-3.5 opacity-60" aria-hidden />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">
@@ -69,9 +75,11 @@ export function LocaleSwitcher() {
             key={code}
             onClick={() => select(code)}
             aria-current={code === locale ? "true" : undefined}
-            className={code === locale ? "font-medium text-brand-accent" : ""}
+            className={code === locale ? "gap-2.5 font-medium text-brand-accent" : "gap-2.5"}
           >
-            {LOCALE_LABELS[code]}
+            <LocaleFlag locale={code} />
+            <span className="flex-1">{LOCALE_LABELS[code]}</span>
+            <span className="text-xs text-muted-foreground uppercase">{code}</span>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
