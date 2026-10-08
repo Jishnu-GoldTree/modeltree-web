@@ -24,7 +24,14 @@ import { Skeleton } from "@/components/ui/skeleton"
  * one call made every route under `[locale]` dynamic. `useTranslations` takes
  * the string from the messages the provider already holds.
  */
-export function PageSkeleton({ children }: { children: React.ReactNode }) {
+export function PageSkeleton({
+  children,
+  flush = false,
+}: {
+  children: React.ReactNode
+  /** Let the children draw full-bleed bands instead of sitting in the gutter. */
+  flush?: boolean
+}) {
   const t = useTranslations("common")
 
   return (
@@ -36,7 +43,7 @@ export function PageSkeleton({ children }: { children: React.ReactNode }) {
         <p role="status" className="sr-only">
           {t("loading")}
         </p>
-        <div aria-hidden className="shell py-10">
+        <div aria-hidden className={flush ? undefined : "shell py-10"}>
           {children}
         </div>
       </main>
@@ -55,7 +62,7 @@ export function HeadingSkeleton() {
 }
 
 /**
- * Matches ModelCard: a 4:3 thumbnail over a title, author line and price row.
+ * Matches ModelCard: a 4:3 thumbnail over a two-line title and the price.
  * Same column counts as the real grids, so the content lands where the
  * placeholder sat instead of reflowing.
  */
@@ -67,11 +74,7 @@ export function ModelGridSkeleton({ count = 8 }: { count?: number }) {
           <Skeleton className="aspect-4/3 rounded-none" />
           <div className="flex flex-col gap-2 p-3">
             <Skeleton className="h-4 w-11/12" />
-            <Skeleton className="h-3 w-1/2" />
-            <div className="mt-1 flex items-center justify-between">
-              <Skeleton className="h-4 w-14" />
-              <Skeleton className="h-3 w-10" />
-            </div>
+            <Skeleton className="mt-0.5 h-4 w-20" />
           </div>
         </li>
       ))}

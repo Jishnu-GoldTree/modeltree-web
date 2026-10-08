@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server"
-import { ChevronDown } from "lucide-react"
+import { Plus } from "lucide-react"
 
 import { Link } from "@/i18n/navigation"
 
@@ -37,14 +37,13 @@ export async function HomeFaq() {
         <div className="mt-8 divide-y rounded-2xl border bg-card">
           {items.map((item) => (
             <details key={item.q} className="group px-5 sm:px-6">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-start font-medium [&::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-start text-base font-medium sm:text-lg [&::-webkit-details-marker]:hidden">
                 {item.q}
-                <ChevronDown
-                  className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180"
-                  aria-hidden
-                />
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full border text-foreground transition-colors group-open:border-brand group-open:bg-brand group-open:text-brand-foreground">
+                  <Plus className="size-4 transition-transform duration-200 group-open:rotate-45" aria-hidden />
+                </span>
               </summary>
-              <p className="pb-5 text-sm text-pretty text-muted-foreground">{item.a}</p>
+              <p className="pb-6 text-base text-pretty text-muted-foreground sm:pe-12">{item.a}</p>
             </details>
           ))}
         </div>

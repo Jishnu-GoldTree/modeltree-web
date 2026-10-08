@@ -1,11 +1,10 @@
 import { Suspense } from "react"
-import { MARKETPLACE_STATS, formatStat } from "@/lib/data/stats"
 import { getTranslations } from "next-intl/server"
-import Image from "next/image"
 import { Link } from "@/i18n/navigation"
-import { ArrowLeft, Check } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 
 import { Logo } from "@/components/layout/logo"
+import { AuthAside } from "@/components/auth/auth-aside"
 import { LoginForm } from "@/components/forms/login-form"
 import { ENABLED_OAUTH_PROVIDERS } from "@/lib/auth-config"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -23,8 +22,6 @@ export async function generateMetadata({
  * job of this screen is to get one of two actions done, and the full nav is a
  * wall of exits from it. The logo still links home, so the way out is obvious.
  */
-
-const BENEFITS = ["login1", "login2", "login3"]
 
 /**
  * Auth.js redirects provider and callback failures here with `?error=`. Map the
@@ -84,57 +81,10 @@ function LoginFormSkeleton() {
 
 export default async function LoginPage({ searchParams }: PageProps<"/[locale]/login">) {
   const t = await getTranslations("auth")
-  const aside = await getTranslations("authAside")
-  const land = await getTranslations("landing")
 
   return (
     <main id="main-content" className="grid min-h-svh lg:grid-cols-2">
-      {/* Brand panel — decorative, so it's hidden rather than stacked on
-          mobile, where it would push the form below the fold. */}
-      <aside className="relative hidden flex-col justify-between overflow-hidden bg-ink p-10 text-white lg:flex">
-        {/* unoptimized: the file is already a hand-tuned webp, so let Next serve
-            it verbatim rather than re-encoding it at its default quality and
-            softening the fine wireframe lines. Dimmed so the white copy and teal
-            accents keep contrast over it — the art is a backdrop, not the message. */}
-        <Image
-          src="/images/auth-cover.webp"
-          alt=""
-          fill
-          unoptimized
-          className="absolute inset-0 object-cover opacity-70"
-        />
-
-        <div className="relative">
-          <Logo />
-        </div>
-
-        <div className="relative max-w-md">
-          <h2 className="text-3xl font-semibold tracking-tight text-balance">
-            {aside("loginTitle")}
-          </h2>
-          <ul className="mt-8 flex flex-col gap-4">
-            {BENEFITS.map((benefit) => (
-              <li key={benefit} className="flex items-start gap-3 text-sm text-white/80">
-                <Check className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
-                {aside(benefit)}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <dl className="relative flex gap-10">
-          {[
-            { value: formatStat(MARKETPLACE_STATS.models), label: land("heroStats.models") },
-            { value: formatStat(MARKETPLACE_STATS.designers), label: land("heroStats.designers") },
-            { value: formatStat(MARKETPLACE_STATS.downloads), label: land("heroStats.downloads") },
-          ].map((stat) => (
-            <div key={stat.label}>
-              <dt className="text-2xl font-semibold">{stat.value}</dt>
-              <dd className="mt-1 text-xs text-white/60">{stat.label}</dd>
-            </div>
-          ))}
-        </dl>
-      </aside>
+      <AuthAside variant="login" />
 
       <div className="flex flex-col px-4 py-8 sm:px-8">
         <div className="flex items-center justify-between lg:justify-end">

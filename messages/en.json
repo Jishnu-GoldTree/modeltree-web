@@ -96,9 +96,9 @@
   "auth": {
     "login": "Log in",
     "logInTitle": "Welcome back",
-    "logInSubtitle": "Log in to reach your purchases, licenses and designer dashboard.",
+    "logInSubtitle": "Log in to reach your purchases, licences and custom requests.",
     "signUpTitle": "Create your account",
-    "signUpSubtitle": "One account to buy, license and sell 3D models.",
+    "signUpSubtitle": "One account to buy, download and license jewellery models.",
     "email": "Email",
     "password": "Password",
     "name": "Name",
@@ -750,16 +750,14 @@
     "print-readyDescription": "Sized and supported for direct resin printing."
   },
   "authAside": {
-    "loginTitle": "40,000 jewellery models, cast-ready and yours to license",
-    "login1": "Royalty-free models, textures and print-ready assets",
-    "login2": "Licenses and invoices kept in one place",
-    "login3": "Sell your own work and earn on every download",
-    "signupTitle": "Turn your 3D work into revenue",
-    "signup1": "Publish unlimited models and earn on every sale",
-    "signup2": "Reach studios, architects and product teams browsing the catalog",
-    "signup3": "Licensing, invoicing and payouts handled for you",
-    "asideTitle": "Turn your 3D work into revenue",
-    "freeToJoin": "Free to join. Earn a commission on every sale, and reach members who take two models a month and request custom size adjustments."
+    "loginTitle": "Every model you've bought, one sign-in away",
+    "login1": "Re-download your files any time, in every format you bought",
+    "login2": "Your orders and licences, kept in one place",
+    "login3": "Request a resize or stone change on models you own",
+    "signupTitle": "Cast-ready jewellery models, licensed for your bench",
+    "signup1": "Free to join. You only pay for the models you license",
+    "signup2": "Commercial licence to cast and sell the pieces you make",
+    "signup3": "Save favourites and request custom adjustments"
   },
   "facet": {
     "metal": {

@@ -1,11 +1,13 @@
+import { Suspense } from "react"
 import { getTranslations } from "next-intl/server"
-import Image from "next/image"
 import { Link } from "@/i18n/navigation"
-import { ArrowLeft, Check } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 
 import { Logo } from "@/components/layout/logo"
+import { AuthAside } from "@/components/auth/auth-aside"
 import { SignupForm } from "@/components/forms/signup-form"
 import { ENABLED_OAUTH_PROVIDERS } from "@/lib/auth-config"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export async function generateMetadata({
   params,
@@ -21,13 +23,12 @@ export async function generateMetadata({
  * convincing — buyers can browse without an account at all.
  */
 
-const BENEFITS = ["signup1", "signup2", "signup3"]
 
-export default async function SignupPage({
+async function SignupFormFromParams({
   searchParams,
-}: PageProps<"/[locale]/signup">) {
-  const t = await getTranslations("auth")
-  const aside = await getTranslations("authAside")
+}: {
+  searchParams: PageProps<"/[locale]/signup">["searchParams"]
+}) {
   const { next } = await searchParams
 
   // Same guard as /login: only same-site relative paths, since "//evil.com" is
@@ -36,46 +37,37 @@ export default async function SignupPage({
   const target = typeof next === "string" ? next : ""
   const redirectTo =
     target.startsWith("/") && !target.startsWith("//") ? target : "/profile"
+
+  return <SignupForm enabledProviders={ENABLED_OAUTH_PROVIDERS} redirectTo={redirectTo} />
+}
+
+function SignupFormSkeleton() {
+  return (
+    <div className="flex flex-col gap-6" aria-hidden>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <Skeleton className="h-10" />
+        <Skeleton className="h-10" />
+      </div>
+      <Skeleton className="h-px" />
+      <div className="flex flex-col gap-4">
+        <Skeleton className="h-15" />
+        <Skeleton className="h-15" />
+        <Skeleton className="h-21" />
+        <Skeleton className="h-5 w-56" />
+        <Skeleton className="h-10" />
+      </div>
+    </div>
+  )
+}
+
+export default async function SignupPage({
+  searchParams,
+}: PageProps<"/[locale]/signup">) {
+  const t = await getTranslations("auth")
+
   return (
     <main id="main-content" className="grid min-h-svh lg:grid-cols-2">
-      <aside className="relative hidden flex-col justify-between overflow-hidden bg-ink p-10 text-white lg:flex">
-        {/* unoptimized: the file is already a hand-tuned webp, so let Next serve
-            it verbatim rather than re-encoding it at its default quality and
-            softening the fine wireframe lines. Dimmed so the white copy and teal
-            accents keep contrast over it — the art is a backdrop, not the message. */}
-        <Image
-          src="/images/auth-cover.webp"
-          alt=""
-          fill
-          unoptimized
-          className="absolute inset-0 object-cover opacity-70"
-        />
-
-        <div className="relative">
-          <Logo />
-        </div>
-
-        <div className="relative max-w-md">
-          <h2 className="text-3xl font-semibold tracking-tight text-balance">
-            {aside("asideTitle")}
-          </h2>
-          <ul className="mt-8 flex flex-col gap-4">
-            {BENEFITS.map((benefit) => (
-              <li
-                key={benefit}
-                className="flex items-start gap-3 text-sm text-white/80"
-              >
-                <Check className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
-                {aside(benefit)}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <p className="relative max-w-md text-sm text-white/60">
-          {aside("freeToJoin")}
-        </p>
-      </aside>
+      <AuthAside variant="signup" />
 
       <div className="flex flex-col px-4 py-8 sm:px-8">
         <div className="flex items-center justify-between lg:justify-end">
@@ -99,10 +91,9 @@ export default async function SignupPage({
             {t("signUpSubtitle")}
           </p>
 
-          <SignupForm
-            enabledProviders={ENABLED_OAUTH_PROVIDERS}
-            redirectTo={redirectTo}
-          />
+          <Suspense fallback={<SignupFormSkeleton />}>
+            <SignupFormFromParams searchParams={searchParams} />
+          </Suspense>
         </div>
       </div>
     </main>

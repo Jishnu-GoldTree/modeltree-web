@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server"
+import { ArrowRight } from "lucide-react"
 
 import { Link } from "@/i18n/navigation"
 import { cn } from "@/lib/utils"
@@ -9,6 +10,8 @@ import { Thumb } from "@/components/marketplace/thumb"
 /**
  * Image-led category entry, the way a jeweller's storefront opens its range:
  * the busiest category takes the large tile, the rest fill the grid beside it.
+ * The label sits in its own row under the render rather than on a gradient
+ * over it — the renders are on white, and any scrim on white reads as grime.
  * Only categories with published models appear (see `getHomeCategories`), each
  * with its live count, so no tile leads to an empty page.
  */
@@ -52,20 +55,25 @@ export async function ShopByCategory({ categories }: { categories: HomeCategory[
             >
               <Link
                 href={`/3d-models/${c.slug}`}
-                className="group relative block h-full overflow-hidden rounded-2xl bg-cream"
+                className="group flex h-full flex-col overflow-hidden rounded-2xl border bg-card transition-colors hover:border-brand"
               >
                 <Thumb
                   seed={c.slug}
                   src={c.image}
                   sizes={lead ? "(min-width: 768px) 50vw, 100vw" : "(min-width: 768px) 25vw, 50vw"}
-                  className={cn("w-full", lead ? "aspect-4/3 md:aspect-auto md:h-full" : "aspect-4/3")}
+                  className={cn("w-full bg-white", lead ? "aspect-4/3 md:aspect-auto md:flex-1" : "aspect-4/3")}
                   imageClassName="transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                 />
-                <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/50 via-black/20 to-transparent p-3 pt-10 text-white sm:p-4 sm:pt-12">
-                  <p className={cn("leading-tight font-semibold", lead ? "text-lg sm:text-xl" : "text-sm sm:text-base")}>
-                    {labels(c.slug)}
-                  </p>
-                  <p className="mt-0.5 text-xs text-white/80">{t("count", { count: c.count })}</p>
+                <div className="flex items-center justify-between gap-3 border-t px-4 py-3 sm:px-5 sm:py-4">
+                  <div className="min-w-0">
+                    <p className={cn("truncate leading-tight font-semibold", lead ? "text-lg sm:text-xl" : "text-sm sm:text-base")}>
+                      {labels(c.slug)}
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">{t("count", { count: c.count })}</p>
+                  </div>
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-full border text-muted-foreground transition-colors group-hover:border-brand group-hover:bg-brand group-hover:text-brand-foreground">
+                    <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden />
+                  </span>
                 </div>
               </Link>
             </li>
