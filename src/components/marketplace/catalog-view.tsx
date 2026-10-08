@@ -11,6 +11,8 @@ import {
 import { getTranslations } from "next-intl/server"
 
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import { ModelGridSkeleton } from "@/components/layout/page-skeleton"
 
 type Params = Record<string, string | undefined>
 
@@ -18,36 +20,30 @@ type Params = Record<string, string | undefined>
  * The listing body, shared by /3d-models and /3d-models/[segment] so the two
  * routes can't drift. Top to bottom: where you are (breadcrumb, title), the
  * category tabs, one filter bar, then the full-width grid.
+ *
+ * Split in two because only the second half depends on the query string:
+ * `CatalogHeader` can render in the static shell while `CatalogResults` waits
+ * on `searchParams` behind a Suspense boundary.
  */
-export async function CatalogView({
-  base,
-  params,
-  patch = {},
-  result,
-  lockedCategory,
-  title,
-  description,
-}: {
-  base: string
-  params: Params
-  /** The segment's locked filter (category/collection), merged into the query
-   *  server-side. Passed to the grid so it can fetch matching later pages. */
-  patch?: Partial<CatalogQuery>
-  result: CatalogResult
-  lockedCategory?: string
-  title: string
-  description: string
-}) {
-  const { items, total, page, pageCount, facets } = result
+export async function CatalogView(props: CatalogResultsProps & HeaderProps) {
+  return (
+    <>
+      <CatalogHeader base={props.base} title={props.title} description={props.description} />
+      <CatalogResults {...props} />
+    </>
+  )
+}
+
+type HeaderProps = { base: string; title: string; description: string }
+
+export async function CatalogHeader({ base, title, description }: HeaderProps) {
   const t = await getTranslations("catalog")
-  const member = await getTranslations("membership")
 
   // On the base /3d-models page the last crumb would repeat the H1, so it's
   // dropped; segment pages keep it and link the parent catalog.
   const isSegment = base !== "/3d-models"
 
   return (
-    <>
       <div className="shell pt-8 pb-6">
         <nav
           aria-label="Breadcrumb"
@@ -77,7 +73,32 @@ export async function CatalogView({
           {description}
         </p>
       </div>
+  )
+}
 
+type CatalogResultsProps = {
+  base: string
+  params: Params
+  /** The segment's locked filter (category/collection), merged into the query
+   *  server-side. Passed to the grid so it can fetch matching later pages. */
+  patch?: Partial<CatalogQuery>
+  result: CatalogResult
+  lockedCategory?: string
+}
+
+export async function CatalogResults({
+  base,
+  params,
+  patch = {},
+  result,
+  lockedCategory,
+}: CatalogResultsProps) {
+  const { items, total, page, pageCount, facets } = result
+  const t = await getTranslations("catalog")
+  const member = await getTranslations("membership")
+
+  return (
+    <>
       <CatalogCategories active={lockedCategory ?? params.category} facets={facets} />
 
       <div className="border-b">
@@ -170,5 +191,34 @@ export async function CatalogView({
         )}
       </div>
     </>
+  )
+}
+
+/** Placeholder for `CatalogResults`: tabs, filter bar, count, grid. */
+export function CatalogResultsSkeleton() {
+  return (
+    <div aria-hidden>
+      <div className="border-b">
+        <div className="shell flex gap-6 pt-3 pb-3">
+          {["w-16", "w-40", "w-36", "w-20"].map((w) => (
+            <Skeleton key={w} className={`h-6 ${w}`} />
+          ))}
+        </div>
+      </div>
+      <div className="border-b">
+        <div className="shell flex flex-wrap gap-2 py-3">
+          <Skeleton className="h-9 w-64 rounded-lg" />
+          {["w-24", "w-24", "w-32", "w-24", "w-28"].map((w, i) => (
+            <Skeleton key={i} className={`h-9 rounded-lg ${w}`} />
+          ))}
+        </div>
+      </div>
+      <div className="shell pt-5 pb-8">
+        <Skeleton className="h-4 w-20" />
+        <div className="mt-6">
+          <ModelGridSkeleton count={10} />
+        </div>
+      </div>
+    </div>
   )
 }

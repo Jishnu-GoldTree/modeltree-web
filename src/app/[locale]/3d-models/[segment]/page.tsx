@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 
-import { cache } from "react"
+import { cache, Suspense } from "react"
 import { getCategories } from "@/lib/data/categories"
 import {
   COLLECTION_SEGMENTS,
@@ -11,7 +11,11 @@ import { toParams, toQuery } from "@/lib/data/catalog-params"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { getTranslations } from "next-intl/server"
-import { CatalogView } from "@/components/marketplace/catalog-view"
+import {
+  CatalogHeader,
+  CatalogResults,
+  CatalogResultsSkeleton,
+} from "@/components/marketplace/catalog-view"
 
 /**
  * One segment under /3d-models serves two things the nav already links:
@@ -75,6 +79,30 @@ export async function generateMetadata({
   return { title: resolved.title, description: resolved.description }
 }
 
+async function SegmentResults({
+  segment,
+  searchParams,
+}: {
+  segment: string
+  searchParams: PageProps<"/[locale]/3d-models/[segment]">["searchParams"]
+}) {
+  const resolved = await resolve(segment)
+  if (!resolved) notFound()
+
+  const raw = toParams(await searchParams)
+  const result = await queryModels({ ...toQuery(raw), ...resolved.patch })
+
+  return (
+    <CatalogResults
+      base={`/3d-models/${segment}`}
+      params={raw}
+      patch={resolved.patch}
+      result={result}
+      lockedCategory={resolved.lockedCategory}
+    />
+  )
+}
+
 export default async function SegmentPage({
   params,
   searchParams,
@@ -83,23 +111,19 @@ export default async function SegmentPage({
   const resolved = await resolve(segment)
   if (!resolved) notFound()
 
-  const raw = toParams(await searchParams)
-  const result = await queryModels({ ...toQuery(raw), ...resolved.patch })
-
   return (
     <>
       <SiteHeader />
 
       <main id="main-content" className="header-offset flex-1">
-        <CatalogView
+        <CatalogHeader
           base={`/3d-models/${segment}`}
-          params={raw}
-          patch={resolved.patch}
-          result={result}
-          lockedCategory={resolved.lockedCategory}
           title={resolved.title}
           description={resolved.description}
         />
+        <Suspense fallback={<CatalogResultsSkeleton />}>
+          <SegmentResults segment={segment} searchParams={searchParams} />
+        </Suspense>
       </main>
 
       <SiteFooter />
