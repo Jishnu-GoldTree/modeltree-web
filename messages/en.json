@@ -515,22 +515,6 @@
       "work3": "Stylized Heroes Vol. 2",
       "work4": "Creature Anatomy Kit"
     },
-    "browse": {
-      "saleTitle": "On sale",
-      "saleBody": "Discounted assets from designers running promotions this week.",
-      "saleCta": "Browse deals",
-      "freeTitle": "Free models",
-      "freeBody": "Thousands of royalty-free assets you can download right now.",
-      "freeCta": "Get free models",
-      "metalHeading": "Browse by metal",
-      "metalBlurb": "Narrow the catalog to the metal you cast in.",
-      "stoneHeading": "Browse by stone",
-      "stoneBlurb": "Find pieces cut for the shape you set.",
-      "typeHeading": "Browse by type",
-      "typeBlurb": "Jump straight to the kind of piece you're making.",
-      "formatHeading": "Browse by format",
-      "formatBlurb": "Filter to the file your CAD or printer takes."
-    },
     "trending": {
       "title": "Most popular models",
       "description": "What jewellers are licensing most right now.",
@@ -1542,6 +1526,13 @@
           "a": "Yes. Open a request from any model page or from Custom work. A modeller quotes the change before any work starts, and adjustments to a model you own cost far less than a new one."
         }
       ]
+    },
+    "material": {
+      "metalTitle": "Shop by metal",
+      "metalBody": "Narrow the library to the metal you cast in.",
+      "stoneTitle": "Shop by stone shape",
+      "stoneBody": "Settings and heads cut for the stone you're setting.",
+      "count": "{count, plural, one {# model} other {# models}}"
     }
   }
 }
