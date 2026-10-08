@@ -26,7 +26,7 @@ export async function SiteFooter() {
 
   return (
     <footer className="bg-ink text-ink-foreground">
-      <div className="shell py-14">
+      <div className="shell pt-14 pb-10">
         <div className="grid gap-10 lg:grid-cols-[320px_1fr]">
           <div>
             <Logo />
@@ -70,6 +70,52 @@ export async function SiteFooter() {
           <p>{t("payments")}</p>
         </div>
       </div>
+
+      <FooterWatermark />
     </footer>
+  )
+}
+
+/**
+ * The brand signed across the foot of every page: the solitaire mark and the
+ * wordmark, edge to edge of the content column, in a tint barely above the ink.
+ *
+ * SVG rather than text sized in vw: `textLength` stretches the wordmark to an
+ * exact width, so it lines up with the column at every breakpoint and in
+ * either direction. `dir="ltr"` keeps it reading MODELTREE on Hebrew pages.
+ * The bottom is clipped a little, as if the word runs off the page.
+ *
+ * One footer per page, so the gradient id can be a constant.
+ */
+function FooterWatermark() {
+  return (
+    <div aria-hidden dir="ltr" className="pointer-events-none overflow-hidden select-none">
+      <div className="shell">
+        <svg viewBox="0 0 1200 170" className="-mb-[3%] block h-auto w-full" fill="none">
+          <defs>
+            <linearGradient id="footer-watermark-fade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#fff" stopOpacity="0.12" />
+              <stop offset="1" stopColor="#fff" stopOpacity="0.02" />
+            </linearGradient>
+          </defs>
+          {/* The logo glyph's paths, scaled from its 24-unit box. */}
+          <g transform="translate(0 8) scale(6.6)" stroke="url(#footer-watermark-fade)" strokeLinejoin="round">
+            <path d="M4 9.5 12 3l8 6.5-8 12-8-12Z" strokeWidth="1.6" />
+            <path d="M4 9.5h16M12 3 8.5 9.5 12 21.5 15.5 9.5 12 3Z" strokeWidth="1.2" />
+          </g>
+          <text
+            x="178"
+            y="150"
+            textLength="1022"
+            lengthAdjust="spacingAndGlyphs"
+            fill="url(#footer-watermark-fade)"
+            className="font-sans"
+            style={{ fontSize: 186, fontWeight: 600, letterSpacing: "-0.02em" }}
+          >
+            MODELTREE
+          </text>
+        </svg>
+      </div>
+    </div>
   )
 }
