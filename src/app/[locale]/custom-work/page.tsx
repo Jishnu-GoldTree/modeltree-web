@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { Link } from "@/i18n/navigation"
 import { getTranslations } from "next-intl/server"
 import {
@@ -14,6 +15,8 @@ import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { Button } from "@/components/ui/button"
 import { ChatWithDesignersButton } from "@/components/requests/chat-cta"
+import { Skeleton } from "@/components/ui/skeleton"
+import { WHATSAPP_NUMBER } from "@/lib/whatsapp"
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/custom-work">) {
   const { locale } = await params
@@ -73,7 +76,11 @@ export default async function CustomWorkPage() {
             {/* White rather than brand teal: the WhatsApp mark is a fixed
                 green, and it only reads as itself against a light button. */}
             <div className="mt-8 flex flex-wrap gap-3">
-              <ChatWithDesignersButton className="h-11 bg-white px-6 text-ink hover:bg-white/90" />
+              {WHATSAPP_NUMBER && (
+                <Suspense fallback={<Skeleton className="h-11 w-56 rounded-lg bg-white/15" />}>
+                  <ChatWithDesignersButton className="h-11 bg-white px-6 text-ink hover:bg-white/90" />
+                </Suspense>
+              )}
               <Button
                 asChild
                 variant="outline"
