@@ -34,15 +34,17 @@ export async function ShopByMaterial() {
           <div className="rounded-2xl border p-6 sm:p-8">
             <h2 className="text-xl font-semibold tracking-tight">{t("metalTitle")}</h2>
             <p className="mt-1.5 text-sm text-muted-foreground">{t("metalBody")}</p>
-            <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fit,minmax(7.5rem,1fr))]">
               {metals.map(({ value, count }) => (
                 <li key={value}>
                   <Link
                     href={`/3d-models?metal=${value}`}
                     rel="nofollow"
-                    className="group flex flex-col items-center gap-2 rounded-xl border px-2 py-4 text-center outline-none transition-colors hover:border-brand focus-visible:ring-3 focus-visible:ring-brand/50"
+                    className="group flex h-full flex-col items-center gap-1 rounded-xl border px-3 pt-5 pb-4 text-center outline-none transition-colors hover:border-brand focus-visible:ring-3 focus-visible:ring-brand/50"
                   >
-                    <MetalIcon metal={value} className="size-10" />
+                    <span className="mb-2 flex size-16 items-center justify-center rounded-full bg-cream transition-colors group-hover:bg-brand-muted">
+                      <MetalIcon metal={value} className="size-10" />
+                    </span>
                     <span className="text-sm leading-tight font-medium">{facet(`metal.${value}`)}</span>
                     <span className="text-xs text-muted-foreground">{t("count", { count })}</span>
                   </Link>
@@ -56,18 +58,17 @@ export async function ShopByMaterial() {
           <div className="rounded-2xl border p-6 sm:p-8">
             <h2 className="text-xl font-semibold tracking-tight">{t("stoneTitle")}</h2>
             <p className="mt-1.5 text-sm text-muted-foreground">{t("stoneBody")}</p>
-            <ul className="mt-6 grid grid-cols-3 gap-3 sm:grid-cols-4">
+            <ul className="mt-6 grid grid-cols-3 gap-2.5 sm:grid-cols-[repeat(auto-fit,minmax(7.5rem,1fr))] sm:gap-3">
               {stones.map(({ value, count }) => (
                 <li key={value}>
                   <Link
                     href={`/3d-models?stone=${value}`}
                     rel="nofollow"
-                    className="group flex flex-col items-center gap-2 rounded-xl border px-2 py-4 text-center outline-none transition-colors hover:border-brand focus-visible:ring-3 focus-visible:ring-brand/50"
+                    className="group flex h-full flex-col items-center gap-1 rounded-xl border px-3 pt-5 pb-4 text-center outline-none transition-colors hover:border-brand focus-visible:ring-3 focus-visible:ring-brand/50"
                   >
-                    <StoneIcon
-                      cut={value}
-                      className="size-10 text-foreground/70 transition-colors group-hover:text-brand-accent"
-                    />
+                    <span className="mb-2 flex size-16 items-center justify-center rounded-full bg-cream text-foreground/75 transition-colors group-hover:bg-brand-muted group-hover:text-brand-accent">
+                      <StoneIcon cut={value} className="size-9" />
+                    </span>
                     <span className="text-sm leading-tight font-medium">{facet(`stone.${value}`)}</span>
                     <span className="text-xs text-muted-foreground">{t("count", { count })}</span>
                   </Link>
