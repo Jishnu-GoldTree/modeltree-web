@@ -21,7 +21,8 @@
     "production": "Production",
     "requests": "Requests",
     "skipToContent": "Skip to main content",
-    "signingOut": "Signing out…"
+    "signingOut": "Signing out…",
+    "about": "About"
   },
   "locale": {
     "label": "Language",
@@ -295,13 +296,14 @@
     "editListing": "Edit {title}"
   },
   "footer": {
-    "tagline": "Royalty-free 3D models for games, film and product design. Buy, sell and commission production-ready assets.",
+    "tagline": "Cast-ready jewellery models from GoldTree's in-house studio, licensed for your production.",
     "newsletter": "Weekly drops in your inbox",
     "newsletterHint": "New collections, free assets and designer spotlights.",
     "subscribe": "Subscribe",
     "rights": "© {year} MODELTREE. All rights reserved.",
     "subscribed": "You're subscribed. Watch your inbox for weekly drops.",
-    "emailLabel": "Email address"
+    "emailLabel": "Email address",
+    "payments": "Secure payments in ₪ through an Israeli payment provider"
   },
   "promo": {
     "badge": "Monthly membership",
@@ -423,6 +425,18 @@
       "guidelines": {
         "label": "Publishing guidelines",
         "description": "Quality bar, licensing and file requirements"
+      },
+      "rings": {
+        "label": "Rings",
+        "description": "Fashion rings, signets and cocktail rings."
+      },
+      "bracelets": {
+        "label": "Bracelets",
+        "description": "Tennis, Cuban link and bangle models."
+      },
+      "customOverview": {
+        "label": "How custom work runs",
+        "description": "Quotes, timelines and what to send us."
       }
     },
     "heroCta": "Explore marketplace",
@@ -512,8 +526,8 @@
       "formatBlurb": "Filter to the file your CAD or printer takes."
     },
     "trending": {
-      "title": "Trending 3D models",
-      "description": "Discover the most popular 3D models and assets trending right now.",
+      "title": "Most popular models",
+      "description": "What jewellers are licensing most right now.",
       "action": "Browse all models"
     },
     "valueProps": {
@@ -585,7 +599,7 @@
       "guidelines": "Publishing guidelines",
       "forum": "Designer forum",
       "challenges": "Challenges",
-      "help": "Help center",
+      "help": "Help",
       "licensing": "Licensing",
       "refunds": "Refund policy",
       "report": "Report content",
@@ -602,7 +616,11 @@
       "delivery": "Delivery policy",
       "sellerTerms": "Seller terms",
       "cookiePolicy": "Cookie policy",
-      "legal": "Legal"
+      "legal": "Legal",
+      "shop": "Shop",
+      "printReady": "Print-ready",
+      "rings": "Rings",
+      "faq": "FAQ"
     },
     "heroEyebrowTag": "Cast-ready",
     "heroEyebrow": "Modelled in-house by the GoldTree studio",
@@ -619,8 +637,8 @@
     }
   },
   "site": {
-    "tagline": "Your number one destination for cast-ready jewellery models",
-    "description": "A jewellery-first 3D marketplace from GoldTree. Rings, pendants and settings modelled in-house for casting and print, plus a wider catalog of production-ready assets, or commission exactly what you need."
+    "tagline": "Cast-ready jewellery models from GoldTree",
+    "description": "Rings, bands, pendants and settings modelled in-house by GoldTree for casting and print. Buy and download instantly, or commission a custom piece."
   },
   "listing": {
     "title": "Title",
@@ -1430,5 +1448,96 @@
     "processingRefresh": "Refresh",
     "unknownOrderTitle": "Order not found",
     "unknownOrderBody": "We couldn't find this order on your account. If you were charged, contact us with your receipt and we'll sort it out."
+  },
+  "home": {
+    "announce": {
+      "download": "Instant download after payment",
+      "shekels": "Secure checkout in ₪ with a tax invoice",
+      "licence": "Commercial licence with every model"
+    },
+    "hero": {
+      "eyebrow": "Modelled in-house by GoldTree",
+      "title": "Jewellery models, <hl>ready to cast</hl>",
+      "body": "Rings, bands, pendants and settings modelled for casting and print. License a model and download it today, or have it adjusted to your stone and size.",
+      "browse": "Browse the library",
+      "commission": "Commission a piece",
+      "popular": "Popular"
+    },
+    "trust": {
+      "castTitle": "Cast and print ready",
+      "castBody": "Watertight geometry, checked before it goes live",
+      "dimsTitle": "Real dimensions",
+      "dimsBody": "Ring size, stone seats and metal weight stated",
+      "downloadTitle": "Instant download",
+      "downloadBody": "Files in your account the moment you pay",
+      "payTitle": "Paid in shekels",
+      "payBody": "Secure checkout with a tax invoice"
+    },
+    "categories": {
+      "title": "Shop by category",
+      "body": "Every piece modelled for production, organised the way you work.",
+      "count": "{count, plural, one {# model} other {# models}}",
+      "all": "All categories"
+    },
+    "production": {
+      "title": "Choose how you produce",
+      "body": "Filter the library by your workflow and get files that suit it.",
+      "castTitle": "Cast-ready",
+      "castBody": "For lost-wax casting: closed geometry and wall thickness that hold up in the flask.",
+      "printTitle": "Print-ready",
+      "printBody": "For direct resin or metal printing: clean meshes that slice without repairs.",
+      "count": "{count, plural, one {# model} other {# models}}",
+      "cta": "Browse"
+    },
+    "how": {
+      "title": "How it works",
+      "body": "From search to bench in three steps.",
+      "s1Title": "Find your piece",
+      "s1Body": "Filter by category, metal, stone shape and how you produce. Every listing states its formats, size and weight.",
+      "s2Title": "Pay securely in ₪",
+      "s2Body": "Card details go to our Israeli payment provider, never to us. Your tax invoice is emailed automatically.",
+      "s3Title": "Download and produce",
+      "s3Body": "STL, Rhino and the other listed formats, in your account straight away, licensed for your production."
+    },
+    "membership": {
+      "comingSoon": "Coming soon"
+    },
+    "custom": {
+      "eyebrow": "Custom modelling",
+      "title": "Need it adjusted, or made from scratch?",
+      "body": "Our modellers resize rings, move stone seats and thicken shanks on any library piece, or build a new model from your sketch or photo. Every job is quoted before work starts.",
+      "adjust": "Request an adjustment",
+      "commission": "Commission a model"
+    },
+    "faq": {
+      "title": "Questions jewellers ask",
+      "more": "Still have a question? <link>Contact us</link>",
+      "items": [
+        {
+          "q": "Which file formats do I get?",
+          "a": "Each product page lists its formats, usually STL and Rhino (3DM), often with OBJ or STEP. One purchase gives you every format listed."
+        },
+        {
+          "q": "Can I cast and sell the jewellery I make?",
+          "a": "Yes. The licence lets you cast, print and sell the physical pieces you make from the model. You may not resell or share the model file itself. The extended licence covers multiple benches or production at scale."
+        },
+        {
+          "q": "How do I receive my files?",
+          "a": "As soon as payment is confirmed the model appears under My downloads in your account, and you can download it again at any time. Nothing is shipped."
+        },
+        {
+          "q": "How do I pay?",
+          "a": "Checkout is in shekels through our Israeli payment provider. You enter card details on their secure page, never on ours, and a tax invoice is emailed to you."
+        },
+        {
+          "q": "Can I get a refund?",
+          "a": "Files are delivered instantly, so purchases are final once a download has started. If a file is faulty or doesn't match its product page, we replace it or refund you."
+        },
+        {
+          "q": "Can you adjust a model to my stone or ring size?",
+          "a": "Yes. Open a request from any model page or from Custom work. A modeller quotes the change before any work starts, and adjustments to a model you own cost far less than a new one."
+        }
+      ]
+    }
   }
 }

@@ -59,16 +59,9 @@ export async function JewelleryLibrary() {
             ))}
           </dl>
 
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8">
             <Button asChild className="h-11 bg-brand px-6 text-brand-foreground hover:bg-brand/85">
-              <Link href="/3d-models/jewelry">{t("browse")}</Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              className="h-11 border-white/25 bg-transparent px-6 text-white hover:bg-white/10 hover:text-white"
-            >
-              <Link href="/custom-work">{t("commission")}</Link>
+              <Link href="/3d-models">{t("browse")}</Link>
             </Button>
           </div>
         </div>

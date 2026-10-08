@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Heebo } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "../globals.css";
 
@@ -19,6 +19,7 @@ import { NewListingFab } from "@/components/layout/new-listing-fab";
 import { WhatsAppFab } from "@/components/layout/whatsapp-fab";
 import { VisitorPrompts } from "@/components/layout/visitor-prompts";
 import { SITE_ORIGIN } from "@/lib/site-url";
+import { pickClientMessages } from "@/i18n/client-messages";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -121,6 +122,7 @@ export default async function LocaleLayout({
   // Lets the static renderer prerender this locale instead of bailing to
   // dynamic because a translation was read.
   setRequestLocale(locale);
+  const messages = pickClientMessages(await getMessages());
 
   return (
     <html
@@ -129,7 +131,7 @@ export default async function LocaleLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${heebo.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background">
-        <NextIntlClientProvider>
+        <NextIntlClientProvider messages={messages}>
           <Providers>
             <Suspense fallback={null}>
               <RouteProgress />

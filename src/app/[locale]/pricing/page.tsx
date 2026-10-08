@@ -27,6 +27,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/pricing"
  */
 export default async function PricingPage() {
   const t = await getTranslations("pricing")
+  const home = await getTranslations("home.membership")
   const locale = (await getLocale()) as Locale
   const twoModels = await getTypicalTwoModelCost()
 
@@ -41,7 +42,9 @@ export default async function PricingPage() {
       Icon: Gem,
       price: memberPrice.primary,
       note: t("perMonth") as string | null,
-      href: "/signup",
+      // No recurring billing yet, so the plan can't be bought: the button is a
+      // disabled "Coming soon" rather than a sign-up that can't charge anyone.
+      href: null,
       features: ["memberF1", "memberF2", "memberF3", "memberF4", "memberF5", "memberF6"],
       featured: true,
       accent: false,
@@ -154,6 +157,11 @@ export default async function PricingPage() {
                   ))}
                 </ul>
 
+                {plan.href === null ? (
+                  <Button disabled className="mt-7 h-11 bg-brand text-brand-foreground">
+                    {home("comingSoon")}
+                  </Button>
+                ) : (
                 <Button
                   asChild
                   className={cn(
@@ -168,6 +176,7 @@ export default async function PricingPage() {
                 >
                   <Link href={plan.href}>{t(`${plan.key}Cta`)}</Link>
                 </Button>
+                )}
               </li>
             ))}
           </ul>

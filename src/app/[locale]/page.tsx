@@ -1,56 +1,47 @@
-import { getTranslations } from "next-intl/server";
-
-import { ASSET_CATEGORIES, ASSET_TABS } from "@/lib/data/landing";
+import { getHomeCategories } from "@/lib/data/home";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
-import { Hero } from "@/components/landing/hero";
-import { PromoBanner } from "@/components/landing/promo-banner";
-import { JewelleryLibrary } from "@/components/landing/jewellery-library";
-import { VideoShowreel } from "@/components/landing/video-showreel";
-import { CategoryExplorer } from "@/components/landing/category-explorer";
-import { Collections } from "@/components/landing/collections";
-import { FeaturedDesigner } from "@/components/landing/featured-designer";
-import { BrowseBy } from "@/components/landing/browse-by";
-import { BrowseByCatalog } from "@/components/landing/browse-by-catalog";
-import { TrendingModels } from "@/components/landing/trending-models";
-import { ValueProps } from "@/components/landing/value-props";
-import { CraftStandard } from "@/components/landing/craft-standard";
-import { CustomSolutions } from "@/components/landing/custom-solutions";
+import { HomeHero } from "@/components/home/home-hero";
+import { TrustBar } from "@/components/home/trust-bar";
+import { ShopByCategory } from "@/components/home/shop-by-category";
+import { TrendingModels } from "@/components/home/trending-models";
+import { ProductionSplit } from "@/components/home/production-split";
+import { JewelleryLibrary } from "@/components/home/jewellery-library";
+import { HowItWorks } from "@/components/home/how-it-works";
+import { MembershipTeaser } from "@/components/home/membership-teaser";
+import { CustomWorkCta } from "@/components/home/custom-work-cta";
+import { HomeFaq } from "@/components/home/home-faq";
 
+/**
+ * Each section answers one question a jeweller has on the way to a purchase,
+ * in the order they ask it: what is this (hero), can I trust it (trust bar),
+ * what do you have (categories, trending), will it fit my workflow (production
+ * split), who made it (library), how does buying work (steps), what else is
+ * on offer (membership, custom work), and what about… (FAQ).
+ *
+ * A section that can't answer its question with real data (an empty category,
+ * no trending models) renders nothing rather than a placeholder.
+ */
 export default async function HomePage() {
-  const t = await getTranslations("landing.explore");
+  const categories = await getHomeCategories();
 
   return (
     <>
       <SiteHeader />
-      <main id="main-content" className="section-flow flex-1">
-        <Hero />
-        <PromoBanner />
-        <JewelleryLibrary />
-        <VideoShowreel />
-        <TrendingModels />
-        <CategoryExplorer
-          title={t("assetsTitle")}
-          description={t("assetsDescription")}
-          chips={ASSET_TABS}
-          chipNamespace="assetTabs"
-          chipBase="/3d-models"
-          categories={ASSET_CATEGORIES}
-          categoryBase="/3d-models"
-          action={{ label: t("assetsAction"), href: "/3d-models" }}
-          footerAction={{ label: t("showAll"), href: "/3d-models" }}
-        />
+      <main id="main-content" className="flex-1">
+        <HomeHero categories={categories} />
+        <TrustBar />
 
-        <Collections />
-        <FeaturedDesigner />
-        <BrowseBy />
-        <BrowseByCatalog />
-        {/* The page's third full-bleed ink band, sat midway between the other
-            two — Jewellery library above, Custom solutions below — so the dark
-            bands space out rather than clump. */}
-        <CraftStandard />
-        <ValueProps />
-        <CustomSolutions />
+        <div className="section-flow pt-16 sm:pt-20">
+          <ShopByCategory categories={categories} />
+          <TrendingModels />
+          <ProductionSplit />
+          <JewelleryLibrary />
+          <HowItWorks />
+          <MembershipTeaser />
+          <CustomWorkCta />
+          <HomeFaq />
+        </div>
       </main>
 
       <SiteFooter />

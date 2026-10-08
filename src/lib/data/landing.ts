@@ -62,9 +62,11 @@ export const PRIMARY_NAV: NavItem[] = [
       { key: "allModels", href: "/3d-models", icon: "grid" },
       { key: "engagement", href: "/3d-models/engagement-rings", icon: "diamond" },
       { key: "bands", href: "/3d-models/wedding-bands", icon: "circle" },
+      { key: "rings", href: "/3d-models/rings", icon: "crown" },
       { key: "pendants", href: "/3d-models/pendants", icon: "gem" },
       { key: "earrings", href: "/3d-models/earrings", icon: "sparkles" },
-      { key: "settings", href: "/3d-models/settings", icon: "crown" },
+      { key: "bracelets", href: "/3d-models/bracelets", icon: "link" },
+      { key: "settings", href: "/3d-models/settings", icon: "building" },
     ],
   },
   {
@@ -73,40 +75,17 @@ export const PRIMARY_NAV: NavItem[] = [
     children: [
       { key: "castReady", href: "/3d-models/cast-ready", icon: "flame" },
       { key: "printReady", href: "/3d-models/print-ready", icon: "printer" },
-      { key: "findings", href: "/3d-models/findings", icon: "link" },
-      { key: "freeModels", href: "/3d-models/free", icon: "gift" },
     ],
   },
   {
     label: "Custom work",
     href: "/custom-work",
     children: [
-      { key: "adjust", href: "/custom-work/adjust", icon: "sliders" },
-      { key: "commission", href: "/custom-work/commission", icon: "pen" },
+      { key: "adjust", href: "/requests/new?kind=adjustment", icon: "sliders" },
+      { key: "commission", href: "/requests/new?kind=commission", icon: "pen" },
+      { key: "customOverview", href: "/custom-work", icon: "book" },
     ],
   },
-  {
-    label: "For Designers",
-    href: "/designers",
-    children: [
-      { key: "startSelling", href: "/sell", icon: "store" },
-      { key: "dashboard", href: "/dashboard", icon: "dashboard" },
-      { key: "guidelines", href: "/guidelines", icon: "book" },
-    ],
-  },
-];
-
-export const HERO_FILTERS = [
-  { key: "rings", href: "/3d-models/rings" },
-  { key: "bracelets", href: "/3d-models/bracelets" },
-  { key: "engagement", href: "/3d-models/engagement-rings" },
-  { key: "necklaces", href: "/3d-models/necklaces" },
-];
-
-/** Chip rows are translated search terms, so they carry keys, not literals. */
-export const ASSET_TABS = [
-  "solitaire", "halo", "eternity", "signet",
-  "hamsa", "tennis", "cuban", "milgrain",
 ];
 
 /**
@@ -126,125 +105,43 @@ export const ASSET_CATEGORIES: CategoryTile[] = [
   { slug: "findings", key: "findings", seed: "cat-findings" },
 ];
 
-export const COLLECTIONS = [
-  { slug: "engagement-rings", key: "models", seed: "collection-engagement" },
-  { slug: "wedding-bands", key: "print", seed: "collection-bands" },
-] as const;
-
-export const FEATURED_DESIGNER = {
-  name: "kamarabay.com",
-  handle: "@kamarabay",
-  rating: 4.9,
-  reviews: 1284,
-  models: 312,
-  since: "2019",
-  tags: ["tagCharacters", "tagRigged", "tagGameReady", "tagPbr"],
-  works: [
-    { seed: "kam-1", key: "work1", price: 149 },
-    { seed: "kam-2", key: "work2", price: 89 },
-    { seed: "kam-3", key: "work3", price: 119 },
-    { seed: "kam-4", key: "work4", price: 199 },
-  ],
-};
-
-/** Metal is the first thing a jeweler narrows by. Counts come from the DB. */
-export const BROWSE_BY_METAL = [
-  { key: "yellow-gold", href: "/3d-models?metal=yellow-gold" },
-  { key: "white-gold", href: "/3d-models?metal=white-gold" },
-  { key: "rose-gold", href: "/3d-models?metal=rose-gold" },
-  { key: "platinum", href: "/3d-models?metal=platinum" },
-  { key: "silver", href: "/3d-models?metal=silver" },
-];
-
-export const BROWSE_BY_STONE = [
-  { key: "round", href: "/3d-models?stone=round" },
-  { key: "princess", href: "/3d-models?stone=princess" },
-  { key: "oval", href: "/3d-models?stone=oval" },
-  { key: "emerald", href: "/3d-models?stone=emerald" },
-  { key: "pear", href: "/3d-models?stone=pear" },
-  { key: "marquise", href: "/3d-models?stone=marquise" },
-  { key: "cushion", href: "/3d-models?stone=cushion" },
-];
-
-/**
- * Jewellery type is a category path segment (/3d-models/pendants), not a
- * `?category=` query — the same URLs the nav uses. `key` doubles as the
- * `landing.categories` label key and the DB category slug the counts group by.
- */
-export const BROWSE_BY_TYPE = [
-  { key: "engagement-rings", href: "/3d-models/engagement-rings" },
-  { key: "wedding-bands", href: "/3d-models/wedding-bands" },
-  { key: "rings", href: "/3d-models/rings" },
-  { key: "pendants", href: "/3d-models/pendants" },
-  { key: "earrings", href: "/3d-models/earrings" },
-  { key: "necklaces", href: "/3d-models/necklaces" },
-  { key: "bracelets", href: "/3d-models/bracelets" },
-];
-
-export const VALUE_PROPS = [
-  { key: "a", icon: "layers" },
-  { key: "b", icon: "tag" },
-  { key: "c", icon: "badge-check" },
-] as const;
-
-export const CUSTOM_SOLUTIONS = [
-  { key: "modelry", steps: [1, 2, 3], benefits: [1, 2, 3, 4] },
-  { key: "projects", steps: [1, 2, 3], benefits: [1, 2, 3] },
-] as const;
-
-/**
- * The three checks a jeweler actually runs on a model before buying it.
- *
- * Order matters and is not arbitrary: a mesh that is not closed cannot be
- * sliced at all, dimensions decide whether it is the right piece, and the
- * production method decides whether these files are usable. Each stage is
- * pointless if the one before it fails.
- */
-export const CRAFT_POINTS = [
-  { key: "watertight", icon: "scan" },
-  { key: "dimensions", icon: "ruler" },
-  { key: "production", icon: "gem" },
-] as const;
-
 export const FOOTER_COLUMNS = [
   {
-    key: "company",
-    links: [
-      { key: "about", href: "/about" },
-      { key: "contact", href: "/contact" },
-      { key: "membership", href: "/pricing" },
-      { key: "customWork", href: "/custom-work" },
-    ],
-  },
-  {
-    key: "marketplace",
+    key: "shop",
     links: [
       { key: "models", href: "/3d-models" },
       { key: "engagement", href: "/3d-models/engagement-rings" },
       { key: "bands", href: "/3d-models/wedding-bands" },
       { key: "castReady", href: "/3d-models/cast-ready" },
-      { key: "freeModels", href: "/3d-models/free" },
+      { key: "printReady", href: "/3d-models/print-ready" },
     ],
   },
   {
-    key: "forDesigners",
+    key: "company",
     links: [
-      { key: "startSelling", href: "/sell" },
-      { key: "sellerTerms", href: "/sell/terms" },
+      { key: "about", href: "/about" },
+      { key: "customWork", href: "/custom-work" },
+      { key: "membership", href: "/pricing" },
+      { key: "contact", href: "/contact" },
     ],
   },
-  // A dedicated legal column: payment-processor reviews (and buyers) expect
-  // every policy one click away from the footer, so they all live here and
-  // point at pages that actually exist.
+  {
+    key: "help",
+    links: [
+      { key: "faq", href: "/#faq" },
+      { key: "licensing", href: "/licensing" },
+      { key: "delivery", href: "/delivery" },
+      { key: "refunds", href: "/refunds" },
+    ],
+  },
+  // Every policy one click from the footer: payment-processor reviews (and
+  // buyers) expect it, and each points at a page that exists.
   {
     key: "legal",
     links: [
       { key: "terms", href: "/terms" },
       { key: "privacy", href: "/privacy" },
-      { key: "refunds", href: "/refunds" },
-      { key: "delivery", href: "/delivery" },
       { key: "cookiePolicy", href: "/cookies" },
-      { key: "licensing", href: "/licensing" },
     ],
   },
 ] as const;

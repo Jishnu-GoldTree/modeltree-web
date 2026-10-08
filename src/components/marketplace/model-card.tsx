@@ -1,4 +1,8 @@
+import { useLocale, useTranslations } from "next-intl"
+
 import { Link } from "@/i18n/navigation"
+import type { Locale } from "@/i18n/routing"
+import { formatPrice } from "@/lib/money"
 
 import { cn } from "@/lib/utils"
 import { UserText } from "@/components/user-text"
@@ -25,6 +29,12 @@ export function ModelCard({
    */
   favorited?: boolean
 }) {
+  const locale = useLocale() as Locale
+  const t = useTranslations("catalog")
+  // Cards carry whole shekels; formatting works in agorot.
+  const price = formatPrice(model.price === "free" ? 0 : model.price * 100, locale, {
+    freeLabel: t("free"),
+  })
   const visibleFormats = model.formats.slice(0, MAX_VISIBLE_FORMATS)
   const overflow = model.formats.length - visibleFormats.length
 
@@ -94,6 +104,14 @@ export function ModelCard({
             <UserText className="line-clamp-2">{model.title}</UserText>
           </Link>
         </h3>
+        {/* The price is the second thing a buyer reads on a card, so it sits
+            on every one rather than waiting for the product page. */}
+        <p className="mt-1.5 flex items-baseline gap-1.5 text-sm">
+          <span className="font-semibold tabular-nums">{price.primary}</span>
+          {price.secondary && (
+            <span className="text-xs text-muted-foreground tabular-nums">≈ {price.secondary}</span>
+          )}
+        </p>
       </div>
     </article>
   )

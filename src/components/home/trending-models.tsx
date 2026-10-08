@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server"
 
 import { queryModels } from "@/lib/data/catalog"
 import { ModelCard } from "@/components/marketplace/model-card"
-import { SectionHeading } from "@/components/landing/section-heading"
+import { SectionHeading } from "@/components/home/section-heading"
 
 /**
  * Reads the catalog instead of a fixture list. The fixtures it replaced were
