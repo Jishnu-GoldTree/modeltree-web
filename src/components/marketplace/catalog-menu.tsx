@@ -40,7 +40,7 @@ export function CatalogMenu({
     <details ref={ref} className="group relative">
       <summary
         className={cn(
-          "flex cursor-pointer list-none items-center gap-1.5 rounded-lg border px-3.5 py-1.5 text-sm whitespace-nowrap outline-none select-none transition-colors",
+          "flex min-h-10 cursor-pointer list-none items-center gap-1.5 rounded-lg border px-3.5 py-1.5 text-sm sm:min-h-9 whitespace-nowrap outline-none select-none transition-colors",
           "hover:bg-accent focus-visible:ring-3 focus-visible:ring-brand/50 [&::-webkit-details-marker]:hidden",
           active && "border-brand bg-brand-muted font-medium text-brand-accent",
         )}

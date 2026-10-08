@@ -123,7 +123,7 @@ export function LoginForm({
                   <FormLabel>{t("password")}</FormLabel>
                   <Link
                     href="/forgot-password"
-                    className="text-xs text-brand-accent hover:underline"
+                    className="-my-2 py-2 text-xs text-brand-accent hover:underline"
                   >
                     {t("forgot")}
                   </Link>

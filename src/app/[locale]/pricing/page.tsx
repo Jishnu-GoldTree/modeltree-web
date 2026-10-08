@@ -84,12 +84,12 @@ export default async function PricingPage() {
         </section>
 
         <div className="shell py-14 sm:py-16">
-          <ul className="mx-auto grid max-w-4xl items-stretch gap-5 sm:grid-cols-2">
+          <ul className="mx-auto grid max-w-4xl grid-cols-1 items-stretch gap-5 sm:grid-cols-2">
             {plans.map((plan) => (
               <li
                 key={plan.key}
                 className={cn(
-                  "relative flex h-full flex-col rounded-2xl border bg-card p-6 sm:p-7",
+                  "relative flex h-full min-w-0 flex-col rounded-2xl border bg-card p-6 sm:p-7",
                   // The membership is the thing being sold; it gets the weight.
                   plan.featured && "border-brand",
                   // Custom modelling is the client's second commercial path — lift it too.

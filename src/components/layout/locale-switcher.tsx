@@ -60,7 +60,7 @@ export function LocaleSwitcher() {
           aria-label={`${t("label")}: ${currentLabel}`}
           title={`${t("label")}: ${currentLabel}`}
           disabled={pending}
-          className="gap-1.5 px-2"
+          className="h-10 gap-1.5 px-2 sm:h-8"
         >
           <LocaleFlag locale={locale} />
           {/* Latin code in both locales ("HE", not "עב"): it's a label for the

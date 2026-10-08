@@ -71,12 +71,16 @@ export function WhatsAppFab() {
       aria-label={t("fabLabel")}
       title={t("fabLabel")}
       className={cn(
-        "group fixed right-6 z-40 flex h-14 items-center overflow-hidden rounded-full border border-black/5 bg-white outline-none focus-visible:ring-3 focus-visible:ring-brand/50",
-        clearsListingFab ? "bottom-24" : "bottom-6",
+        "group fixed right-4 z-40 flex h-12 items-center sm:right-6 sm:h-14 overflow-hidden rounded-full border border-black/5 bg-white outline-none focus-visible:ring-3 focus-visible:ring-brand/50",
+        clearsListingFab
+          ? "bottom-24"
+          : pathname.startsWith("/3d-model/")
+            ? "bottom-24 lg:bottom-6"
+            : "bottom-4 sm:bottom-6",
       )}
     >
-      <span className="flex size-14 shrink-0 items-center justify-center">
-        <WhatsAppIcon className="size-7" />
+      <span className="flex size-12 shrink-0 items-center justify-center sm:size-14">
+        <WhatsAppIcon className="size-6 sm:size-7" />
       </span>
       <span className="max-w-0 overflow-hidden whitespace-nowrap text-sm font-medium opacity-0 transition-all duration-300 ease-out group-hover:max-w-xs group-hover:pe-5 group-hover:opacity-100 motion-reduce:transition-none">
         {t("fabCta")}

@@ -51,6 +51,7 @@ import { AccountMenu } from "@/components/layout/account-menu"
 import { HeaderBadges } from "@/components/layout/header-badges"
 import { LocaleSwitcher } from "@/components/layout/locale-switcher"
 import { SearchForm } from "@/components/forms/search-form"
+import { useViewer } from "@/lib/queries/viewer"
 
 /**
  * Top-level nav labels come from PRIMARY_NAV, which is data rather than copy.
@@ -235,6 +236,7 @@ export function SiteHeader() {
 
 function MobileNav() {
   const t = useTranslations("nav")
+  const { data: viewer } = useViewer()
   const nav = useTranslations("landing.navChildren")
 
   return (
@@ -245,7 +247,7 @@ function MobileNav() {
           size="icon"
           aria-label={t("openMenu")}
           title={t("openMenu")}
-          className="lg:hidden"
+          className="size-10 lg:hidden"
         >
           <Menu className="size-5" aria-hidden />
         </Button>
@@ -287,11 +289,22 @@ function MobileNav() {
               <Link href="/3d-models">{t("browseModels")}</Link>
             </Button>
           </SheetClose>
-          <SheetClose asChild>
-            <Button variant="outline" asChild>
-              <Link href="/about">{t("about")}</Link>
-            </Button>
-          </SheetClose>
+          {/* The bar hides Log in / Sign up below sm, so signed-out phone
+              visitors reach them here. */}
+          {!viewer && (
+            <div className="grid grid-cols-2 gap-2 sm:hidden">
+              <SheetClose asChild>
+                <Button variant="outline" asChild>
+                  <Link href="/login">{t("logIn")}</Link>
+                </Button>
+              </SheetClose>
+              <SheetClose asChild>
+                <Button variant="outline" asChild>
+                  <Link href="/signup">{t("signUp")}</Link>
+                </Button>
+              </SheetClose>
+            </div>
+          )}
         </div>
       </SheetContent>
     </Sheet>

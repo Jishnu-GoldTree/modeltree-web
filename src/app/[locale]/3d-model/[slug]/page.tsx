@@ -1,6 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server"
 
 import { formatPrice } from "@/lib/money"
+import { MobileBuyBar } from "@/components/marketplace/mobile-buy-bar"
 import type { Locale } from "@/i18n/routing"
 import { initials } from "@/lib/utils"
 import { Link } from "@/i18n/navigation"
@@ -222,7 +223,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                       <li key={tag}>
                         <Link
                           href={`/3d-models?tag=${encodeURIComponent(tag.toLowerCase())}`}
-                          className="inline-flex rounded-md border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-brand hover:text-foreground"
+                          className="inline-flex min-h-9 items-center rounded-md border px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-brand hover:text-foreground sm:min-h-7 sm:px-2.5"
                         >
                           {tag}
                         </Link>
@@ -440,6 +441,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                     {t("save")}
                   </Button>
                   <Button
+                    id="buy-button"
                     type="submit"
                     form="buy-form"
                     className="h-13 w-full gap-2 rounded-none border-0 text-base font-semibold bg-brand text-brand-foreground hover:bg-brand/85"
@@ -521,7 +523,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
                         <Link
                           href={`/3d-models?tag=${encodeURIComponent(tag)}`}
                           dir="auto"
-                          className="inline-flex items-center rounded-md border bg-muted/40 px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                          className="inline-flex min-h-9 items-center rounded-md border bg-muted/40 px-3 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:min-h-7 sm:px-2.5"
                         >
                           {tag}
                         </Link>
@@ -573,6 +575,12 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/3d-mode
             </section>
           )}
         </div>
+        <MobileBuyBar
+          title={model.title}
+          price={price.primary}
+          label={model.price === "free" ? t("getModel") : t("addToCart")}
+          free={model.price === "free"}
+        />
       </main>
 
       <SiteFooter />
