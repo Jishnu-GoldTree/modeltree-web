@@ -30,7 +30,7 @@
   },
   "catalog": {
     "title": "Jewellery models",
-    "description": "Cast-ready and print-ready jewellery from GoldTree and independent designers. Filter by piece, metal, stone and licence.",
+    "description": "Cast-ready and print-ready jewellery models, modelled in-house by GoldTree. Filter by piece, metal, stone and licence.",
     "count": "{count, plural, =0 {No models} one {# model} other {# models}}",
     "filters": "Filters",
     "clearAll": "Clear all",
@@ -55,7 +55,13 @@
     "scrollLeft": "Scroll categories left",
     "scrollRight": "Scroll categories right",
     "loadMore": "Load more",
-    "loadError": "Couldn’t load more models."
+    "loadError": "Couldn’t load more models.",
+    "productionFilter": {
+      "label": "Production method",
+      "all": "All",
+      "cast": "Cast-ready",
+      "print": "Print-ready"
+    }
   },
   "cart": {
     "title": "Your cart",

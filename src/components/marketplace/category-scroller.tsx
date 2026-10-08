@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
+import { cn } from "@/lib/utils"
+
 /**
  * Overflow arrows for the category strip. Still server-rendered links inside,
  * so the row is shareable and works without JS — this thin wrapper only owns
@@ -18,10 +20,13 @@ export function CategoryScroller({
   prevLabel,
   nextLabel,
   children,
+  listClassName,
 }: {
   prevLabel: string
   nextLabel: string
   children: React.ReactNode
+  /** Replaces the list's default spacing (chip rows vs. underlined tabs). */
+  listClassName?: string
 }) {
   const ref = useRef<HTMLUListElement>(null)
   const [hiddenLeft, setHiddenLeft] = useState(false)
@@ -60,7 +65,7 @@ export function CategoryScroller({
       <ul
         ref={ref}
         onScroll={update}
-        className="no-scrollbar flex items-center gap-2.5 overflow-x-auto py-3"
+        className={cn("no-scrollbar flex overflow-x-auto", listClassName ?? "items-center gap-2.5 py-3")}
       >
         {children}
       </ul>

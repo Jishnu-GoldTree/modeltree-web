@@ -3,7 +3,6 @@ import { getTranslations } from "next-intl/server"
 import { Check, RotateCcw } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { ASSET_CATEGORIES } from "@/lib/data/landing"
 import { CatalogMenu as Menu } from "@/components/marketplace/catalog-menu"
 import {
   FORMATS,
@@ -51,7 +50,7 @@ function href(base: string, params: Params, patch: Params) {
  * The cost is a beat of latency on the click, which is the right trade for a
  * filter: the visitor is choosing, not navigating a path they already know.
  */
-function Pill({
+function Segment({
   href: to,
   active,
   label,
@@ -67,9 +66,8 @@ function Pill({
       rel={to.includes("?") ? "nofollow" : undefined}
       aria-current={active ? "true" : undefined}
       className={cn(
-        "inline-flex shrink-0 items-center rounded-lg border px-3.5 py-1.5 text-sm whitespace-nowrap outline-none transition-colors",
-        "hover:bg-accent focus-visible:ring-3 focus-visible:ring-brand/50",
-        active && "border-brand bg-brand-muted font-medium text-brand-accent",
+        "inline-flex shrink-0 items-center rounded-md px-3 py-1 text-sm whitespace-nowrap outline-none transition-colors focus-visible:ring-3 focus-visible:ring-brand/50",
+        active ? "bg-ink font-medium text-ink-foreground" : "text-muted-foreground hover:text-foreground",
       )}
     >
       {label}
@@ -121,16 +119,12 @@ export async function CatalogToolbar({
   base,
   params,
   facets,
-  lockedCategory,
 }: {
   base: string
   params: Params
   facets: CatalogResult["facets"]
-  /** Set on /3d-models/[category], where the category is the page, not a filter. */
-  lockedCategory?: string
 }) {
   const t = await getTranslations("catalog")
-  const cat = await getTranslations("landing")
   const lic = await getTranslations("license")
   const facet = await getTranslations("facet")
   const s = await getTranslations("sort")
@@ -150,7 +144,6 @@ export async function CatalogToolbar({
   const formatLabel = FORMATS.find((f) => f.value === params.format)?.label
   const priceLabel =
     params.price === "free" ? t("free") : params.price === "paid" ? t("paid") : undefined
-  const categoryKey = ASSET_CATEGORIES.find((c) => c.slug === params.category)?.key
   const metalLabel =
     params.metal && METALS.includes(params.metal as (typeof METALS)[number]) && params.metal !== "unspecified"
       ? facet(`metal.${params.metal}`)
@@ -162,68 +155,24 @@ export async function CatalogToolbar({
   const licenseLabel =
     params.license && params.license in LICENSE_LABELS ? lic(params.license) : undefined
 
+  const production = params.production === "cast" || params.production === "print" ? params.production : undefined
+
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Menu
-        label={formatLabel ?? t("fileFormat")}
-        active={Boolean(formatLabel)}
-      >
-        {FORMATS.map((format) => (
-          <MenuLink
-            key={format.value}
-            href={toggle("format", format.value)}
-            active={params.format === format.value}
-            label={format.label}
-            count={facets.formats[format.value] ?? 0}
+      {/* How the piece gets made is a choice of one, so it reads as a
+          segmented control rather than two loose toggles. */}
+      <div role="group" aria-label={t("productionFilter.label")} className="inline-flex rounded-lg border p-0.5">
+        {([undefined, "cast", "print"] as const).map((value) => (
+          <Segment
+            key={value ?? "all"}
+            href={href(base, params, { production: value })}
+            active={production === value}
+            label={t(`productionFilter.${value ?? "all"}`)}
           />
         ))}
-      </Menu>
+      </div>
 
-      <Pill
-        href={toggle("price", "free")}
-        active={params.price === "free"}
-        label={t("free")}
-      />
-      <Pill
-        href={toggle("production", "cast")}
-        active={params.production === "cast"}
-        label={facet("production.cast")}
-      />
-      <Pill
-        href={toggle("production", "print")}
-        active={params.production === "print"}
-        label={facet("production.print")}
-      />
-
-      <Menu label={priceLabel ?? t("price")} active={Boolean(priceLabel)}>
-        <MenuLink
-          href={toggle("price", "free")}
-          active={params.price === "free"}
-          label={t("free")}
-        />
-        <MenuLink
-          href={toggle("price", "paid")}
-          active={params.price === "paid"}
-          label={t("paid")}
-        />
-      </Menu>
-
-      {!lockedCategory && (
-        <Menu
-          label={categoryKey ? cat(`categories.${categoryKey}`) : t("category")}
-          active={Boolean(categoryKey)}
-        >
-          {ASSET_CATEGORIES.map((category) => (
-            <MenuLink
-              key={category.slug}
-              href={toggle("category", category.slug)}
-              active={params.category === category.slug}
-              label={cat(`categories.${category.key}`)}
-              count={facets.categories[category.slug] ?? 0}
-            />
-          ))}
-        </Menu>
-      )}
+      <span aria-hidden className="mx-1 hidden h-5 w-px bg-border sm:block" />
 
       <Menu label={metalLabel ?? t("metal")} active={Boolean(metalLabel)}>
         {METALS.filter((m) => m !== "unspecified").map((metal) => (
@@ -247,6 +196,34 @@ export async function CatalogToolbar({
             count={facets.stones[stone] ?? 0}
           />
         ))}
+      </Menu>
+
+      <Menu
+        label={formatLabel ?? t("fileFormat")}
+        active={Boolean(formatLabel)}
+      >
+        {FORMATS.map((format) => (
+          <MenuLink
+            key={format.value}
+            href={toggle("format", format.value)}
+            active={params.format === format.value}
+            label={format.label}
+            count={facets.formats[format.value] ?? 0}
+          />
+        ))}
+      </Menu>
+
+      <Menu label={priceLabel ?? t("price")} active={Boolean(priceLabel)}>
+        <MenuLink
+          href={toggle("price", "free")}
+          active={params.price === "free"}
+          label={t("free")}
+        />
+        <MenuLink
+          href={toggle("price", "paid")}
+          active={params.price === "paid"}
+          label={t("paid")}
+        />
       </Menu>
 
       <Menu label={licenseLabel ?? t("licenseGroup")} active={Boolean(licenseLabel)}>

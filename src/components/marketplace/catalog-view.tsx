@@ -14,13 +14,10 @@ import { Button } from "@/components/ui/button"
 
 type Params = Record<string, string | undefined>
 
-/** Named filters offered under "Browse by type", mirroring COLLECTION_SEGMENTS. */
-const BROWSE_TYPES = ["free", "cast-ready", "print-ready"] as const
-
 /**
  * The listing body, shared by /3d-models and /3d-models/[segment] so the two
- * routes can't drift. The layout follows a marketplace shape: a category strip
- * and a horizontal filter bar pinned under the header, then a full-width grid.
+ * routes can't drift. Top to bottom: where you are (breadcrumb, title), the
+ * category tabs, one filter bar, then the full-width grid.
  */
 export async function CatalogView({
   base,
@@ -43,7 +40,6 @@ export async function CatalogView({
 }) {
   const { items, total, page, pageCount, facets } = result
   const t = await getTranslations("catalog")
-  const seg = await getTranslations("segment")
   const member = await getTranslations("membership")
 
   // On the base /3d-models page the last crumb would repeat the H1, so it's
@@ -52,20 +48,7 @@ export async function CatalogView({
 
   return (
     <>
-      <CatalogCategories active={lockedCategory ?? params.category} facets={facets} />
-
-      <div className="border-b bg-background">
-        <div className="shell py-3">
-          <CatalogToolbar
-            base={base}
-            params={params}
-            facets={facets}
-            lockedCategory={lockedCategory}
-          />
-        </div>
-      </div>
-
-      <div className="shell py-8">
+      <div className="shell pt-8 pb-6">
         <nav
           aria-label="Breadcrumb"
           className="flex items-center gap-1 text-xs text-muted-foreground"
@@ -93,21 +76,18 @@ export async function CatalogView({
         <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
           {description}
         </p>
+      </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-          <span className="text-muted-foreground">{t("browseByType")}</span>
-          {BROWSE_TYPES.map((type) => (
-            <Link
-              key={type}
-              href={`/3d-models/${type}`}
-              className="font-medium text-brand-accent outline-none hover:underline focus-visible:ring-3 focus-visible:ring-brand/50"
-            >
-              {seg(type)}
-            </Link>
-          ))}
+      <CatalogCategories active={lockedCategory ?? params.category} facets={facets} />
+
+      <div className="border-b">
+        <div className="shell py-3">
+          <CatalogToolbar base={base} params={params} facets={facets} />
         </div>
+      </div>
 
-        <div className="mt-6 flex flex-wrap items-center gap-3 border-t pt-5">
+      <div className="shell pt-5 pb-8">
+        <div className="flex flex-wrap items-center gap-3">
           {/* One interpolated message, not a number glued to a noun: word
               order differs per language and concatenation breaks in RTL. */}
           <p className="text-sm text-muted-foreground">{t("count", { count: total })}</p>
