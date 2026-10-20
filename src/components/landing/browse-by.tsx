@@ -4,9 +4,9 @@ import { Link } from "@/i18n/navigation"
 import { ArrowRight, ChevronRight, Download, Gem, Gift } from "lucide-react"
 import { getTranslations } from "next-intl/server"
 
-import { BROWSE_BY_METAL, BROWSE_BY_STONE } from "@/lib/data/landing"
+import { BROWSE_BY_STONE } from "@/lib/data/landing"
 import { FACET_COUNTS } from "@/lib/data/stats"
-import { MetalIcon, StoneIcon } from "@/components/landing/browse-icons"
+import { StoneIcon } from "@/components/landing/browse-icons"
 
 export function BrowseList({
   heading,
@@ -94,17 +94,7 @@ export async function BrowseBy() {
 
   return (
     <section className="shell">
-      <div className="grid gap-10 rounded-2xl border bg-card p-6 sm:p-8 lg:grid-cols-3">
-        <BrowseList
-          heading={t("metalHeading")}
-          blurb={t("metalBlurb")}
-          items={BROWSE_BY_METAL.map((m) => ({
-            href: m.href,
-            label: facet(`metal.${m.key}`),
-            count: FACET_COUNTS.metals[m.key] ?? 0,
-            icon: <MetalIcon metal={m.key} className="size-6 shrink-0" />,
-          }))}
-        />
+      <div className="grid gap-10 rounded-2xl border bg-card p-6 sm:p-8 lg:grid-cols-2">
         <BrowseList
           heading={t("stoneHeading")}
           blurb={t("stoneBlurb")}
