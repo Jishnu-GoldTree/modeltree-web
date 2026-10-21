@@ -1,0 +1,9 @@
+# Not a monorepo — this project is standalone. pnpm 10+ reads a few install
+# settings only from this file, so it holds just one: the allowlist of
+# dependencies permitted to run install/build scripts (native binaries).
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
