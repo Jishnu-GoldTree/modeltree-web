@@ -15,6 +15,7 @@ import type { AbstractIntlMessages } from "next-intl"
  */
 export const CLIENT_NAMESPACES = [
   "auth",
+  "bulkUpload",
   "catalog",
   "checkout",
   "common",

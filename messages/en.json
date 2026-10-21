@@ -443,6 +443,10 @@
       "customOverview": {
         "label": "How custom work runs",
         "description": "Quotes, timelines and what to send us."
+      },
+      "enterprise": {
+        "label": "For workshops",
+        "description": "Team seats, invoicing and extended licensing"
       }
     },
     "heroCta": "Explore marketplace",
@@ -450,7 +454,13 @@
       "rings": "Rings",
       "bracelets": "Bracelets",
       "engagement": "Engagement",
-      "necklaces": "Necklaces"
+      "necklaces": "Necklaces",
+      "bands": "Wedding bands",
+      "castReady": "Cast-ready",
+      "printReady": "Print-ready",
+      "yellowGold": "Yellow gold",
+      "settings": "Settings",
+      "free": "Free models"
     },
     "heroStats": {
       "models": "3D models",
@@ -624,6 +634,17 @@
       "castReady": "Cast-ready models",
       "custom": "Custom modelling",
       "sell": "Sell your models"
+    },
+    "business": {
+      "title": "Business account on {name}",
+      "body": "Production-ready assets from verified designers, licensed for your whole team. Find the models you need instantly and take a project from idea to done without the procurement overhead.",
+      "cta": "Open a business account",
+      "aTitle": "Simple asset sharing across teams",
+      "aBody": "Share models with your team without the usual hassle. Store an asset once and it's available to everyone who needs it — no duplicate purchases.",
+      "bTitle": "Consolidated payments",
+      "bBody": "Simpler asset buying with flexible billing options. Consolidate your invoices and stop chasing receipts — whether it's one purchase or a hundred.",
+      "cTitle": "Clear licensing terms",
+      "cBody": "We offer a range of flexible licensing options. Whether you need a simple license for personal use or a comprehensive one for commercial projects, we have you covered."
     }
   },
   "site": {
@@ -1534,5 +1555,29 @@
       "stoneBody": "Settings and heads cut for the stone you're setting.",
       "count": "{count, plural, one {# model} other {# models}}"
     }
+  },
+  "bulkUpload": {
+    "title": "Bulk import 3D files",
+    "body": "Pick several 3D files at once. Each becomes its own draft listing, titled after the file name — fill in the rest and publish from your dashboard later.",
+    "category": "Category (all items)",
+    "selectCategory": "Choose a category",
+    "license": "Licence",
+    "price": "Price (₪)",
+    "metal": "Metal",
+    "stone": "Stone",
+    "production": "Production",
+    "pickFiles": "Choose 3D files",
+    "hint": "STL, OBJ, FBX, 3DM, 3MF, STEP, MAX · up to {max} files at a time",
+    "tooMany": "You can import up to {max} files at a time.",
+    "uploadFailed": "{name} failed to upload",
+    "uploadError": "Upload failed",
+    "unsupported": "Unsupported format",
+    "remove": "Remove",
+    "create": "Create drafts ({count})",
+    "creating": "Creating…",
+    "created": "{count} drafts created",
+    "submitFailed": "Could not create the drafts. Please try again.",
+    "needCategory": "Choose a category to continue",
+    "viewDrafts": "View drafts in your dashboard"
   }
 }

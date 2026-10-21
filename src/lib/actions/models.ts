@@ -74,6 +74,41 @@ const listingSchema = z.object({
   uploadedImages: z.array(uploadedImageSchema).max(20).default([]),
 })
 
+/**
+ * Bulk import. A designer with a folder of finished files should not have to
+ * run the full listing form once per model. Each selected 3D file is uploaded
+ * to R2 (same presign → PUT path the single form uses) and becomes one *draft*
+ * listing: title from the file name, shared batch defaults for category,
+ * licence, price and the jewellery facets, and no preview image yet. Drafts
+ * never reach the catalog, so the missing description/preview are filled in
+ * later from the normal edit form before publishing.
+ */
+const bulkItemSchema = z.object({
+  storageKey: z.string().min(1),
+  format: z.enum(FORMAT_VALUES),
+  // Derived from the file name client-side; a draft only needs something to
+  // show in the dashboard, so the publish-time min(4) rule does not apply yet.
+  title: z.string().trim().min(1).max(120),
+})
+
+const bulkSchema = z.object({
+  categoryId: z.string().min(1, "Pick a category").uuid("Pick a category"),
+  licenseCode: z.string().min(1, "Pick a licence"),
+  price: z.coerce.number().min(0, "Price cannot be negative").max(10_000),
+  metal: z.enum(METALS),
+  stone: z.enum(STONES),
+  production: z.enum(PRODUCTION),
+  // Capped so one submit stays inside a serverless function's time budget —
+  // the client tells the designer to run another batch past the limit.
+  items: z.array(bulkItemSchema).min(1, "Add at least one file").max(25),
+})
+
+export type BulkCreateResult = {
+  created: number
+  failed: { title: string; reason: string }[]
+  error?: string
+}
+
 export type ListingState = { error?: string; fieldErrors?: Record<string, string> }
 
 /** Client-echoed storage keys are trusted only after this: R2 only accepts
@@ -314,6 +349,135 @@ export async function createListing(
   // declared ListingState return type, which next-intl's redirect no longer
   // narrows away the way next/navigation's `never` return did.
   return {}
+}
+
+/**
+ * Creates one draft listing per uploaded 3D file. Called directly from the
+ * bulk-import client (not a <form> action), so it takes a typed payload rather
+ * than FormData and returns a per-file result instead of redirecting — a batch
+ * can partly succeed, and the designer needs to see which files didn't land.
+ *
+ * Every file is verified the same way createListing verifies its own: the key
+ * must sit under the caller's R2 namespace, and R2 must actually hold bytes for
+ * it. Nothing from the client is trusted beyond "which key, which format".
+ */
+export async function bulkCreateListings(input: unknown): Promise<BulkCreateResult> {
+  const user = await getCurrentUser()
+  if (!user) return { created: 0, failed: [], error: "Your session expired. Sign in and try again." }
+
+  const parsed = bulkSchema.safeParse(input)
+  if (!parsed.success) {
+    return { created: 0, failed: [], error: parsed.error.issues[0]?.message ?? "Invalid request." }
+  }
+  const v = parsed.data
+  const supabase = await createClient()
+
+  const failed: { title: string; reason: string }[] = []
+
+  // Confirm bytes for every key up front, in parallel. A presigned URL is
+  // permission to upload, not proof of one — the same reason createListing
+  // headObjects before inserting. Keys outside the caller's namespace or seen
+  // twice in the batch are rejected without a storage round-trip.
+  type Check = {
+    item: (typeof v.items)[number]
+    title: string
+    stored: StoredObject | null
+    reason: string | null
+  }
+  const seen = new Set<string>()
+  const checks: Check[] = await Promise.all(
+    v.items.map(async (item): Promise<Check> => {
+      const title = item.title.trim() || "model"
+      if (!ownsKey(item.storageKey, user.id, "models")) {
+        return { item, title, stored: null, reason: "Upload could not be verified." }
+      }
+      if (seen.has(item.storageKey)) {
+        return { item, title, stored: null, reason: "Duplicate file in this batch." }
+      }
+      seen.add(item.storageKey)
+      try {
+        const stored = await headObject(item.storageKey)
+        if (!stored || stored.size === 0) {
+          return { item, title, stored: null, reason: "The file did not finish uploading." }
+        }
+        return { item, title, stored, reason: null }
+      } catch {
+        return { item, title, stored: null, reason: "Could not reach file storage." }
+      }
+    }),
+  )
+
+  // Inserts run sequentially: the slug-collision walk reads back rows this same
+  // loop just wrote, so two files named the same in one batch still get distinct
+  // slugs (…-2, …-3) instead of racing for the unique index.
+  let created = 0
+  for (const check of checks) {
+    const stored = check.stored
+    if (!stored) {
+      failed.push({ title: check.title, reason: check.reason ?? "The file did not finish uploading." })
+      continue
+    }
+    const { item, title } = check
+
+    const base = slugify(title) || "model"
+    let slug = base
+    for (let n = 2; n < 100; n++) {
+      const { data: taken } = await supabase.from("models").select("id").eq("slug", slug).maybeSingle()
+      if (!taken) break
+      slug = `${base}-${n}`
+    }
+
+    const { data: model, error } = await supabase
+      .from("models")
+      .insert({
+        designer_id: user.id,
+        category_id: v.categoryId,
+        slug,
+        title,
+        // Placeholder so the draft is coherent in the dashboard; the publish-time
+        // schema forces a real one before this can go live.
+        description: `Imported draft "${title}". Add a description before publishing.`,
+        status: "draft",
+        published_at: null,
+        price_cents: Math.round(v.price * 100),
+        license_code: v.licenseCode,
+        metal: v.metal,
+        stone: v.stone,
+        production: v.production,
+        weight_grams: null,
+        tags: [],
+      })
+      .select("id")
+      .single()
+
+    if (error || !model) {
+      failed.push({ title, reason: error?.message ?? "Could not save the draft." })
+      continue
+    }
+
+    const { error: fileError } = await supabase.from("model_files").insert({
+      model_id: model.id,
+      format: item.format,
+      storage_key: item.storageKey,
+      size_bytes: stored.size,
+      checksum: stored.checksum,
+    })
+    if (fileError) {
+      // Don't leave a fileless draft behind; roll the row back so a retry is clean.
+      await supabase.from("models").delete().eq("id", model.id)
+      failed.push({ title, reason: fileError.message })
+      continue
+    }
+
+    created++
+  }
+
+  if (created > 0) {
+    updateTag(CATALOG_TAG)
+    revalidatePath("/dashboard")
+  }
+
+  return { created, failed }
 }
 
 /**

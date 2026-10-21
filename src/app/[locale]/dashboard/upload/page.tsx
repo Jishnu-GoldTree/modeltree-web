@@ -11,6 +11,7 @@ import { getTranslations } from "next-intl/server"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { ListingForm } from "@/components/forms/listing-form"
+import { BulkImportForm } from "@/components/forms/bulk-import-form"
 
 export async function generateMetadata({
   params,
@@ -55,6 +56,10 @@ export default async function UploadPage() {
 
           <div className="mt-8">
             <ListingForm categories={categories} licenses={licenses} />
+          </div>
+
+          <div className="mt-12 border-t pt-10">
+            <BulkImportForm categories={categories} licenses={licenses} />
           </div>
         </div>
       </main>
