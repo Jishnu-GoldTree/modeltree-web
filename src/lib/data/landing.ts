@@ -70,14 +70,6 @@ export const PRIMARY_NAV: NavItem[] = [
     ],
   },
   {
-    label: "Production",
-    href: "/3d-models/cast-ready",
-    children: [
-      { key: "castReady", href: "/3d-models/cast-ready", icon: "flame" },
-      { key: "printReady", href: "/3d-models/print-ready", icon: "printer" },
-    ],
-  },
-  {
     label: "Custom work",
     href: "/custom-work",
     children: [

@@ -17,7 +17,7 @@ import { HomeFaq } from "@/components/home/home-faq";
  * Each section answers one question a jeweller has on the way to a purchase,
  * in the order they ask it: what is this (hero), can I trust it (trust bar),
  * what do you have (categories, trending), will it fit my workflow (production
- * split), what's it in (metal, stone shape), who made it (library), how does buying work (steps), what else is
+ * split), what stone shape it fits, who made it (library), how does buying work (steps), what else is
  * on offer (membership, custom work), and what about… (FAQ).
  *
  * A section that can't answer its question with real data (an empty category,

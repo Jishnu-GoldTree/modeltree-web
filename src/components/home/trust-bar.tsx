@@ -1,15 +1,13 @@
 import { getTranslations } from "next-intl/server"
-import { Download, Flame, ReceiptText, Ruler } from "lucide-react"
+import { Download, Ruler } from "lucide-react"
 
 const PROMISES = [
-  { key: "cast", Icon: Flame },
   { key: "dims", Icon: Ruler },
   { key: "download", Icon: Download },
-  { key: "pay", Icon: ReceiptText },
 ] as const
 
 /**
- * The four things a jeweller checks before buying a file from someone new,
+ * The two things a jeweller checks before buying a file from someone new,
  * answered straight under the hero instead of at the bottom of the page.
  * Each is backed elsewhere: the product page states dimensions, the delivery
  * and licensing pages state the rest.
@@ -19,7 +17,7 @@ export async function TrustBar() {
 
   return (
     <div className="border-b bg-background">
-      <ul className="shell grid grid-cols-2 items-center gap-x-4 gap-y-4 py-5 sm:items-start sm:gap-6 sm:py-7 lg:grid-cols-4">
+      <ul className="shell grid grid-cols-2 items-center gap-x-4 gap-y-4 py-5 sm:items-start sm:gap-6 sm:py-7">
         {PROMISES.map(({ key, Icon }) => (
           <li key={key} className="flex items-start gap-3">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-muted text-brand-accent">

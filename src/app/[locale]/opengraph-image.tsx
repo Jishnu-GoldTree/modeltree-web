@@ -1,15 +1,10 @@
 import { ogAlt, ogContentType, ogSize } from "@/lib/og/brand-frame"
 import { renderShareCard, toLocale } from "@/lib/og/render"
-import { routing } from "@/i18n/routing"
 
 export const size = ogSize
 export const contentType = ogContentType
 
-/** One card per locale, prerendered alongside the pages. */
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }))
-}
-
+// The parent layout supplies locales; Next.js derives image params from this metadata.
 export async function generateImageMetadata({
   params,
 }: {
