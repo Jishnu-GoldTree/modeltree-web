@@ -3,12 +3,13 @@
 import { redirect as externalRedirect } from "next/navigation"
 import { getLocale } from "next-intl/server"
 
-import { redirect } from "@/i18n/navigation"
+import { getPathname, redirect } from "@/i18n/navigation"
 import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
 
 import { createClient } from "@/lib/supabase/server"
 import { withFlash } from "@/lib/flash"
+import { SITE_ORIGIN } from "@/lib/site-url"
 
 /**
  * Auth mutations against Supabase.
@@ -21,13 +22,18 @@ import { withFlash } from "@/lib/flash"
 
 export async function signInWithProvider(provider: string, redirectTo = "/") {
   const supabase = await createClient()
-  const origin = (await headers()).get("origin") ?? ""
+  const locale = await getLocale()
+  const origin = (await headers()).get("origin") ?? SITE_ORIGIN
+
+  // /auth/callback sits outside [locale] and redirects verbatim, so it gets
+  // the localised path. A bare "/next" would always land on the Hebrew root.
+  const callback = new URL("/auth/callback", origin)
+  callback.searchParams.set("next", getPathname({ href: redirectTo, locale }))
+  callback.searchParams.set("locale", locale)
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: provider as "google" | "facebook",
-    options: {
-      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`,
-    },
+    options: { redirectTo: callback.toString() },
   })
 
   if (error || !data.url) {
