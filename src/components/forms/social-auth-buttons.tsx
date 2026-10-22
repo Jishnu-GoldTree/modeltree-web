@@ -10,10 +10,9 @@ import { Button } from "@/components/ui/button"
  * The OAuth provider row, shared by login and signup so the two can't drift.
  * Lucide dropped brand icons, so the marks are inlined.
  *
- * Buttons are rendered for every provider the product supports, but only the
- * ones Auth.js actually has credentials for are clickable — `enabledProviders`
- * is resolved on the server and passed down. A configured-looking button that
- * dead-ends is worse than one that says why it's unavailable.
+ * Only providers listed in `enabledProviders` (resolved on the server from
+ * SUPABASE_OAUTH_PROVIDERS) are rendered. A button for a provider that isn't
+ * switched on in Supabase can only fail, and buyers shouldn't see setup notes.
  */
 
 function GoogleIcon() {
@@ -61,50 +60,46 @@ export function SocialAuthButtons({
   dividerLabel,
   enabledProviders,
   redirectTo = "/",
-  onUnavailable,
 }: {
   dividerLabel: string
   enabledProviders: string[]
   redirectTo?: string
-  onUnavailable: (provider: string) => void
 }) {
   const [pending, startTransition] = useTransition()
+  const providers = PROVIDERS.filter(({ id }) => enabledProviders.includes(id))
 
-  // Nothing configured yet — the OAuth apps aren't set up, so a row of
-  // dead-ending buttons is worse than none. Once a provider is switched on in
-  // Supabase and listed in SUPABASE_OAUTH_PROVIDERS, the buttons return on
-  // their own; the divider goes with them so email sign-in isn't left under a
-  // stray "or continue with".
-  if (enabledProviders.length === 0) return null
+  // Nothing configured — no buttons, and no divider, so email sign-in isn't
+  // left under a stray "or continue with".
+  if (providers.length === 0) return null
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="grid gap-2 sm:grid-cols-2">
-        {PROVIDERS.map(({ id, name, Icon }) => {
-          const enabled = enabledProviders.includes(id)
-          return (
-            <Button
-              key={id}
-              type="button"
-              variant="outline"
-              className="h-10"
-              disabled={pending}
-              onClick={() => {
-                if (!enabled) return onUnavailable(name)
-                startTransition(() => {
-                  void signInWithProvider(id, redirectTo)
-                })
-              }}
-            >
-              {pending ? (
-                <Loader2 className="size-4 animate-spin" aria-hidden />
-              ) : (
-                <Icon />
-              )}
-              {name}
-            </Button>
-          )
-        })}
+      <div
+        className={
+          providers.length > 1 ? "grid gap-2 sm:grid-cols-2" : "grid gap-2"
+        }
+      >
+        {providers.map(({ id, name, Icon }) => (
+          <Button
+            key={id}
+            type="button"
+            variant="outline"
+            className="h-10"
+            disabled={pending}
+            onClick={() => {
+              startTransition(() => {
+                void signInWithProvider(id, redirectTo)
+              })
+            }}
+          >
+            {pending ? (
+              <Loader2 className="size-4 animate-spin" aria-hidden />
+            ) : (
+              <Icon />
+            )}
+            {name}
+          </Button>
+        ))}
       </div>
 
       <div className="flex items-center gap-3">
