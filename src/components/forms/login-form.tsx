@@ -83,11 +83,6 @@ export function LoginForm({
         dividerLabel={t("orEmail")}
         enabledProviders={enabledProviders}
         redirectTo={redirectTo}
-        onUnavailable={(provider) =>
-          setNotice(
-            `${provider} sign-in isn't enabled yet. Turn it on in the Supabase dashboard under Authentication → Providers.`,
-          )
-        }
       />
 
       <Form {...form}>
