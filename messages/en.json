@@ -1488,16 +1488,6 @@
       "count": "{count, plural, one {# model} other {# models}}",
       "all": "All categories"
     },
-    "production": {
-      "title": "Choose how you produce",
-      "body": "Filter the library by your workflow and get files that suit it.",
-      "castTitle": "Cast-ready",
-      "castBody": "For lost-wax casting: closed geometry and wall thickness that hold up in the flask.",
-      "printTitle": "Print-ready",
-      "printBody": "For direct resin or metal printing: clean meshes that slice without repairs.",
-      "count": "{count, plural, one {# model} other {# models}}",
-      "cta": "Browse"
-    },
     "how": {
       "title": "How it works",
       "body": "From search to bench in three steps.",
@@ -1554,6 +1544,16 @@
       "stoneTitle": "Shop by stone shape",
       "stoneBody": "Settings and heads cut for the stone you're setting.",
       "count": "{count, plural, one {# model} other {# models}}"
+    },
+    "ringCollections": {
+      "title": "Rings for every milestone",
+      "body": "Explore engagement rings and wedding bands, and find the design for your next piece.",
+      "engagementTitle": "Engagement rings",
+      "engagementBody": "Discover solitaire, halo and accent-stone designs for a personal proposal.",
+      "weddingTitle": "Wedding bands",
+      "weddingBody": "Explore classic bands and distinctive designs to mark a lifetime together.",
+      "count": "{count, plural, one {# model} other {# models}}",
+      "cta": "Explore collection"
     }
   },
   "bulkUpload": {

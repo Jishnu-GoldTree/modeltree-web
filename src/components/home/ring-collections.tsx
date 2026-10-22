@@ -1,22 +1,21 @@
 import { getTranslations } from "next-intl/server"
-import { ArrowRight, Flame, Printer } from "lucide-react"
+import { ArrowRight, Diamond, Circle } from "lucide-react"
 
 import { Link } from "@/i18n/navigation"
-import { getProductionCounts } from "@/lib/data/home"
+import { getRingCollections } from "@/lib/data/home"
 import { Thumb } from "@/components/marketplace/thumb"
 
-/**
- * The second question a jeweller asks after "what piece": "will it work in my
- * workflow". Two doors, one per production method, each with its live count.
- */
-export async function ProductionSplit() {
-  const t = await getTranslations("home.production")
-  const counts = await getProductionCounts()
-
-  const doors = [
-    { key: "cast", href: "/3d-models/cast-ready", Icon: Flame, image: "/videos/posters/ijewel-11.webp", count: counts.cast },
-    { key: "print", href: "/3d-models/print-ready", Icon: Printer, image: "/videos/posters/ijewel-12.webp", count: counts.print },
-  ] as const
+/** Two featured ring collections, using their own images and live model counts. */
+export async function RingCollections() {
+  const t = await getTranslations("home.ringCollections")
+  const collections = await getRingCollections()
+  const doors = collections.map((category) => ({
+    key: category.slug === "engagement-rings" ? "engagement" : "wedding",
+    href: `/3d-models/${category.slug}`,
+    Icon: category.slug === "engagement-rings" ? Diamond : Circle,
+    image: category.image,
+    count: category.count,
+  }))
 
   return (
     <section className="shell">

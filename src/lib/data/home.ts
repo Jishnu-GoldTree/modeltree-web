@@ -69,11 +69,15 @@ export async function getHomeCategories(limit = 7): Promise<HomeCategory[]> {
   )
 }
 
-/** Live counts behind the cast-ready / print-ready split. */
-export async function getProductionCounts() {
-  const [cast, print] = await Promise.all([
-    queryModels({ production: "cast", page: 1 }, { facets: false }),
-    queryModels({ production: "print", page: 1 }, { facets: false }),
-  ])
-  return { cast: cast.total, print: print.total }
+/** Featured ring collections with category-specific covers and live totals. */
+export async function getRingCollections(): Promise<HomeCategory[]> {
+  return Promise.all(
+    ["engagement-rings", "wedding-bands"].map(async (slug) => {
+      const { items, total } = await queryModels(
+        { category: slug, sort: "trending", page: 1 },
+        { facets: false },
+      )
+      return { slug, count: total, image: items.find((model) => model.cover)?.cover ?? FALLBACK_ART[slug] }
+    }),
+  )
 }
